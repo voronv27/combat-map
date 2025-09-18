@@ -1,3 +1,6 @@
+// JS code for the various map-related features on the site, such as loading in images
+// or adding elements & drawings
+
 // Add a listener for changes in the combat map image
 window.addEventListener( 'load', function() {
     document.getElementById( 'fileInput' ).addEventListener( 'change', function() {
