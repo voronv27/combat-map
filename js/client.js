@@ -3,7 +3,7 @@
 // or getting messages from the server from another client's changes
 
 // Connect to server
-const url = new URL("./start_web_socket", location.href);
+var url = new URL("./start_web_socket", location.href);
 url.protocol = url.protocol.replace("http", "ws");
 const socket = new WebSocket(url);
 

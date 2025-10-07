@@ -1,23 +1,51 @@
 // Creates a MapServer and listens for client connections
-import { Application, Context, Router } from "@oak/oak";
 import MapServer from "./server.ts";
 
-const app = new Application();
 const port = 8080;
-const router = new Router();
 const server = new MapServer();
 
-router.get("/start_web_socket", (ctx: Context) => server.handleConnection(ctx));
+function contentType(filePath:string): string {
+  if (filePath.endsWith('html')) {
+    return "text/html";
+  } else if (filePath.endsWith('js')) {
+    return "application/javascript";
+  } else if (filePath.endsWith('css')) {
+    return "text/css";
+  }
+  // default: arbitrary binary data
+  return "application/octet-stream"
+}
 
-app.use(router.routes());
-app.use(router.allowedMethods());
-app.use(async (context) => {
-  await context.send({
-    root: `${Deno.cwd()}`,
-    index: "index.html",
-  });
-});
+async function handler(req: Request): Promise<Reponse> {
+  if (req.headers.get("upgrade") === "websocket") {
+    return server.handleConnection(req);
+  }
+
+  const url = new URL(req.url);
+  if (url.pathname === "/") {
+    return new Response(
+      await Deno.readTextFile(`${Deno.cwd()}/index.html`), {
+        headers: {"Content-type": "text/html"}
+    });
+  } else if (url.pathname === "/images/sample_map.png") {
+    return new Response(
+      await Deno.readFile(`${Deno.cwd()}/images/sample_map.png`), {
+        headers: {"Content-type": "image/png"}
+    });
+  } else {
+    // The url pathname is requesting one of the files
+    try {
+      const filePath = `${Deno.cwd()}${url.pathname}`;
+      return new Response(
+        await Deno.readTextFile(filePath), {
+          headers: {"content-type": contentType(filePath)}
+      });
+    } catch (e) {
+      return new Response("Not Found", {status: 404});
+    }
+  }
+}
 
 //console.log("Listening at http://localhost:" + port);
-await app.listen({ port });
+Deno.serve({port}, handler);
 
