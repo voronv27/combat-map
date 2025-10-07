@@ -1,8 +1,8 @@
 // Creates a MapServer and listens for client connections
-import MapServer from "./server.ts";
+//import MapServer from "./server.ts";
 
 const port = 8080;
-const server = new MapServer();
+//const server = new MapServer();
 
 function contentType(filePath:string): string {
   if (filePath.endsWith('html')) {
@@ -24,7 +24,9 @@ async function handler(req: Request): Promise<Reponse> {
   if (req.headers.get("upgrade") === "websocket") {
     console.log("upgrade to websocket");
     //return server.handleConnection(req);
-    return Response("Testing");
+    const {socket, response} =  Deno.upgradeWebSocket(req);
+    socket.onopen = () => console.log("TEST");
+    return response;
   }
 
   if (url.pathname === "/") {
@@ -44,8 +46,7 @@ async function handler(req: Request): Promise<Reponse> {
       const fileData = Deno.readTextFile(filePath);
     } catch (e) {
       console.log(`Error for url ${url}`);
-      //return new Response("Not Found", {status: 404});
-      return new Response(req.headers);
+      return new Response("Not Found", {status: 404});
     }
 
     return new Response(fileData, {
