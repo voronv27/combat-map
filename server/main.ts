@@ -18,8 +18,11 @@ function contentType(filePath:string): string {
 
 async function handler(req: Request): Promise<Reponse> {
   const url = new URL(req.url);
+  console.log("Request headers:");
+  console.log(req.headers);
   if (req.headers.get("upgrade") === "websocket" ||
       url.pathname === "/start_web_socket") {
+    console.log("upgrade to websocket");
     return server.handleConnection(req);
   }
 

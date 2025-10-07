@@ -5,7 +5,6 @@
 // Connect to server
 var url = new URL("./start_web_socket", location.href);
 url.protocol = url.protocol.replace("http", "ws");
-console.log(url);
 const socket = new WebSocket(url);
 
 // Listen for server messages and update page elements
