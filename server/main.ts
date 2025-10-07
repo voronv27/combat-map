@@ -43,7 +43,7 @@ async function handler(req: Request): Promise<Reponse> {
     // The url pathname is requesting one of the files
     try {
       const filePath = `${Deno.cwd()}${url.pathname}`;
-      const fileData = Deno.readTextFile(filePath);
+      const fileData = await Deno.readTextFile(filePath);
     } catch (e) {
       console.log(`Error for url ${url}`);
       return new Response("Not Found", {status: 404});
