@@ -20,9 +20,6 @@ async function handler(req: Request): Promise<Reponse> {
   const url = new URL(req.url);
   if (req.headers.get("upgrade") === "websocket") {
     return server.handleConnection(req);
-    /*const {socket, response} =  Deno.upgradeWebSocket(req);
-    socket.onopen = () => console.log("TEST");
-    return response;*/
   }
 
   if (url.pathname === "/") {
