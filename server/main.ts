@@ -23,7 +23,8 @@ async function handler(req: Request): Promise<Reponse> {
   console.log(`${req.headers}`);
   if (req.headers.get("upgrade") === "websocket") {
     console.log("upgrade to websocket");
-    return server.handleConnection(req);
+    //return server.handleConnection(req);
+    return Response("Testing");
   }
 
   if (url.pathname === "/") {
@@ -46,7 +47,7 @@ async function handler(req: Request): Promise<Reponse> {
       //return new Response("Not Found", {status: 404});
       return new Response(req.headers);
     }
-    
+
     return new Response(fileData, {
       headers: {"content-type": contentType(filePath)}
     });
