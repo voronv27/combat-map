@@ -40,15 +40,16 @@ async function handler(req: Request): Promise<Reponse> {
     // The url pathname is requesting one of the files
     try {
       const filePath = `${Deno.cwd()}${url.pathname}`;
-      return new Response(
-        await Deno.readTextFile(filePath), {
-          headers: {"content-type": contentType(filePath)}
-      });
+      const fileData = Deno.readTextFile(filePath);
     } catch (e) {
       console.log(`Error for url ${url}`);
       //return new Response("Not Found", {status: 404});
       return new Response(req.headers);
     }
+    
+    return new Response(fileData, {
+      headers: {"content-type": contentType(filePath)}
+    });
   }
 }
 
