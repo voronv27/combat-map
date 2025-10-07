@@ -1,8 +1,8 @@
 // Creates a MapServer and listens for client connections
-//import MapServer from "./server.ts";
+import MapServer from "./server.ts";
 
 const port = 8080;
-//const server = new MapServer();
+const server = new MapServer();
 
 function contentType(filePath:string): string {
   if (filePath.endsWith('html')) {
