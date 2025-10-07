@@ -17,11 +17,15 @@ function contentType(filePath:string): string {
 }
 
 async function handler(req: Request): Promise<Reponse> {
-  if (req.headers.get("upgrade") === "websocket") {
+  const url = new URL(req.url);
+  console.log("Request headers:");
+  console.log(req.headers);
+  if (req.headers.get("upgrade") === "websocket" ||
+      url.pathname === "/start_web_socket") {
+    console.log("upgrade to websocket");
     return server.handleConnection(req);
   }
 
-  const url = new URL(req.url);
   if (url.pathname === "/") {
     return new Response(
       await Deno.readTextFile(`${Deno.cwd()}/index.html`), {
@@ -41,6 +45,7 @@ async function handler(req: Request): Promise<Reponse> {
           headers: {"content-type": contentType(filePath)}
       });
     } catch (e) {
+      console.log(`Error for url ${url}`);
       return new Response("Not Found", {status: 404});
     }
   }
