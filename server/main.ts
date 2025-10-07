@@ -20,9 +20,8 @@ async function handler(req: Request): Promise<Reponse> {
   const url = new URL(req.url);
   console.log(url);
   console.log("Request headers:");
-  console.log(req.headers);
-  if (req.headers.get("upgrade") === "websocket" ||
-      url.pathname === "/start_web_socket") {
+  console.log(`${req.headers}`);
+  if (req.headers.get("upgrade") === "websocket") {
     console.log("upgrade to websocket");
     return server.handleConnection(req);
   }
