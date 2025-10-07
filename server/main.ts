@@ -44,14 +44,13 @@ async function handler(req: Request): Promise<Reponse> {
     const filePath = `${Deno.cwd()}${url.pathname}`;
     try {
       const fileData = await Deno.readTextFile(filePath);
+      return new Response(fileData, {
+        headers: {"content-type": contentType(filePath)}
+      });
     } catch (e) {
       console.log(`Error for url ${url}`);
       return new Response("Not Found", {status: 404});
     }
-
-    return new Response(fileData, {
-      headers: {"content-type": contentType(filePath)}
-    });
   }
 }
 
