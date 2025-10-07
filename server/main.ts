@@ -29,7 +29,7 @@ async function handler(req: Request): Promise<Reponse> {
     return response;
   }
 
-  /*if (url.pathname === "/") {
+  if (url.pathname === "/") {
     return new Response(
       await Deno.readTextFile(`${Deno.cwd()}/index.html`), {
         headers: {"Content-type": "text/html"}
@@ -52,8 +52,7 @@ async function handler(req: Request): Promise<Reponse> {
     return new Response(fileData, {
       headers: {"content-type": contentType(filePath)}
     });
-  }*/
-  return new Response("test");
+  }
 }
 
 //console.log("Listening at http://localhost:" + port);
