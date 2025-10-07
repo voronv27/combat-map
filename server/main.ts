@@ -41,14 +41,13 @@ async function handler(req: Request): Promise<Reponse> {
     });
   } else {
     // The url pathname is requesting one of the files
-    try {
-      const filePath = `${Deno.cwd()}${url.pathname}`;
-      const fileData = await Deno.readTextFile(filePath);
+    const filePath = `${Deno.cwd()}${url.pathname}`;
+    const fileData = try {
+      await Deno.readTextFile(filePath);
     } catch (e) {
       console.log(`Error for url ${url}`);
       return new Response("Not Found", {status: 404});
     }
-
     return new Response(fileData, {
       headers: {"content-type": contentType(filePath)}
     });
