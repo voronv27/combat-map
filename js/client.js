@@ -7,41 +7,60 @@ var url = new URL("./start_web_socket", location.href);
 url.protocol = url.protocol.replace("http", "ws");
 const socket = new WebSocket(url);
 
+// store updated items as { "itemId": { "changeablePropertyName": value }}
+var updatedItems = {};
+
 // Listen for server messages and update page elements
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     switch (data.event) {
         case "request-all":
-            // TODO: keep track of all editable elements and send their values
-            const statusBox = document.getElementById("statusBox");
             socket.send(JSON.stringify({
                 event: "request-all",
-                data: {"statusBox": statusBox.value},
+                data: updatedItems,
             }));
             break;
         case "update-all":
-            // TODO: updateAll function when we add more elements
-            updateStatusBox(data.data.statusBox);
+            updateAll(data.data);
             break;
-        case "status-update":
-            updateStatusBox(data.text);
+        case "update-item":
+            updateItem(data.item, data.values);
             break;
-
-        // TODO: add more cases for different events
     }
 };
 
-// TODO: may be easier to create a function for any text elements and pass in id as a param
-function updateStatusBox(text) {
-    var statusBox = document.getElementById("statusBox");
-    statusBox.value = text;
+// Function to update an item's specified HTML elements
+function updateItem(itemName, itemData) {
+    var item = document.getElementById(itemName);
+    for (valueName in itemData) {
+        item[valueName] = itemData[valueName];
+    }
 }
 
-// Send messages to the server when modifying page elements
-// TODO: consider adding jquery to project and change this to listen for
-// changes to anything with a "textbox"  (similar philosophy for added objects)
+// Updates all of the HTML elements in items
+function updateAll(items) {
+    updatedItems = items;
+    for (item in updatedItems) {
+        updateItem(item, updatedItems[item]);
+    }
+}
+
+// ALL UPDATEABLE ITEMS GO BELOW THIS LINE
+// To add an item, give it a unique id and add it to updatedItems
+// as part of the event listener. Send the updated values over the
+// socket with "item" corresponding to the item id and "values"
+// being a dictionary of { changed HTML element: value }
+
+// statusBox
 const statusBoxInput = document.getElementById("statusBox");
 statusBoxInput.addEventListener('input', function() {
-    const input = statusBoxInput.value;
-    socket.send(JSON.stringify({ event: "status-update", text: input }));
+    const data = { "value": statusBoxInput.value };
+    updatedItems["statusBox"] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: "statusBox",
+        values: data
+    }));
 });
+
+// TODO: map image

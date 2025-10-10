@@ -46,10 +46,11 @@ export default class MapServer {
     private send(message: any) {
         const data = JSON.parse(message.data);
         switch (data.event) {
-            case "status-update":
+            case "update-item":
                 this.broadcast({
-                    event: "status-update",
-                    text: data.text,
+                    event: "update-item",
+                    item: data.item,
+                    values: data.values
                 });
                 break;
 
