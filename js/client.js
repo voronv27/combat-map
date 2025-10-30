@@ -21,6 +21,8 @@ socket.onmessage = (event) => {
             }));
             break;
         case "update-all":
+            // TODO: once we allow users to add/remove elements,
+            // create all elements before updating their values
             updateAll(data.data);
             break;
         case "update-item":
@@ -45,6 +47,28 @@ function updateAll(items) {
     }
 }
 
+// Uploads an image file to the server stored under the id
+// of the element
+async function uploadImage(file, id) {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('element', id);
+
+    // upload image to server
+    const res = await fetch("/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    // We return true if the image has been successfully uploaded
+    if (res.status === 200) {
+        return true;
+    } else {
+        console.error(`Failed to upload image for element ${id}`);
+        return false;
+    }
+}
+
 // ALL UPDATEABLE ITEMS GO BELOW THIS LINE
 // To add an item, give it a unique id and add it to updatedItems
 // as part of the event listener. Send the updated values over the
@@ -63,4 +87,33 @@ statusBoxInput.addEventListener('input', function() {
     }));
 });
 
-// TODO: map image
+// ALL ITEMS WITH UPLOADED IMAGES GO BELOW THIS LINE
+// To handle items with uploaded images, give the item a unique
+// id and an eventListener for the image being uploaded. When an
+// image is uploaded by the client, call uploadImage(file, item id)
+// to upload the image to the server. Then send an "update-item" 
+// message over the socket, with values: { "src": "/server-image/[element id]"}
+//
+// Important note: it is REALLY important that we listen for the image submission,
+// and not the image loading to avoid sending constant messages. You can see the
+// mapBg example, where we listen for 'change' in 'fileInput' (which keeps track
+// of the current uploaded map image) and not 'load' in 'mapBg'.
+
+// mapBg
+const mapFile = document.getElementById('fileInput');
+mapFile.addEventListener('change', async function() {
+    const file = this.files[0];
+    const imgUploaded = await uploadImage(file, 'mapBg');
+    if (!imgUploaded) {
+        // failed image upload, don't send a message
+        return;
+    }
+
+    const data = { "src": "/server-image/mapBg" };
+    updatedItems["mapBg"] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: "mapBg",
+        values: data
+    }));
+});
