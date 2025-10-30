@@ -37,6 +37,7 @@ function updateItem(itemName, itemData) {
     for (valueName in itemData) {
         item[valueName] = itemData[valueName];
     }
+    updatedItems[itemName] = itemData;
 }
 
 // Updates all of the HTML elements in items
