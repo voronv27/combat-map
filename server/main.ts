@@ -41,7 +41,7 @@ function contentType(filePath:string): string {
 // Listen for broadcast messages from other servers and
 // pass them along to this server's connected clients
 async function serverBroadcast() {
-  const watcher = kv.watch({prefix: ["broadcast"]});
+  const watcher = kv.watch([["broadcast"]]);
   for await (const entry of watcher) {
     const { value } = entry;
     if (!value || value.id === serverId) {
