@@ -14,12 +14,6 @@ var updatedItems = {};
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     switch (data.event) {
-        case "request-all":
-            socket.send(JSON.stringify({
-                event: "request-all",
-                data: updatedItems,
-            }));
-            break;
         case "update-all":
             // TODO: once we allow users to add/remove elements,
             // create all elements before updating their values

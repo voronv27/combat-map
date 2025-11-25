@@ -1,4 +1,4 @@
-// supabase for image storage
+// Supabase for image storage
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_KEY")!;
@@ -6,7 +6,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 // Creates a MapServer and listens for client connections
 import MapServer from "./server.ts";
-
 const port = 8080;
 
 // We need to use Deno KV to ensure we are broadcasting to websockets
@@ -14,6 +13,7 @@ const port = 8080;
 const kv = await Deno.openKv();
 const serverId = crypto.randomUUID();
 const server = new MapServer(kv, serverId);
+var newServer = true;
 await kv.set(["servers", serverId], {
   startedAt: Date.now()
 });
@@ -48,9 +48,23 @@ async function serverBroadcast() {
     const value = entry.value;
     if (!value || value.id === serverId) {
       continue;
+    } else if (value.msg === "new-server") {
+      if (newServer) {
+        server.broadcast(value.data, false);
+        newServer = false;
+      }
+      continue;
     }
     console.log("Got broadcast message from server", value.id);
     server.broadcast(value.msg, false);
+  }
+}
+
+async function updateServers() {
+  const watcher = kv.watch([["servers"]]);
+  for await (const [entry] of watcher) {
+    console.log("updating new server");
+    server.broadcastUpdatedItems();
   }
 }
 

@@ -11,6 +11,8 @@ export default class MapServer {
     // New websockets that need to be updated before they're considered "connected"
     private connecting = new Set<WebSocket>();
 
+    private updatedItems = {};
+
     // information to broadcast cross-server
     private kv: Deno.Kv;
     private serverId: string;
@@ -60,21 +62,7 @@ export default class MapServer {
                     item: data.item,
                     values: data.values
                 });
-                break;
-
-            // upon recieving a response to a "request-all",
-            // send the desired socket a message to update all
-            case "request-all":
-                var connectingSockets = this.connecting;
-                for (let socket of connectingSockets) {
-                    socket.send(JSON.stringify({
-                        event: "update-all",
-                        data: data.data,
-                    }));
-                    this.connecting.delete(socket);
-                    this.connected.add(socket);
-                    console.log("Client connected");
-                }
+                this.updatedItems[data.item] = data.values;
                 break;
         }
     }
@@ -96,16 +84,30 @@ export default class MapServer {
         }
     }
 
-    // Get shared website state from an already-connected connected client
-    // which will allow us to update our connecting clients
-    private updateNewClients() {
-        for (let user of this.connected) {
-            // requests status of all interactable objects
-            const message = {event: "request-all"};
-            user.send(JSON.stringify(message));
+    // Broadcast this server's updatedItems for newly-joining servers
+    public async broadcastUpdatedItems() {
+        const message = {
+            event: "update-all",
+            data: this.updatedItems,
+        };
+        await this.kv.set(["broadcast"], {
+            id: this.serverId,
+            msg: "new-server",
+            data: message,
+        });
+    }
 
-            // We only need one client to update our socket
-            break;
-        }
+    // Send updatedItems data to connecting sockets
+    private updateNewClients() {
+        var connectingSockets = this.connecting;
+        for (let socket of connectingSockets) {
+            socket.send(JSON.stringify({
+                event: "update-all",
+                data: this.updatedItems,
+            }));
+            this.connecting.delete(socket);
+            this.connected.add(socket);
+            console.log("Client connected");
+        }        
     }
 }
