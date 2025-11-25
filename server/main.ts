@@ -42,9 +42,10 @@ function contentType(filePath:string): string {
 // pass them along to this server's connected clients
 async function serverBroadcast() {
   const watcher = kv.watch([["broadcast"]]);
-  for await (const entry of watcher) {
+  for await (const [entry] of watcher) {
     console.log(`server ${serverId} recvd broadcast message`);
-    const { value } = entry;
+    console.log(entry);
+    const value = entry.value;
     if (!value || value.id === serverId) {
       continue;
     }
