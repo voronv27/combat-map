@@ -85,6 +85,7 @@ async function handler(req: Request): Promise<Reponse> {
     const formData = await req.formData();
     const file = formData.get("image");
     const id = formData.get("element");
+    const room = formData.get("roomId");
 
     // check for valid file
     if (!(file instanceof File)) {
@@ -93,17 +94,17 @@ async function handler(req: Request): Promise<Reponse> {
     
     // Upload to supabase storage
     const {data, error} = await supabase.storage.from("images")
-      .upload(`images/${id}-${roomId}.png`, file, {upsert: true});
+      .upload(`images/${id}-${room}.png`, file, {upsert: true});
     if (error) {
       console.error("Image upload error:", error);
       return new Response({status: 500});
     }
 
     // Store URL
-    const urlData = supabase.storage.from("images").getPublicUrl(`images/${id}-${roomId}.png`);
+    const urlData = supabase.storage.from("images").getPublicUrl(`images/${id}-${room}.png`);
     const imageUrl = `${urlData.data.publicUrl}?t=${Date.now()}`; // add in date to avoid caching issues
-    await kv.set(["server-image", roomId, id], imageUrl);
-    console.log(`Image ${id}-${roomId}.png uploaded`);
+    await kv.set(["server-image", room, id], imageUrl);
+    console.log(`Image ${id}-${room}.png uploaded`);
     return new Response({status: 200});
   }
 

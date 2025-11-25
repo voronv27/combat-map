@@ -4,7 +4,7 @@
 
 async function startWebSocket(roomId) {
     // Connect to server
-    var url = new URL("./start_web_socket?room=" + encodeURIComponent(roomId),
+    var url = new URL("./start_web_socket?room=" + roomId,
         location.href);
     url.protocol = url.protocol.replace("http", "ws");
     const socket = new WebSocket(url);
@@ -34,7 +34,7 @@ async function startWebSocket(roomId) {
             if (valueName === "src") {
                 // forces the image to be re-requested so page doesn't
                 // need to be refreshed
-                item[valueName] = itemData[valueName] + "?_=" + performance.now();
+                item[valueName] = itemData[valueName] + "&_=" + performance.now();
             }
             else {
                 item[valueName] = itemData[valueName];
@@ -57,6 +57,7 @@ async function startWebSocket(roomId) {
         const formData = new FormData();
         formData.append('image', file);
         formData.append('element', id);
+        formData.append('roomId', roomId);
 
         // upload image to server
         const res = await fetch("/upload", {
@@ -113,7 +114,7 @@ async function startWebSocket(roomId) {
             return;
         }
 
-        const data = { "src": "/server-image/mapBg" };
+        const data = { "src": `/server-image/mapBg?room=${roomId}` };
         updatedItems["mapBg"] = data;
         socket.send(JSON.stringify({
             event: "update-item",
@@ -133,5 +134,5 @@ joinBtn.addEventListener("click", () => {
     document.getElementById("landing").style.display = "none";
     document.getElementById("roomContent").style.display = "block";
 
-    startWebSocket(roomId);
+    startWebSocket(encodeURIComponent(roomId));
 });
