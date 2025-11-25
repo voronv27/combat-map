@@ -13,16 +13,13 @@ const port = 8080;
 const kv = await Deno.openKv();
 const serverId = crypto.randomUUID();
 const server = new MapServer(kv, serverId);
-await kv.set(["servers", serverId], {
-  startedAt: Date.now()
-});
+await kv.set(["servers", serverId], {heartbeat: Date.now()}, {expireIn: 20000});
 console.log(`Started server with id ${serverId}`);
 
-// Server pings its id in KV. TODO: when the heartbeat isn't updated over
-// a timeframe (TBD), delete (use expireIn option)
+// Server pings its id in KV every 5s. If after 20s it hasn't done so, it will expire
 setInterval(() => {
-  kv.set(["servers", serverId], { heartbeat: Date.now() });
-}, 10000);
+  kv.set(["servers", serverId], {heartbeat: Date.now()}, {expireIn: 20000});
+}, 5000);
 
 // Get the list of items to be updated from Deno KV and update the server When we swap to server rooms, 
 // this function can be modified to get the specific room id
