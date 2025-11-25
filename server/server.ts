@@ -27,7 +27,7 @@ export default class MapServer {
         socket.addEventListener("open", () => {
             // If we have existing connections, the new websocket needs to be
             // updated to match their shared state
-            if (this.connected.size) {
+            if (this.connected.size || this.updatedItems != {}) {
                 console.log("Client connecting");
                 this.connecting.add(socket);
                 this.updateNewClients();
