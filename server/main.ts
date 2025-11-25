@@ -49,8 +49,13 @@ async function serverBroadcast() {
       continue;
     } else if (value.msg === "new-server") {
       if (newServer) {
-        console.log("new server got message")
-        server.broadcast(value.data, false);
+        console.log("new server got message");
+        const message = {
+            event: "update-all",
+            data: value.items,
+        };
+        server.broadcast(message, false);
+        server.updateItems(value.items);
         newServer = false;
       }
       continue;

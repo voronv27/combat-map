@@ -86,15 +86,15 @@ export default class MapServer {
 
     // Broadcast this server's updatedItems for newly-joining servers
     public async broadcastUpdatedItems() {
-        const message = {
-            event: "update-all",
-            data: this.updatedItems,
-        };
         await this.kv.set(["broadcast"], {
             id: this.serverId,
             msg: "new-server",
-            data: message,
+            items: this.updatedItems
         });
+    }
+
+    public updateItems(items: any) {
+        this.updatedItems = items;
     }
 
     // Send updatedItems data to connecting sockets
