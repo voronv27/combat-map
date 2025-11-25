@@ -73,6 +73,9 @@ export default class MapServer {
         for (let user of this.connected) {
             user.send(messageString);
         }
+        if (message.event === "update-item") {
+            this.updatedItems[message.item] = message.values;
+        }
 
         // if we should broadcast this message to other servers, do so
         // TODO: add a timeout
