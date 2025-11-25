@@ -11,6 +11,14 @@ export default class MapServer {
     // New websockets that need to be updated before they're considered "connected"
     private connecting = new Set<WebSocket>();
 
+    // information to broadcast cross-server
+    private kv: Deno.Kv;
+    private serverId: string;
+    constructor(kv: Deno.Kv, serverId: string) {
+        this.kv = kv;
+        this.serverId = serverId;
+    }
+
     public async handleConnection(request: Request): Response {
         const {socket, response} = Deno.upgradeWebSocket(request);
 
@@ -72,10 +80,19 @@ export default class MapServer {
     }
 
     // Helper function to broadcast a message to all connected clients
-    private broadcast(message: AppEvent) {
+    async broadcast(message: AppEvent, serverBroadcast: bool = true) {
         const messageString = JSON.stringify(message);
         for (let user of this.connected) {
             user.send(messageString);
+        }
+
+        // if we should broadcast this message to other servers, do so
+        // TODO: add a timeout
+        if (serverBroadcast) {
+            await this.kv.set(["broadcast"], {
+                id: this.serverId,
+                msg: message
+            });
         }
     }
 
