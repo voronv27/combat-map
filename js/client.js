@@ -29,7 +29,14 @@ socket.onmessage = (event) => {
 function updateItem(itemName, itemData) {
     var item = document.getElementById(itemName);
     for (valueName in itemData) {
-        item[valueName] = itemData[valueName];
+        if (valueName === "src") {
+            // forces the image to be re-requested so page doesn't
+            // need to be refreshed
+            item[valueName] = itemData[valueName] + "?_=" + performance.now();
+        }
+        else {
+            item[valueName] = itemData[valueName];
+        }
     }
     updatedItems[itemName] = itemData;
 }

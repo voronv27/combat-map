@@ -11,14 +11,16 @@ export default class MapServer {
     // New websockets that need to be updated before they're considered "connected"
     private connecting = new Set<WebSocket>();
 
+    // Keep track of items that are changed on the website to send to new clients
     private updatedItems = {};
 
-    // information to broadcast cross-server
+    // Information to broadcast cross-server
     private kv: Deno.Kv;
     private serverId: string;
     constructor(kv: Deno.Kv, serverId: string) {
         this.kv = kv;
         this.serverId = serverId;
+        this.updatedItems = {};
     }
 
     public async handleConnection(request: Request): Response {
@@ -27,7 +29,7 @@ export default class MapServer {
         socket.addEventListener("open", () => {
             // If we have existing connections, the new websocket needs to be
             // updated to match their shared state
-            if (this.connected.size || this.updatedItems != {}) {
+            if (this.connected.size || Object.keys(this.updatedItems).length > 0) {
                 console.log("Client connecting");
                 this.connecting.add(socket);
                 this.updateNewClients();
@@ -68,7 +70,7 @@ export default class MapServer {
     }
 
     // Helper function to broadcast a message to all connected clients
-    async broadcast(message: AppEvent, serverBroadcast: bool = true) {
+    public async broadcast(message: AppEvent, broadcastToServers: bool = true) {
         const messageString = JSON.stringify(message);
         for (let user of this.connected) {
             user.send(messageString);
@@ -78,8 +80,8 @@ export default class MapServer {
         }
 
         // if we should broadcast this message to other servers, do so
-        // TODO: add a timeout
-        if (serverBroadcast) {
+        if (broadcastToServers) {
+            await this.kv.set(["updatedItems"], this.updatedItems);
             await this.kv.set(["broadcast"], {
                 id: this.serverId,
                 msg: message
@@ -87,17 +89,13 @@ export default class MapServer {
         }
     }
 
-    // Broadcast this server's updatedItems for newly-joining servers
-    public async broadcastUpdatedItems() {
-        await this.kv.set(["broadcast"], {
-            id: this.serverId,
-            msg: "new-server",
-            items: this.updatedItems
-        });
-    }
-
+    // Update server items (for new server)
     public updateItems(items: any) {
         this.updatedItems = items;
+        this.broadcast({
+            event: "update-all",
+            data: this.updatedItems,
+        }, false);
     }
 
     // Send updatedItems data to connecting sockets

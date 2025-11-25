@@ -13,7 +13,6 @@ const port = 8080;
 const kv = await Deno.openKv();
 const serverId = crypto.randomUUID();
 const server = new MapServer(kv, serverId);
-var newServer = true;
 await kv.set(["servers", serverId], {
   startedAt: Date.now()
 });
@@ -24,6 +23,16 @@ console.log(`Started server with id ${serverId}`);
 setInterval(() => {
   kv.set(["servers", serverId], { heartbeat: Date.now() });
 }, 10000);
+
+// Get the list of items to be updated from Deno KV and update the server When we swap to server rooms, 
+// this function can be modified to get the specific room id
+async function updateServer() {
+  const items = await kv.get(["updatedItems"]);
+  if (items.value) {
+    server.updateItems(items.value);
+  }
+}
+updateServer();
 
 // Helper function to get Content-type header for a file
 function contentType(filePath:string): string {
@@ -44,31 +53,10 @@ async function serverBroadcast() {
   const watcher = kv.watch([["broadcast"]]);
   for await (const [entry] of watcher) {
     const value = entry.value;
-    console.log(value);
     if (!value || value.id === serverId) {
-      continue;
-    } else if (value.msg === "new-server") {
-      if (newServer) {
-        console.log("new server got message");
-        const message = {
-            event: "update-all",
-            data: value.items,
-        };
-        server.broadcast(message, false);
-        server.updateItems(value.items);
-        newServer = false;
-      }
       continue;
     }
     server.broadcast(value.msg, false);
-  }
-}
-
-async function updateServers() {
-  const watcher = kv.watch([["servers"]]);
-  for await (const [entry] of watcher) {
-    console.log("broadcast update to new server");
-    server.broadcastUpdatedItems();
   }
 }
 
@@ -122,16 +110,13 @@ async function handler(req: Request): Promise<Reponse> {
     // Client is requesting image uploaded to server
     const id = url.pathname.split("/")[2];
     const imageUrl = await kv.get(["server-image", id]);
-    const res = await fetch(imageUrl.value);
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    
     // We set the cache-control header to ensure image paths are
     // not cached. This is important because the image under the
     // same path changes with each upload
-    //return new Response(data.value, {
-    return new Response(bytes, {
+    return new Response(null, {
+      status: 302,
       headers: {
-        "Content-type": "image/png",
+        "Location": imageUrl.value,
         "Cache-Control": "no-store, no-cache, must-revalidate"
       }
     });
@@ -153,4 +138,3 @@ async function handler(req: Request): Promise<Reponse> {
 //console.log("Listening at http://localhost:" + port);
 Deno.serve({port}, handler);
 serverBroadcast();
-updateServers();
