@@ -47,6 +47,7 @@ async function serverBroadcast() {
     if (!value || value.id === serverId) {
       continue;
     }
+    console.log("Got broadcast message from server", value.id);
     server.broadcast(value.msg, false);
   }
 }
