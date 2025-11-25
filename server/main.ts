@@ -43,6 +43,7 @@ function contentType(filePath:string): string {
 async function serverBroadcast() {
   const watcher = kv.watch([["broadcast"]]);
   for await (const entry of watcher) {
+    console.log(`server ${serverId} recvd broadcast message`);
     const { value } = entry;
     if (!value || value.id === serverId) {
       continue;
