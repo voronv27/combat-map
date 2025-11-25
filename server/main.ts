@@ -43,19 +43,18 @@ function contentType(filePath:string): string {
 async function serverBroadcast() {
   const watcher = kv.watch([["broadcast"]]);
   for await (const [entry] of watcher) {
-    console.log(`server ${serverId} recvd broadcast message`);
-    console.log(entry);
     const value = entry.value;
+    console.log(value);
     if (!value || value.id === serverId) {
       continue;
     } else if (value.msg === "new-server") {
       if (newServer) {
+        console.log("new server got message")
         server.broadcast(value.data, false);
         newServer = false;
       }
       continue;
     }
-    console.log("Got broadcast message from server", value.id);
     server.broadcast(value.msg, false);
   }
 }
@@ -63,7 +62,7 @@ async function serverBroadcast() {
 async function updateServers() {
   const watcher = kv.watch([["servers"]]);
   for await (const [entry] of watcher) {
-    console.log("updating new server");
+    console.log("broadcast update to new server");
     server.broadcastUpdatedItems();
   }
 }
@@ -149,3 +148,4 @@ async function handler(req: Request): Promise<Reponse> {
 //console.log("Listening at http://localhost:" + port);
 Deno.serve({port}, handler);
 serverBroadcast();
+updateServers();
