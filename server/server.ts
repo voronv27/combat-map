@@ -89,7 +89,7 @@ export default class MapServer {
         // if we should broadcast this message to other servers, do so
         // TODO: add a timeout
         if (serverBroadcast) {
-            await this.kv.set(["broadcast"], {
+            await this.kv.set(["broadcast", Date.now().toString()], {
                 id: this.serverId,
                 msg: message
             });
