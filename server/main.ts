@@ -21,16 +21,6 @@ setInterval(() => {
   kv.set(["servers", serverId], {heartbeat: Date.now()}, {expireIn: 20000});
 }, 5000);
 
-// Get the list of items to be updated from Deno KV and update the server When we swap to server rooms, 
-// this function can be modified to get the specific room id
-async function updateServer() {
-  const items = await kv.get(["updatedItems"]);
-  if (items.value) {
-    server.updateItems(items.value);
-  }
-}
-updateServer();
-
 // Helper function to get Content-type header for a file
 function contentType(filePath:string): string {
   if (filePath.endsWith('html')) {
@@ -46,22 +36,47 @@ function contentType(filePath:string): string {
 
 // Listen for broadcast messages from other servers and
 // pass them along to this server's connected clients
-async function serverBroadcast() {
-  const watcher = kv.watch([["broadcast"]]);
+async function serverBroadcast(roomId) {
+  const watcher = kv.watch([["broadcast", roomId]]);
   for await (const [entry] of watcher) {
     const value = entry.value;
     if (!value || value.id === serverId) {
       continue;
     }
-    server.broadcast(value.msg, false);
+    server.broadcast(value.msg, roomId, false);
   }
+}
+
+// Update the items for a room for a server and set up a watcher
+// for the room to listen for new broadcast messages
+const roomIds = new Set<string>();
+async function updateServer(roomId) {
+  // This server already has the data for this room
+  if (roomIds.has(roomId)) {
+    return;
+  }
+
+  // Fetch the items for this room and update rooms server manages
+  const items = await kv.get(["updatedItems", roomId]);
+  if (items.value) {
+    console.log(`Add room ${roomId} to server ${serverId}`);
+    server.updateItems(items.value, roomId);
+  } else {
+    console.log(`Create new room ${roomId} in server ${serverId}`);
+  }
+
+  // Set up kv watch on the room
+  serverBroadcast(roomId);
+  roomIds.add(roomId);
 }
 
 async function handler(req: Request): Promise<Reponse> {
   const url = new URL(req.url);
+  const roomId = url.searchParams.get("room") || "default";
 
   // Websocket upgrade
   if (req.headers.get("upgrade") === "websocket") {
+    await updateServer(roomId);
     return server.handleConnection(req);
   }
 
@@ -78,17 +93,17 @@ async function handler(req: Request): Promise<Reponse> {
     
     // Upload to supabase storage
     const {data, error} = await supabase.storage.from("images")
-      .upload(`images/${id}.png`, file, {upsert: true});
+      .upload(`images/${id}-${roomId}.png`, file, {upsert: true});
     if (error) {
       console.error("Image upload error:", error);
       return new Response({status: 500});
     }
 
     // Store URL
-    const urlData = supabase.storage.from("images").getPublicUrl(`images/${id}.png`);
+    const urlData = supabase.storage.from("images").getPublicUrl(`images/${id}-${roomId}.png`);
     const imageUrl = `${urlData.data.publicUrl}?t=${Date.now()}`; // add in date to avoid caching issues
-    await kv.set(["server-image", id], imageUrl);
-    console.log("uploaded");
+    await kv.set(["server-image", roomId, id], imageUrl);
+    console.log(`Image ${id}-${roomId}.png uploaded`);
     return new Response({status: 200});
   }
 
@@ -106,7 +121,8 @@ async function handler(req: Request): Promise<Reponse> {
   } else if (url.pathname.startsWith("/server-image/")) {
     // Client is requesting image uploaded to server
     const id = url.pathname.split("/")[2];
-    const imageUrl = await kv.get(["server-image", id]);
+    const imageUrl = await kv.get(["server-image", roomId, id]);
+    
     // We set the cache-control header to ensure image paths are
     // not cached. This is important because the image under the
     // same path changes with each upload
@@ -134,4 +150,3 @@ async function handler(req: Request): Promise<Reponse> {
 
 //console.log("Listening at http://localhost:" + port);
 Deno.serve({port}, handler);
-serverBroadcast();

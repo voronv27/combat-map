@@ -5,21 +5,33 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="js/combatmap.js"></script>
     <script src="js/client.js" defer></script>
+    <style>
+        #roomContent {display: none;}
+    </style>
 </head>
 
 <body>
-    <h1>DnD Combat Map Site
-        <!-- Upload bg image for combat map -->
-        <label for="fileInput" class="btn btn-primary" >Select Map</label>
-         <input type="file" id="fileInput" accept="image/*" style="display:none" />
-    </h1>
+    <h1>DnD Combat Map Site</h1>
 
-    <div class="row align-items-start">
-        <div class="col-12 col-sm-auto">
-            <img id="mapBg" src="images/sample_map.png" class="img-fluid">
-        </div>
-        <div class="col-12 col-sm">
-            <textarea class="form-control vh-100" id="statusBox" placeholder="Keep track of status effects & initiative here!" style="height: auto"></textarea>
+    <div id="landing">
+        <input id="roomId" class="form-control" placeholder="Enter Room Id">
+        <button id="joinRoom" class="btn btn-primary">Join Room</button>
+    </div>
+
+    <div id="roomContent">
+        <h1>
+            <!-- Upload bg image for combat map -->
+            <label for="fileInput" class="btn btn-primary" >Select Map</label>
+             <input type="file" id="fileInput" accept="image/*" style="display:none" />
+        </h1>
+
+        <div class="row align-items-start">
+            <div class="col-12 col-sm-auto">
+                <img id="mapBg" src="images/sample_map.png" class="img-fluid">
+            </div>
+            <div class="col-12 col-sm">
+                <textarea class="form-control vh-100" id="statusBox" placeholder="Keep track of status effects & initiative here!" style="height: auto"></textarea>
+            </div>
         </div>
     </div>
 
