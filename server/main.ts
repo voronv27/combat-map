@@ -1,3 +1,9 @@
+// supabase for image storage
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_KEY")!;
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
 // Creates a MapServer and listens for client connections
 import MapServer from "./server.ts";
 
@@ -63,14 +69,20 @@ async function handler(req: Request): Promise<Reponse> {
     if (!(file instanceof File)) {
       return new Response({status: 400});
     }
-    // store file in KV under the "server-image" key
-    // Deno KV only goes up to 64k bytes so chunk image as needed
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    var chunk = 0;
-    for (let i = 0; i < bytes.length; i += 64000) {
-      await kv.set(["server-image", id, chunk++], bytes.slice(i, i+64000));
+    
+    // Upload to supabase storage
+    const {data, error} = await supabase.storage.from("images")
+      .upload(`images/${id}.png`, file, {upsert: true});
+    if (error) {
+      console.error("Image upload error:", error);
+      return new Response({status: 500});
     }
-    await kv.set(["server-image", id, "size"], chunk);
+
+    // Store URL
+    const urlData = supabase.storage.from("images").getPublicUrl(`images/${id}.png`);
+    const imageUrl = `${urlData.data.publicUrl}?t=${Date.now()}`; // add in date to avoid caching issues
+    await kv.set(["server-image", id], imageUrl);
+    console.log("uploaded");
     return new Response({status: 200});
   }
 
@@ -88,16 +100,10 @@ async function handler(req: Request): Promise<Reponse> {
   } else if (url.pathname.startsWith("/server-image/")) {
     // Client is requesting image uploaded to server
     const id = url.pathname.split("/")[2];
-    const size = await kv.get(["server-image", id, "size"]);
+    const imageUrl = await kv.get(["server-image", id]);
+    const res = await fetch(imageUrl.value);
+    const bytes = new Uint8Array(await res.arrayBuffer());
     
-    var bytes = new Uint8Array(size.value * 64000);
-    var offset = 0;
-    for (let i = 0; i < size.value; i++) {
-      const data = await kv.get(["server-image", id, i]);
-      bytes.set(data.value, offset);
-      offset += data.value.length;
-    }
-
     // We set the cache-control header to ensure image paths are
     // not cached. This is important because the image under the
     // same path changes with each upload
