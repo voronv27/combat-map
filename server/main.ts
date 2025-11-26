@@ -58,6 +58,7 @@ async function serverBroadcast(roomId) {
     }
 
     // Pass on other server's broadcast msg
+    console.log(value);
     server.broadcast(value.msg, roomId, false);
   }
 }
