@@ -55,10 +55,11 @@ async function serverBroadcast(roomId) {
       // Remove this room from rooms the server is managing
       roomIds.delete(roomId);
       return; // stop watching
+    } else if (value.delete) {
+      continue;
     }
 
     // Pass on other server's broadcast msg
-    console.log(value);
     server.broadcast(value.msg, roomId, false);
   }
 }
