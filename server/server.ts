@@ -14,6 +14,9 @@ export default class MapServer {
     // Keep track of items that are changed per room
     private updatedItems = new Map<string, Record<string, any>>();
 
+    // Keep track of how many clients are connected to a room
+    private roomIds = {};
+
     // Information to broadcast cross-server
     private kv: Deno.Kv;
     private serverId: string;
@@ -37,6 +40,9 @@ export default class MapServer {
             if (!this.updatedItems.has(roomId)) {
                 this.updatedItems.set(roomId, {});
             }
+            if (!this.roomIds[roomId]) {
+                this.roomIds[roomId] = 0;
+            }
 
             // If we have existing connections, the new websocket needs to be
             // updated to match their shared state
@@ -48,13 +54,24 @@ export default class MapServer {
                 console.log("Client connected");
                 this.connected.get(roomId).add(socket);
             }
+            this.roomIds[roomId] += 1;
         });
 
         // Remove from connected Websockets
-        socket.addEventListener("close", () => {
+        socket.addEventListener("close", async () => {
             this.connecting.get(roomId)?.delete(socket);
             this.connected.get(roomId)?.delete(socket);
             console.log("Client disconnected");
+            
+            // Get rid of roomId if no more clients are connected to the room
+            this.roomIds[roomId] -= 1;
+            if (this.roomIds[roomId] === 0) {
+                this.connecting.delete(roomId);
+                this.connected.delete(roomId);
+                this.updatedItems.delete(roomId);
+                delete this.roomIds[roomId];
+                await this.kv.set(["broadcast", roomId], {"delete": this.serverId});
+            }
         });
 
         // After recieving a client message server will send out its own message
@@ -81,7 +98,7 @@ export default class MapServer {
     }
 
     // Helper function to broadcast a message to all connected clients
-    public async broadcast(message: AppEvent, roomId: string, broadcastToServers: bool = true) {
+    public async broadcast(message: AppEvent, roomId: string, broadcastToServers: boolean = true) {
         if (!this.connected.has(roomId)) {
             console.log("Room id not found", roomId)
             return;
@@ -96,7 +113,7 @@ export default class MapServer {
 
         // if we should broadcast this message to other servers, do so
         if (broadcastToServers) {
-            await this.kv.set(["updatedItems", roomId], this.updatedItems.get(roomId));
+            await this.kv.set(["updatedItems", roomId], this.updatedItems.get(roomId), {expireIn: 20000});
             await this.kv.set(["broadcast", roomId], {
                 id: this.serverId,
                 msg: message

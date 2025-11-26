@@ -13,13 +13,7 @@ const port = 8080;
 const kv = await Deno.openKv();
 const serverId = crypto.randomUUID();
 const server = new MapServer(kv, serverId);
-await kv.set(["servers", serverId], {heartbeat: Date.now()}, {expireIn: 20000});
 console.log(`Started server with id ${serverId}`);
-
-// Server pings its id in KV every 5s. If after 20s it hasn't done so, it will expire
-setInterval(() => {
-  kv.set(["servers", serverId], {heartbeat: Date.now()}, {expireIn: 20000});
-}, 5000);
 
 // Helper function to get Content-type header for a file
 function contentType(filePath:string): string {
@@ -34,22 +28,42 @@ function contentType(filePath:string): string {
   return "application/octet-stream"
 }
 
+const roomIds = new Set<string>();
+
+// Server pings the updatedItems for its rooms every 5s.
+// If after 20s no server has pinged updatedItems for the roomId,
+// the entry will expire
+async function pingRoomServers(rooms) {
+  for (const roomId of rooms) {
+    const updatedItems = await kv.get(["updatedItems", roomId]);
+    await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
+  }
+}
+setInterval(() => {pingRoomServers(roomIds)}, 5000);
+
 // Listen for broadcast messages from other servers and
 // pass them along to this server's connected clients
 async function serverBroadcast(roomId) {
   const watcher = kv.watch([["broadcast", roomId]]);
   for await (const [entry] of watcher) {
     const value = entry.value;
+
     if (!value || value.id === serverId) {
+      // Invalid message or message from the server
       continue;
+    } else if (value.delete === serverId) {
+      // Remove this room from rooms the server is managing
+      roomIds.delete(roomId);
+      return; // stop watching
     }
+
+    // Pass on other server's broadcast msg
     server.broadcast(value.msg, roomId, false);
   }
 }
 
 // Update the items for a room for a server and set up a watcher
 // for the room to listen for new broadcast messages
-const roomIds = new Set<string>();
 async function updateServer(roomId) {
   // This server already has the data for this room
   if (roomIds.has(roomId)) {
@@ -70,7 +84,7 @@ async function updateServer(roomId) {
   roomIds.add(roomId);
 }
 
-async function handler(req: Request): Promise<Reponse> {
+async function handler(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const roomId = url.searchParams.get("room") || "default";
 
