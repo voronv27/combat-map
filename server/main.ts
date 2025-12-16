@@ -23,6 +23,8 @@ function contentType(filePath:string): string {
     return "application/javascript";
   } else if (filePath.endsWith('css')) {
     return "text/css";
+  } else if (filePath.endsWith('png')) {
+    return "image/png";
   }
   // default: arbitrary binary data
   return "application/octet-stream"
@@ -130,11 +132,17 @@ async function handler(req: Request): Promise<Response> {
       await Deno.readTextFile(`${Deno.cwd()}/index.html`), {
         headers: {"Content-type": "text/html"}
     });
-  } else if (url.pathname === "/images/sample_map.png") {
-    return new Response(
-      await Deno.readFile(`${Deno.cwd()}/images/sample_map.png`), {
-        headers: {"Content-type": "image/png"}
-    });
+  } else if (url.pathname.startsWith("/images/")) {
+    const filePath = `${Deno.cwd()}${url.pathname}`;
+    try {
+      const fileData = await Deno.readFile(filePath);
+      return new Response(fileData, {
+        headers: {"Content-type": contentType(filePath)}
+      });
+    } catch (e) {
+      console.log(`Error for url ${url}`);
+      return new Response("Not Found", {status: 404});
+    }
   } else if (url.pathname.startsWith("/server-image/")) {
     // Client is requesting image uploaded to server
     const id = url.pathname.split("/")[2];
