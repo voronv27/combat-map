@@ -2,7 +2,11 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- local scripts -->
     <script src="js/combatmap.js"></script>
     <script src="js/client.js" defer></script>
     <style>
@@ -10,34 +14,48 @@
     </style>
 </head>
 
-<body>
-    <h1>DnD Combat Map Site</h1>
+<body class="p-4 space-y-4">
+    <h1 class="text-2xl fond-bold">DnD Combat Map Site</h1>
 
-    <div id="landing">
-        <input id="roomId" class="form-control" placeholder="Enter Room Id">
-        <button id="joinRoom" class="btn btn-primary">Join Room</button>
+    <div id="landing" class="flex gap-2 max-2-md">
+        <input id="roomId"
+            class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter Room Id">
+        <button id="joinRoom"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+            Join Room
+        </button>
     </div>
 
     <div id="roomContent">
-        <h1>
+        <h1 class="mb-4">
             <!-- Upload bg image for combat map -->
-            <label for="fileInput" class="btn btn-primary" >Select Map</label>
-             <input type="file" id="fileInput" accept="image/*" style="display:none" />
+            <label for="fileInput"
+                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                Select Map
+            </label>
+             <input type="file" id="fileInput" accept="image/*" class="hidden">
         </h1>
 
-        <div class="row align-items-start">
-            <div class="col-12 col-sm-auto">
-                <img id="mapBg" src="images/sample_map.png" class="img-fluid">
+        <div class="flex flex-col sm:flex-row gap-4 items-start">
+            <div class="sm:w-auto w-full">
+                <img id="mapBg" src="images/sample_map.png" class="max-w-full h-auto">
             </div>
-            <div class="col-12 col-sm">
-                <textarea class="form-control vh-100" id="statusBox" placeholder="Keep track of status effects & initiative here!" style="height: auto"></textarea>
+            <div class="flex-1 w-full">
+                <textarea id="statusBox"
+                    class="h-screen px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Keep track of status effects & initiative here!"></textarea>
             </div>
         </div>
     </div>
 
     <br>
-    <p>Github repo: <a href="https://github.com/voronv27/combat-map">voronv27/combat-map</a></p>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+    <p>
+        Github repo:
+        <a href="https://github.com/voronv27/combat-map"
+            class="text-blue-600 underline hover:text-blue-800">
+            voronv27/combat-map
+        </a>
+    </p>
 </body>
 </html>
