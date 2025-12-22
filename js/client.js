@@ -9,6 +9,8 @@ async function startWebSocket(roomId) {
     url.protocol = url.protocol.replace("http", "ws");
     const socket = new WebSocket(url);
 
+    document.getElementById("roomCode").textContent = roomId;
+
     // store updated items as { "itemId": { "changeablePropertyName": value }}
     var updatedItems = {};
 
@@ -126,7 +128,7 @@ async function startWebSocket(roomId) {
 
 const joinBtn = document.getElementById("joinRoom");
 joinBtn.addEventListener("click", () => {
-    const roomId = document.getElementById("roomId").value.trim();
+    const roomId = document.getElementById("roomId").value.trim().toUpperCase();
     if (!roomId) {
         alert("Please enter a room id");
         return;
