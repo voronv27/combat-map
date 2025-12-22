@@ -134,10 +134,14 @@ async function handler(req: Request): Promise<Response> {
     });
   } else if (url.pathname.startsWith("/images/")) {
     const filePath = `${Deno.cwd()}${url.pathname}`;
+    console.log("fetching this img " + filePath);
     try {
       const fileData = await Deno.readFile(filePath);
       return new Response(fileData, {
-        headers: {"Content-type": contentType(filePath)}
+        headers: {
+          "Content-type": contentType(filePath),
+          "Cache-Control": "public, max-age=2000000"
+        }
       });
     } catch (e) {
       console.log(`Error for url ${url}`);
