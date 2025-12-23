@@ -3,7 +3,16 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- tailwind -->
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Quicksand">
+    <style>
+        * {
+            font-family: 'Quicksand', sans-serif;
+        }
+    </style>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,33 +32,64 @@
     </script>
 
     <!-- local scripts -->
-    <script src="js/combatmap.js"></script>
+    <script src="js/layout.js" defer></script>
     <script src="js/client.js" defer></script>
-    <style>
-        #roomContent {display: none;}
-    </style>
 </head>
 
-<body class="p-4 space-y-4 bg-light text-dark">
-    <h1 class="text-2xl fond-bold bg-light-accent">
-        <div class="flex items-center h-[72px] gap-4">
-            <a href="index.html"
-                style="max-width: 250px; max-height: 150px;">
-                <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-w-full h-auto">
+<body class="space-y-4 bg-light text-dark text-[16px]">
+    <header id="header" class="sticky top-0 bg-light-accent text-[24px]">
+        <div class="items-center h-[90px] flex justify-center md:justify-normal">
+            <a href="index.html">
+                <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
             </a>
-            <div class="hidden md:flex gap-8 text-accent">
+            <div class="hidden md:flex pr-16 text-accent">
                 Map Mimic - D&D Combat Map Site
             </div>
-            <!--menu hidden unless screen is big enough to fit it--TODO: add mobile menu-->
-            <nav class="hidden lg:flex items-center gap-8 ml-auto bg-dark text-light-accent">
+            
+            <!--desktop menu (for large screen size)-->
+            <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[450px]">
                 <a href="about.html">About</a>
                 <a href="tutorial.html">Tutorial</a>
                 <a href="index.html">Home</a>
             </nav>
-        <div>
-    </h1>
 
-    <div id="landing" class="gap-2 max-2-md">
+            <!--mobile menu (for small and medium screen size)-->
+            <!--button to open menu-->
+            <button class="lg:hidden text-light text-3xl z-20 absolute right-2" id="header-dropdown-open" onclick="openHeaderDropdown();">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                    <g id="SVGRepo_iconCarrier">
+                    <line fill="none" id="XMLID_103_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="16" y2="16"/>
+                    <line fill="none" id="XMLID_102_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="25" y2="25"/>
+                    <line fill="none" id="XMLID_101_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="7" y2="7"/>
+                    </g>
+                </svg>
+            </button>
+            <!--hidden button to close menu-->
+            <button class="hidden lg:hidden text-light text-3xl z-20 absolute right-2" id="header-dropdown-close" onclick="closeHeaderDropdown();">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                    <g id="SVGRepo_iconCarrier">
+                    <line fill="none" id="XMLID_103_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="16" y2="16"/>
+                    <line fill="none" id="XMLID_102_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="25" y2="25"/>
+                    <line fill="none" id="XMLID_101_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="7" y2="7"/>
+                    </g>
+                </svg>
+            </button>
+            <!--dropdown menu-->
+            <div id="header-dropdown" class="hidden lg:hidden absolute top-[90px] left-0 w-full">
+                <nav class="flex flex-col bg-light-accent text-light py-4 px-8 gap-4 border-y-2 border-light">
+                    <a href="about.html" class="bg-dark rounded-md px-4">About</a>
+                    <a href="tutorial.html" class="bg-dark rounded-md px-4">Tutorial</a>
+                    <a href="index.html" class="bg-dark rounded-md px-4">Home</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div id="landing" class="p-4 gap-2 max-2-md">
         <div>Enter room code:</div>
         <input id="roomId"
             type="text"
@@ -63,12 +103,12 @@
             <div> OR </div>
             <button id="joinRoom"
                 class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
-                CREATE <br>NEW ROOM
+                CREATE NEW<br> ROOM
             </button>
         </div>
     </div>
 
-    <div id="roomContent">
+    <div id="roomContent" class="p-4 hidden">
         <p>
             Room code: <span id="roomCode" class="text-accent"></span>
         </p>
@@ -96,13 +136,13 @@
     </div>
 
     <br>
-    <p>
+    <div class="p-4">
         <div class="bg-light-accent px-4 py-2 rounded-md">
             Map Mimic is open-source. Check out our
             <a href="https://github.com/voronv27/combat-map"
                 class="text-accent underline hover:text-accent-hover">
                 Github Repo</a>, it (probably) doesn't bite!
         </div>
-    </p>
+    </div>
 </body>
 </html>

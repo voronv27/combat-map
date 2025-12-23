@@ -133,8 +133,8 @@ joinBtn.addEventListener("click", () => {
         alert("Please enter a room id");
         return;
     }
-    document.getElementById("landing").style.display = "none";
-    document.getElementById("roomContent").style.display = "block";
+    document.getElementById("landing").classList.add("hidden");
+    document.getElementById("roomContent").classList.remove("hidden");
 
     startWebSocket(encodeURIComponent(roomId));
 });
