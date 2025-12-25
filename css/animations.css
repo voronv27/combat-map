@@ -1,0 +1,92 @@
+/* HEADER ANIMATIONS */
+/* "Eats" the currently-selected tab */
+.mm-selector {
+    animation: eat 0.25s, shrink-down 0.25s ease 0.25s;
+}
+.mm-text {
+    animation: centered-position 0.25s, slide-down 0.25s ease 0.25s;
+}
+
+/* When hovering over a different tab, creature bounces at the bottom */
+.mm-hover .mm-selector-hidden {
+    visibility: hidden;
+}
+.mm-hover:hover .mm-selector-hidden {
+    visibility: visible;
+    animation: bounce 1.5s forwards;
+}
+
+/* When hovering over a different tab, hide the creature "eating" the current tab */
+.mm-selected:has(~ .mm-hover:hover) .mm-selector {
+    visibility: hidden;
+    animation-name: none;
+}
+.mm-selected:has(~ .mm-hover:hover) .mm-text {
+    translate: 0 -20px;
+    animation-name: none;
+}
+.mm-hover:hover ~ .mm-selected .mm-selector {
+    visibility: hidden;
+    animation-name: none;
+}
+.mm-hover:hover ~ .mm-selected .mm-text {
+    translate: 0 -20px;
+    animation-name: none;
+}
+
+/* Keyframes for header animations */
+@keyframes bounce {
+    0% {
+      transform: translateY(100px);
+      animation-timing-function: ease-out;
+    }
+    50%, 85% {
+        transform: translateY(40px) scaleY(0.9);
+        animation-timing-function: ease-in;
+    }
+    70% {
+        transform: translateY(30px) scaleY(1.1);
+    }
+    100% {
+        animation-timing-function: ease-out;
+        transform: translateY(50px) scaleY(0.9);
+    }
+}
+
+@keyframes eat {
+    0% {
+        transform: scale(10) translateY(-20px) scaleY(1.5);
+    }
+    100% {
+        transform: translateY(-20px) scaleY(1.5);
+    }
+}
+
+@keyframes shrink-down {
+    from {
+        transform: translateY(-20px) scaleY(1.5);
+    }
+    to {
+        transform: 0 0;
+    }
+}
+
+@keyframes centered-position {
+    from {
+        translate: 0 -20px;
+    }
+    to {
+        translate: 0 -20px;
+    }
+}
+
+@keyframes slide-down {
+    from {
+        translate: 0 -20px;
+    }
+    to {
+        translate: 0 0;
+    }
+}
+
+/* OTHER ANIMATIONS -- TODO */

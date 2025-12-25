@@ -134,7 +134,6 @@ async function handler(req: Request): Promise<Response> {
     });
   } else if (url.pathname.startsWith("/images/")) {
     const filePath = `${Deno.cwd()}${url.pathname}`;
-    console.log("fetching this img " + filePath);
     try {
       const fileData = await Deno.readFile(filePath);
       return new Response(fileData, {

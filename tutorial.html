@@ -32,6 +32,7 @@
     </script>
 
     <!-- local scripts -->
+    <link rel="stylesheet" href="css/animations.css">
     <script src="js/layout.js" defer></script>
 </head>
 
@@ -41,20 +42,30 @@
             <a href="index.html">
                 <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
             </a>
-            <div class="hidden md:flex pr-16 text-accent">
+            <div class="hidden md:flex pr-8 text-accent">
                 Map Mimic - D&D Combat Map Site
             </div>
             
             <!--desktop menu (for large screen size)-->
-            <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[450px]">
-                <a href="about.html">About</a>
-                <a href="tutorial.html">Tutorial</a>
-                <a href="index.html">Home</a>
+            <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[500px]">
+                <a class="grid mm-hover overflow-hidden w-full justify-center" href="about.html">
+                    <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1">
+                    <div class="col-start-1 row-start-1 justify-self-center self-center">About</div>
+                </a>
+                <a class="grid mm-selected overflow-hidden w-full justify-center" href="tutorial.html">
+                    <img src="images/mm_selector.png" class="mm-selector h-[90px] w-[130px] col-start-1 row-start-1">
+                    <div class="col-start-1 row-start-1 justify-self-center mt-12 mm-text">Tutorial</div>
+                </a>
+                <a class="grid mm-hover overflow-hidden w-full justify-center" href="index.html">
+                    <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1 z-30">
+                    <div class="col-start-1 row-start-1 justify-self-center self-center">Home</div>
+                </a>
             </nav>
+
 
             <!--mobile menu (for small and medium screen size)-->
             <!--button to open menu-->
-            <button class="lg:hidden text-light text-3xl z-20 absolute right-2" id="header-dropdown-open" onclick="openHeaderDropdown();">
+            <button class="lg:hidden text-light text-3xl z-20 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -66,7 +77,7 @@
                 </svg>
             </button>
             <!--hidden button to close menu-->
-            <button class="hidden lg:hidden text-light text-3xl z-20 absolute right-2" id="header-dropdown-close" onclick="closeHeaderDropdown();">
+            <button class="hidden lg:hidden text-light text-3xl z-20 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
