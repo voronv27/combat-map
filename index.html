@@ -102,20 +102,21 @@
 
     <!-- main content -->
     <main class="p-4 gap-2 flex-1">
-        <div id="landing">
-            <div>Enter room code:</div>
+        <div id="landing" class="grid justify-center space-2">
+            <div class="text-[20px] justify-self-center">Enter room code:</div>
             <input id="roomId"
                 type="text"
-                class="uppercase px-3 py-2 rounded-md border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
+                class="w-60 md:w-72 justify-self-center uppercase px-3 py-2 rounded-lg border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
                 placeholder="ROOM CODE">
-            <div class="flex">
+            
+            <div class="mt-2 flex items-stretch gap-4 md:gap-8">
                 <button id="joinRoom"
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
+                    class="px-4 md:px-8 py-1 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
                     JOIN ROOM
                 </button>
-                <div> OR </div>
+                <div class="self-center text-[20px]"> OR </div>
                 <button id="joinRoom"
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
+                    class="px-4 md:px-8 py-1 bg-accent text-light leading-[1.2] border-2 border-dark rounded-lg hover:bg-accent-hover transition">
                     CREATE NEW<br> ROOM
                 </button>
             </div>
