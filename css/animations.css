@@ -13,7 +13,7 @@
 }
 .mm-hover:hover .mm-selector-hidden {
     visibility: visible;
-    animation: bounce 1.5s forwards;
+    animation: bounce 1s forwards;
 }
 
 /* When hovering over a different tab, hide the creature "eating" the current tab */
@@ -90,3 +90,15 @@
 }
 
 /* OTHER ANIMATIONS -- TODO */
+
+/* FOOTER */
+/* for the "text box" */
+.triangle {
+    translate: 0 6px;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 8px 35px 8px;
+    border-color: transparent transparent #E5D0CC transparent;
+    transform: rotate(250deg);
+ }

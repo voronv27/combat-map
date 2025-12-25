@@ -36,8 +36,9 @@
     <script src="js/layout.js" defer></script>
 </head>
 
-<body class="space-y-4 bg-light text-dark text-[16px]">
-    <header id="header" class="sticky top-0 bg-light-accent text-[24px]">
+<body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
+    <!-- header -->
+    <header id="header" class="sticky top-0 bg-light-accent text-[24px] mb-4">
         <div class="items-center h-[90px] flex justify-center md:justify-normal">
             <a href="index.html">
                 <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
@@ -99,16 +100,21 @@
         </div>
     </header>
 
-    <br>
-    <div class="p-4">
+    <!-- main content -->
+    <div class="flex-1 p-4">
         TODO: add a tutorial. This will be done a lot later in the project.<br><br>
+    </div>
 
-        <div class="bg-light-accent px-4 py-2 rounded-md">
+    <!-- footer -->
+    <footer class="mt-auto flex items-end p-4 justify-center">
+        <img class="w-auto h-[52px] pr-4" src="images/mm_footer.png">
+        <div class="triangle"></div>
+        <div class="flex-1 bg-light-accent px-8 py-2 rounded-md">
             Map Mimic is open-source. Check out our
             <a href="https://github.com/voronv27/combat-map"
                 class="text-accent underline hover:text-accent-hover">
                 Github Repo</a>, it (probably) doesn't bite!
         </div>
-    </div>
+    </footer>
 </body>
 </html>

@@ -37,8 +37,9 @@
     <script src="js/client.js" defer></script>
 </head>
 
-<body class="space-y-4 bg-light text-dark text-[16px]">
-    <header id="header" class="sticky top-0 bg-light-accent text-[24px]">
+<body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
+    <!-- header -->
+    <header id="header" class="sticky top-0 bg-light-accent text-[24px] mb-4">
         <div class="items-center h-[90px] flex justify-center md:justify-normal">
             <a href="index.html">
                 <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
@@ -99,60 +100,65 @@
         </div>
     </header>
 
-    <div id="landing" class="p-4 gap-2 max-2-md">
-        <div>Enter room code:</div>
-        <input id="roomId"
-            type="text"
-            class="uppercase px-3 py-2 rounded-md border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
-            placeholder="ROOM CODE">
-        <div class="flex">
-            <button id="joinRoom"
-                class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
-                JOIN ROOM
-            </button>
-            <div> OR </div>
-            <button id="joinRoom"
-                class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
-                CREATE NEW<br> ROOM
-            </button>
-        </div>
-    </div>
-
-    <div id="roomContent" class="p-4 hidden">
-        <p>
-            Room code: <span id="roomCode" class="text-accent"></span>
-        </p>
-        
-        <div class="flex flex-col sm:flex-row gap-4 items-start">
-            <div class="sm:w-auto w-full">
-                <img id="mapBg" src="images/sample_map.png" class="max-w-full h-auto">
-            </div>
-            <div class="flex-1 w-full">
-                <textarea id="statusBox"
-                    class="h-screen px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Keep track of status effects & initiative here!"></textarea>
+    <!-- main content -->
+    <main class="p-4 gap-2 flex-1">
+        <div id="landing">
+            <div>Enter room code:</div>
+            <input id="roomId"
+                type="text"
+                class="uppercase px-3 py-2 rounded-md border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
+                placeholder="ROOM CODE">
+            <div class="flex">
+                <button id="joinRoom"
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
+                    JOIN ROOM
+                </button>
+                <div> OR </div>
+                <button id="joinRoom"
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
+                    CREATE NEW<br> ROOM
+                </button>
             </div>
         </div>
 
-        <div class="mb-4">
-            <!-- Upload bg image for combat map -->
-            <label for="fileInput"
-                class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
-                Select Map
-            </label>
-             <input type="file" id="fileInput" accept="image/*" class="hidden">
+        <div id="roomContent" class="hidden">
+            <p>
+                Room code: <span id="roomCode" class="text-accent"></span>
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 items-start">
+                <div class="sm:w-auto w-full">
+                    <img id="mapBg" src="images/sample_map.png" class="max-w-full h-auto">
+                </div>
+                <div class="flex-1 w-full">
+                    <textarea id="statusBox"
+                        class="h-screen px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Keep track of status effects & initiative here!"></textarea>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <!-- Upload bg image for combat map -->
+                <label for="fileInput"
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
+                    Select Map
+                </label>
+                <input type="file" id="fileInput" accept="image/*" class="hidden">
+            </div>
+
         </div>
+    </main>
 
-    </div>
-
-    <br>
-    <div class="p-4">
-        <div class="bg-light-accent px-4 py-2 rounded-md">
+    <!-- footer -->
+    <footer class="mt-auto flex items-end p-4 justify-center">
+        <img class="w-auto h-[52px] pr-4" src="images/mm_footer.png">
+        <div class="triangle"></div>
+        <div class="flex-1 bg-light-accent px-8 py-2 rounded-md">
             Map Mimic is open-source. Check out our
             <a href="https://github.com/voronv27/combat-map"
                 class="text-accent underline hover:text-accent-hover">
                 Github Repo</a>, it (probably) doesn't bite!
         </div>
-    </div>
+    </footer>
 </body>
 </html>
