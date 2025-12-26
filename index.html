@@ -39,7 +39,7 @@
 
 <body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
     <!-- header -->
-    <header id="header" class="sticky top-0 bg-light-accent text-[24px] mb-4">
+    <header id="header" class="sticky top-0 bg-light-accent text-[24px]">
         <div class="items-center h-[90px] flex justify-center md:justify-normal">
             <a href="index.html">
                 <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
@@ -101,9 +101,9 @@
     </header>
 
     <!-- main content -->
-    <main class="p-4 gap-2 flex-1">
+    <main class="px-4 gap-2 flex-1">
         <!-- landing page -->
-        <div id="landing" class="grid justify-center space-2">
+        <div id="landing" class="grid justify-center space-2 mt-8">
             <div class="text-[20px] justify-self-center">Enter room code:</div>
             <div class="relative justify-self-center overflow-hidden">
                 <input id="roomId"
@@ -129,29 +129,51 @@
         </div>
 
         <!-- inside game room -->
-        <div id="roomContent" class="hidden">
-            <p>
-                Room code: <span id="roomCode" class="text-accent"></span>
+        <div id="roomContent" class="hidden pt-2">
+            <p class="text-[18px]">
+                Room code: <b id="roomCode" class="text-accent"></b>
             </p>
             
-            <div class="flex flex-col sm:flex-row gap-4 items-start">
-                <div class="sm:w-auto w-full">
-                    <img id="mapBg" src="images/sample_map.png" class="max-w-full h-auto">
+            <!-- I have no clue how I got the image to resize properly here--DO NOT TOUCH the classes -->
+            <div class="w-full gap-2 h-auto flex flex-col sm:h-[calc(85vh-90px)] sm:flex-row sm:gap-8">
+                <div class="max-w-full max-h-full sm:max-h-[calc(85vh-90px)] sm:max-w-3/4 sm:w-auto flex justify-center">
+                    <div class="inline-flex">
+                        <img id="mapBg"
+                            src="images/sample_map.png"
+                            class="h-full w-full object-contain border-2 border-accent rounded-xl">
+                    </div>
                 </div>
                 <div class="flex-1 w-full">
                     <textarea id="statusBox"
-                        class="h-screen px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full h-full max-h-[calc(85vh-90px)] px-3 py-2 border-2 border-accent rounded-xl outline-accent-hover"
                         placeholder="Keep track of status effects & initiative here!"></textarea>
                 </div>
             </div>
 
-            <div class="mb-4">
+            <!-- buttons -->
+            <div class="flex flex-col pt-2 sm:flex-row gap-2 sm:gap-4 leading-[1.2] text-[12px] text-center">
                 <!-- Upload bg image for combat map -->
                 <label for="fileInput"
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-md hover:bg-accent-hover transition">
-                    Select Map
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+                    CHOOSE<br>NEW MAP
                 </label>
                 <input type="file" id="fileInput" accept="image/*" class="hidden">
+                <button
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+                    EDIT<br>GRID
+                </button>
+                <button
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+                    ADD<br>CHARACTER
+                </button>
+                <button
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+                    ADD<br>OBJECT
+                </button>
+                <button
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+                    FULLSCREEN<br>MODE
+                </button>
             </div>
 
         </div>
