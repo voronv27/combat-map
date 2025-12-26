@@ -126,8 +126,7 @@ async function startWebSocket(roomId) {
     });
 }
 
-const joinBtn = document.getElementById("joinRoom");
-joinBtn.addEventListener("click", () => {
+function joinRoom() {
     const roomId = document.getElementById("roomId").value.trim().toUpperCase();
     if (!roomId) {
         alert("Please enter a room id");
@@ -137,4 +136,4 @@ joinBtn.addEventListener("click", () => {
     document.getElementById("roomContent").classList.remove("hidden");
 
     startWebSocket(encodeURIComponent(roomId));
-});
+}

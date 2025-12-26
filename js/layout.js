@@ -23,3 +23,21 @@ document.addEventListener("click", (e) => {
         closeHeaderDropdown();
     }
 });
+
+/* ANIMATE EATING THE ROOM CODE */
+const mouth = document.getElementById("roomId");
+const fang = document.getElementById("fang");
+async function eatCode() {
+    // skip animation for invalid room id
+    const roomId = document.getElementById("roomId").value;
+    if (!roomId) {
+        return;
+    }
+    mouth.classList.add("mouth-animation");
+    fang.classList.add("fang-animation");
+    await new Promise(resolve => {
+        fang.addEventListener('animationend', resolve, {once: true})
+    });
+    mouth.classList.remove("mouth-animation");
+    fang.classList.remove("fang-animation");
+}
