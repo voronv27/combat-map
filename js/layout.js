@@ -33,8 +33,8 @@ async function eatCode() {
     if (!roomId) {
         return;
     }
-    mouth.classList.add("mouth-animation");
     fang.classList.add("fang-animation");
+    mouth.classList.add("mouth-animation");
     await new Promise(resolve => {
         fang.addEventListener('animationend', resolve, {once: true})
     });

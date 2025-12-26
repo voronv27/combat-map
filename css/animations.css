@@ -91,16 +91,15 @@
 
 /* LANDING PAGE ANIMATIONS */
 /* fang pops out when hovering over the room code */
-#fang, #fang-darker {
+#roomId:placeholder-shown ~ #fang, #fang-darker {
     top: -100%;
 }
 #roomId:hover ~ #fang {
     transition: top 0.25s ease-in-out;
     top: 0;
 }
-/* swap to darker fang when typing to match the change in input box color 
-   (we keep the old fang underneath for the eat anim) */
-#roomId:focus ~ #fang-darker, #fang {
+/* swap to darker fang when typing to match the change in input box color */
+#roomId:focus ~ #fang-darker {
     top: 0;
 }
 
