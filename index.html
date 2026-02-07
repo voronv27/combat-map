@@ -40,7 +40,7 @@
 
 <body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
     <!-- header -->
-    <header id="header" class="sticky top-0 bg-light-accent text-[24px]">
+    <header id="header" class="sticky top-0 bg-light-accent text-[24px] z-20">
         <div class="items-center h-[90px] flex justify-center md:justify-normal">
             <a href="index.html">
                 <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
@@ -67,7 +67,7 @@
 
             <!--mobile menu (for small and medium screen size)-->
             <!--button to open menu-->
-            <button class="lg:hidden text-light text-3xl z-20 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
+            <button class="lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -79,7 +79,7 @@
                 </svg>
             </button>
             <!--hidden button to close menu-->
-            <button class="hidden lg:hidden text-light text-3xl z-20 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
+            <button class="hidden lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -138,10 +138,21 @@
             <!--row for map and notes-->
             <div class="w-full gap-2 h-auto flex flex-col sm:flex-row sm:gap-8">
                 <!--map-->
-                <div id="mapCtr" class="max-w-full max-h-full w-full sm:max-h-[calc(85vh-90px)] flex-1 overflow-auto hide-scrollbar border-2 border-accent rounded-xl">
+                <div id="mapCtr" class="max-w-full max-h-full w-full sm:max-h-[calc(85vh-90px)] flex-1 overflow-auto hide-scrollbar touch-pan-x touch-pan-y border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1">
                     <img id="mapBg"
-                        src="images/sample_map.png" 
-                        class="w-full h-full object-contain sm:w-full sm:h-auto sm:max-w-none">
+                    src="images/sample_map.png" 
+                    draggable="false"
+                    class="col-start-1 row-start-1 w-full h-full object-contain sm:max-w-none">
+
+                    <!--overlay to explain controls-->
+                    <div id="ctrlMsgCtr" class="pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300 z-10">
+                        <div class="rounded-lg w-2/3 text-light bg-black/70 px-4 py-2">
+                            Scroll to pan<br>
+                            Shift + Scroll or pinch to zoom<br>
+                            Click/scroll to dismiss this message
+                        </div>
+                    </div>
+
                 </div>
 
                 <!--notes-->
@@ -180,6 +191,10 @@
                 <button
                     class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
                     ADD<br>OBJECT
+                </button>
+                <button
+                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+                    EXPLAIN<br>CONTROLS
                 </button>
                 <button
                     class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
