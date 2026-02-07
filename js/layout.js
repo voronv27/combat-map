@@ -41,3 +41,35 @@ async function eatCode() {
     mouth.classList.remove("mouth-animation");
     fang.classList.remove("fang-animation");
 }
+
+/* CODE FOR MAP CONTAINER IMAGE FITTING */
+const mapBg = document.getElementById("mapBg");
+const mapCtr = document.getElementById("mapCtr");
+async function fitImg() {
+    const imgRatio = mapBg.naturalWidth / mapBg.naturalHeight;
+    const ctrRatio = mapCtr.clientWidth / mapCtr.clientHeight;
+    
+    // for a very small difference in ratio, don't change
+    // (prevents some flickering)
+    const eps = 0.01;
+    if (Math.abs(imgRatio - ctrRatio) < eps) {
+        return;
+    }
+    
+    if (imgRatio > ctrRatio) {
+        // scale by height, let width overflow
+        mapBg.classList.remove("sm:w-full", "sm:h-auto");
+        mapBg.classList.add("sm:h-full", "sm:w-auto")
+    } else {
+        // scale by width, let height overflow
+        mapBg.classList.remove("sm:h-full", "sm:w-auto");
+        mapBg.classList.add("sm:w-full", "sm:h-auto");
+    }
+}
+
+// Upon new image upload, fit img to container
+mapBg.onload = fitImg;
+
+// Upon container resize (due to page resize), refit img
+const resizeObserver = new ResizeObserver(fitImg);
+resizeObserver.observe(mapCtr);

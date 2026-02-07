@@ -33,6 +33,7 @@
 
     <!-- local scripts -->
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="js/layout.js" defer></script>
     <script src="js/client.js" defer></script>
 </head>
@@ -134,24 +135,34 @@
                 Room code: <b id="roomCode" class="text-accent"></b>
             </p>
             
-            <!-- I have no clue how I got the image to resize properly here--DO NOT TOUCH the classes -->
-            <div class="w-full gap-2 h-auto flex flex-col sm:h-[calc(85vh-90px)] sm:flex-row sm:gap-8">
-                <div class="max-w-full max-h-full sm:max-h-[calc(85vh-90px)] sm:max-w-3/4 sm:w-auto flex justify-center">
-                    <div class="inline-flex">
-                        <img id="mapBg"
-                            src="images/sample_map.png"
-                            class="h-full w-full object-contain border-2 border-accent rounded-xl">
-                    </div>
+            <!--row for map and notes-->
+            <div class="w-full gap-2 h-auto flex flex-col sm:flex-row sm:gap-8">
+                <!--map-->
+                <div id="mapCtr" class="max-w-full max-h-full w-full sm:max-h-[calc(85vh-90px)] flex-1 overflow-auto hide-scrollbar border-2 border-accent rounded-xl">
+                    <img id="mapBg"
+                        src="images/sample_map.png" 
+                        class="w-full h-full object-contain sm:w-full sm:h-auto sm:max-w-none">
                 </div>
-                <div class="flex-1 w-full">
-                    <textarea id="statusBox"
-                        class="w-full h-full max-h-[calc(85vh-90px)] px-3 py-2 border-2 border-accent rounded-xl outline-accent-hover"
-                        placeholder="Keep track of status effects & initiative here!"></textarea>
+
+                <!--notes-->
+                <div class="w-full sm:max-w-sm">
+                    <div class="w-full h-[calc(85vh-90px)] border-2 border-accent rounded-xl focus:outline-none bg-dark text-light-accent">
+                        <div class="tab-selector flex flex-row flex-wrap justify-center py-2 px-4">
+                            <button class="active-tab w-1/3 overflow-hidden text-ellipsis" onclick="console.log('swap tabs');">Initiative</button>
+                            <button class="w-1/3 overflow-hidden text-ellipsis" onclick="console.log('swap tabs');">Conditions</button>
+                            <button class="w-1/3 overflow-hidden text-ellipsis" onclick="console.log('swap tabs');">Notes</button>
+                        </div>
+                        <div class="tab-content w-full max-h-full px-4 text-[12px]">
+                            <textarea id="statusBox"
+                                class="w-full max-h-full focus:outline-none px-3 py-2 rounded-xl bg-light-accent"
+                                placeholder="Keep track of status effects & initiative here!"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- buttons -->
-            <div class="flex flex-col pt-2 sm:flex-row gap-2 sm:gap-4 leading-[1.2] text-[12px] text-center">
+            <div class="flex flex-col sm:flex-row w-full pt-2 gap-2 sm:gap-4 leading-[1.2] text-[12px] text-center justify-self-center">
                 <!-- Upload bg image for combat map -->
                 <label for="fileInput"
                     class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
