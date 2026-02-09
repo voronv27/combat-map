@@ -1,4 +1,4 @@
-// JS code for the map container controls
+// JS code for the combat map page (index.html)
 
 /* CODE FOR MAP CONTAINER IMAGE FITTING */
 const mapBg = document.getElementById("mapBg");
@@ -196,3 +196,28 @@ mapCtr.addEventListener("pointerout", (e) => {
 mapCtr.addEventListener("pointerleave", (e) => {
     fingerUp(e);
 });
+
+/* CODE FOR SWAPPING NOTES TABS */
+const tabs = [
+    document.getElementById("initiative-tab"),
+    document.getElementById("conditions-tab"),
+    document.getElementById("notes-tab")
+]
+const tabConts = [
+    document.getElementById("initiative"),
+    document.getElementById("conditions"),
+    document.getElementById("notes")
+]
+function swapTab(tab) {
+    for (let t of tabConts) {
+        t.classList.add("hidden");
+    }
+    for (let t of tabs) {
+        t.classList.remove("bg-dark", "text-light-accent");
+    }
+    const activeTabCont = document.getElementById(tab);
+    activeTabCont.classList.remove("hidden");
+
+    const activeTab = document.getElementById(`${tab}-tab`);
+    activeTab.classList.add("bg-dark", "text-light-accent");
+}

@@ -2,6 +2,9 @@
 // sending the server messages when the client modifies something on the site,
 // or getting messages from the server from another client's changes
 
+// store updated items as { "itemId": { "changeablePropertyName": value }}
+var updatedItems = {};
+
 async function startWebSocket(roomId) {
     // Connect to server
     var url = new URL("./start_web_socket?room=" + roomId,
@@ -10,9 +13,6 @@ async function startWebSocket(roomId) {
     const socket = new WebSocket(url);
 
     document.getElementById("roomCode").textContent = roomId;
-
-    // store updated items as { "itemId": { "changeablePropertyName": value }}
-    var updatedItems = {};
 
     // Listen for server messages and update page elements
     socket.onmessage = (event) => {
@@ -82,10 +82,49 @@ async function startWebSocket(roomId) {
     // socket with "item" corresponding to the item id and "values"
     // being a dictionary of { changed HTML element: value }
 
+    // TODO: make an array with all of these and iterate through the array instead
+    // TODO 2: fix issue where every character typed resets cursor to the top of the box lol
+    // initiativeName
+    const initiativeNameInput = document.getElementById("initiativeName");
+    initiativeNameInput.addEventListener('input', function() {
+        const data = { "innerHTML": initiativeNameInput.innerHTML };
+        updatedItems["initiativeName"] = data;
+        socket.send(JSON.stringify({
+            event: "update-item",
+            item: "initiativeName",
+            values: data
+        }));
+    });
+
+
+    // initiativeBox
+    const initiativeBoxInput = document.getElementById("initiativeBox");
+    initiativeBoxInput.addEventListener('input', function() {
+        const data = { "innerHTML": initiativeBoxInput.innerHTML };
+        updatedItems["initiativeBox"] = data;
+        socket.send(JSON.stringify({
+            event: "update-item",
+            item: "initiativeBox",
+            values: data
+        }));
+    });
+
+    // statusName
+    const statusNameInput = document.getElementById("statusName");
+    statusNameInput.addEventListener('input', function() {
+        const data = { "innerHTML": statusNameInput.innerHTML };
+        updatedItems["statusName"] = data;
+        socket.send(JSON.stringify({
+            event: "update-item",
+            item: "statusName",
+            values: data
+        }));
+    });
+
     // statusBox
     const statusBoxInput = document.getElementById("statusBox");
     statusBoxInput.addEventListener('input', function() {
-        const data = { "value": statusBoxInput.value };
+        const data = { "innerHTML": statusBoxInput.innerHTML };
         updatedItems["statusBox"] = data;
         socket.send(JSON.stringify({
             event: "update-item",

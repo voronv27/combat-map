@@ -21,6 +21,7 @@
                     colors: {
                     'accent': '#92229D',
                     'accent-hover': '#67196F',
+                    'accent-light': '#C636D3',
                     'light': '#F8F3F2',
                     'light-accent': '#E5D0CC',
                     'dark': '#003049',
@@ -40,182 +41,241 @@
 </head>
 
 <body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
-    <!-- header -->
-    <header id="header" class="sticky top-0 bg-light-accent text-[24px] z-20">
-        <div class="items-center h-[90px] flex justify-center md:justify-normal">
-            <a href="index.html">
-                <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
+    
+<!-- header -->
+<header id="header" class="sticky top-0 bg-light-accent text-[24px] z-20">
+    <div class="items-center h-[90px] flex justify-center md:justify-normal">
+        <a href="index.html">
+            <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
+        </a>
+        <div class="hidden md:flex pr-8 text-accent">
+            Map Mimic - D&D Combat Map Site
+        </div>
+        
+        <!--desktop menu (for large screen size)-->
+        <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[500px]">
+            <a class="grid mm-hover overflow-hidden w-full justify-center" href="about.html">
+                <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1">
+                <div class="col-start-1 row-start-1 justify-self-center self-center">About</div>
             </a>
-            <div class="hidden md:flex pr-8 text-accent">
-                Map Mimic - D&D Combat Map Site
-            </div>
-            
-            <!--desktop menu (for large screen size)-->
-            <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[500px]">
-                <a class="grid mm-hover overflow-hidden w-full justify-center" href="about.html">
-                    <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1">
-                    <div class="col-start-1 row-start-1 justify-self-center self-center">About</div>
-                </a>
-                <a class="grid mm-hover overflow-hidden w-full justify-center" href="tutorial.html">
-                    <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] w-[130px] col-start-1 row-start-1">
-                    <div class="col-start-1 row-start-1 justify-self-center self-center">Tutorial</div>
-                </a>
-                <a class="grid mm-selected overflow-hidden w-full justify-center" href="index.html">
-                    <img src="images/mm_selector.png" class="mm-selector h-[90px] col-start-1 row-start-1 z-30">
-                    <div class="col-start-1 row-start-1 justify-self-center mt-12 mm-text">Home</div>
-                </a>
+            <a class="grid mm-hover overflow-hidden w-full justify-center" href="tutorial.html">
+                <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] w-[130px] col-start-1 row-start-1">
+                <div class="col-start-1 row-start-1 justify-self-center self-center">Tutorial</div>
+            </a>
+            <a class="grid mm-selected overflow-hidden w-full justify-center" href="index.html">
+                <img src="images/mm_selector.png" class="mm-selector h-[90px] col-start-1 row-start-1 z-30">
+                <div class="col-start-1 row-start-1 justify-self-center mt-12 mm-text">Home</div>
+            </a>
+        </nav>
+
+        <!--mobile menu (for small and medium screen size)-->
+        <!--button to open menu-->
+        <button class="lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                <g id="SVGRepo_iconCarrier">
+                <line fill="none" id="XMLID_103_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="16" y2="16"/>
+                <line fill="none" id="XMLID_102_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="25" y2="25"/>
+                <line fill="none" id="XMLID_101_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="7" y2="7"/>
+                </g>
+            </svg>
+        </button>
+        <!--hidden button to close menu-->
+        <button class="hidden lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                <g id="SVGRepo_iconCarrier">
+                <line fill="none" id="XMLID_103_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="16" y2="16"/>
+                <line fill="none" id="XMLID_102_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="25" y2="25"/>
+                <line fill="none" id="XMLID_101_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="7" y2="7"/>
+                </g>
+            </svg>
+        </button>
+        <!--dropdown menu-->
+        <div id="header-dropdown" class="hidden lg:hidden absolute top-[90px] left-0 w-full">
+            <nav class="flex flex-col bg-light-accent text-light py-4 px-8 gap-4 border-y-2 border-light">
+                <a href="about.html" class="bg-dark rounded-md px-4">About</a>
+                <a href="tutorial.html" class="bg-dark rounded-md px-4">Tutorial</a>
+                <a href="index.html" class="bg-dark rounded-md px-4">Home</a>
             </nav>
+        </div>
+    </div>
+</header>
 
-            <!--mobile menu (for small and medium screen size)-->
-            <!--button to open menu-->
-            <button class="lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
-                    <g id="SVGRepo_iconCarrier">
-                    <line fill="none" id="XMLID_103_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="16" y2="16"/>
-                    <line fill="none" id="XMLID_102_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="25" y2="25"/>
-                    <line fill="none" id="XMLID_101_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="7" y2="7"/>
-                    </g>
-                </svg>
-            </button>
-            <!--hidden button to close menu-->
-            <button class="hidden lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
-                    <g id="SVGRepo_iconCarrier">
-                    <line fill="none" id="XMLID_103_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="16" y2="16"/>
-                    <line fill="none" id="XMLID_102_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="25" y2="25"/>
-                    <line fill="none" id="XMLID_101_" stroke="#F8F3F2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" x1="7" x2="25" y1="7" y2="7"/>
-                    </g>
-                </svg>
-            </button>
-            <!--dropdown menu-->
-            <div id="header-dropdown" class="hidden lg:hidden absolute top-[90px] left-0 w-full">
-                <nav class="flex flex-col bg-light-accent text-light py-4 px-8 gap-4 border-y-2 border-light">
-                    <a href="about.html" class="bg-dark rounded-md px-4">About</a>
-                    <a href="tutorial.html" class="bg-dark rounded-md px-4">Tutorial</a>
-                    <a href="index.html" class="bg-dark rounded-md px-4">Home</a>
-                </nav>
+<!-- main content -->
+<main class="px-4 gap-2 flex-1">
+
+<!-- landing page -->
+<div id="landing" class="grid justify-center space-2 mt-8">
+    <div class="text-[20px] justify-self-center">Enter room code:</div>
+    <div class="relative justify-self-center overflow-hidden">
+        <input id="roomId"
+            type="text"
+            class="w-60 md:w-72 uppercase px-3 py-2 rounded-lg border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
+            placeholder="ROOM CODE">
+        <img id="fang" class="absolute right-5 top-0 h-[20px]" src="images/fang.png">
+        <img id="fang-darker" class="absolute right-5 top-0 h-[20px] z-10" src="images/fang_darker.png">
+    </div>
+    
+    <div class="mt-2 flex items-stretch gap-4 md:gap-8">
+        <button id="joinRoom"
+            onclick="eatCode().then(joinRoom);"
+            class="px-4 md:px-8 py-1 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+            JOIN ROOM
+        </button>
+        <div class="self-center text-[20px]"> OR </div>
+        <button id="createRoom"
+            class="px-4 md:px-8 py-1 bg-accent text-light leading-[1.2] border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+            CREATE NEW<br> ROOM
+        </button>
+    </div>
+</div>
+
+<!-- inside game room -->
+<div id="roomContent" class="hidden pt-2">
+
+<!--display room code at top-->
+<p class="text-[18px]">
+    Room code: <b id="roomCode" class="text-accent"></b>
+</p>
+    
+<!--row for map and notes-->
+<div class="w-full gap-2 h-auto flex flex-col sm:flex-row sm:gap-8">
+    
+    <!--map-->
+    <div id="mapCtr" class="max-w-full max-h-full w-full sm:max-h-[calc(85vh-90px)] flex-1 overflow-auto hide-scrollbar touch-pan-x touch-pan-y border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1">
+        <img id="mapBg"
+        src="images/sample_map.png" 
+        draggable="false"
+        class="col-start-1 row-start-1 w-full h-full object-contain sm:max-w-none">
+
+        <!--overlay to explain controls-->
+        <div id="ctrlMsgCtr" class="pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300 z-10">
+            <div class="rounded-lg w-2/3 text-light bg-black/70 px-4 py-2">
+                Scroll to pan<br>
+                Shift + Scroll or pinch to zoom<br>
+                Click/scroll to dismiss this message
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- main content -->
-    <main class="px-4 gap-2 flex-1">
-        <!-- landing page -->
-        <div id="landing" class="grid justify-center space-2 mt-8">
-            <div class="text-[20px] justify-self-center">Enter room code:</div>
-            <div class="relative justify-self-center overflow-hidden">
-                <input id="roomId"
-                    type="text"
-                    class="w-60 md:w-72 uppercase px-3 py-2 rounded-lg border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
-                    placeholder="ROOM CODE">
-                <img id="fang" class="absolute right-5 top-0 h-[20px]" src="images/fang.png">
-                <img id="fang-darker" class="absolute right-5 top-0 h-[20px] z-10" src="images/fang_darker.png">
+    <!--notes-->
+    <div class="w-full sm:max-w-sm">
+        <div class="w-full h-[calc(85vh-90px)] border-2 border-accent rounded-xl bg-light-accent text-dark overflow-hidden">
+
+            <!--notes tabs-->
+            <div class="tab-selector flex flex-row flex-wrap justify-center">
+                <button class="w-1/3 overflow-hidden text-ellipsis bg-dark text-light-accent py-2 px-4"
+                id="initiative-tab"
+                onclick="swapTab('initiative');">Initiative</button>
+
+                <button class="w-1/3 overflow-hidden text-ellipsis py-2 px-4"
+                id="conditions-tab"
+                onclick="swapTab('conditions');">Conditions</button>
+
+                <button class="w-1/3 overflow-hidden text-ellipsis py-2 px-4"
+                id="notes-tab"
+                onclick="swapTab('notes');">Notes</button>
             </div>
-            
-            <div class="mt-2 flex items-stretch gap-4 md:gap-8">
-                <button id="joinRoom"
-                    onclick="eatCode().then(joinRoom);"
-                    class="px-4 md:px-8 py-1 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    JOIN ROOM
-                </button>
-                <div class="self-center text-[20px]"> OR </div>
-                <button id="createRoom"
-                    class="px-4 md:px-8 py-1 bg-accent text-light leading-[1.2] border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    CREATE NEW<br> ROOM
-                </button>
-            </div>
-        </div>
 
-        <!-- inside game room -->
-        <div id="roomContent" class="hidden pt-2">
-            <p class="text-[18px]">
-                Room code: <b id="roomCode" class="text-accent"></b>
-            </p>
-            
-            <!--row for map and notes-->
-            <div class="w-full gap-2 h-auto flex flex-col sm:flex-row sm:gap-8">
-                <!--map-->
-                <div id="mapCtr" class="max-w-full max-h-full w-full sm:max-h-[calc(85vh-90px)] flex-1 overflow-auto hide-scrollbar touch-pan-x touch-pan-y border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1">
-                    <img id="mapBg"
-                    src="images/sample_map.png" 
-                    draggable="false"
-                    class="col-start-1 row-start-1 w-full h-full object-contain sm:max-w-none">
-
-                    <!--overlay to explain controls-->
-                    <div id="ctrlMsgCtr" class="pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300 z-10">
-                        <div class="rounded-lg w-2/3 text-light bg-black/70 px-4 py-2">
-                            Scroll to pan<br>
-                            Shift + Scroll or pinch to zoom<br>
-                            Click/scroll to dismiss this message
-                        </div>
-                    </div>
-
-                </div>
-
-                <!--notes-->
-                <div class="w-full sm:max-w-sm">
-                    <div class="w-full h-[calc(85vh-90px)] border-2 border-accent rounded-xl focus:outline-none bg-dark text-light-accent">
-                        <div class="tab-selector flex flex-row flex-wrap justify-center py-2 px-4">
-                            <button class="active-tab w-1/3 overflow-hidden text-ellipsis" onclick="console.log('swap tabs');">Initiative</button>
-                            <button class="w-1/3 overflow-hidden text-ellipsis" onclick="console.log('swap tabs');">Conditions</button>
-                            <button class="w-1/3 overflow-hidden text-ellipsis" onclick="console.log('swap tabs');">Notes</button>
-                        </div>
-                        <div class="tab-content w-full max-h-full px-4 text-[12px]">
-                            <textarea id="statusBox"
-                                class="w-full max-h-full focus:outline-none px-3 py-2 rounded-xl bg-light-accent"
-                                placeholder="Keep track of status effects & initiative here!"></textarea>
-                        </div>
+            <!--notes tab content-->
+            <div class="w-full h-full px-4 py-2 bg-dark">
+                <div id="initiative" class="mt-2">
+                    <!--TODO: fix issue of no scroll appearing-->
+                    <div class="group grid grid-cols-[2fr_auto_1fr] w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto">
+                        <div
+                            id="initiativeName"
+                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
+                            contenteditable="true"
+                            oninput="togglePlaceholder(this);"
+                            onkeydown="handleNewline(event);"
+                            placeholder="Character"></div>
+                        <div class="w-[2px] bg-accent group-focus-within:bg-accent-light"></div>
+                        <div
+                            id="initiativeBox"
+                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
+                            contenteditable="true"
+                            oninput="togglePlaceholder(this);"
+                            onkeydown="handleNewline(event);"
+                            placeholder="Initiative"></div>
                     </div>
                 </div>
+
+                <div id="conditions" class="hidden mt-2">
+                    <div class="group grid grid-cols-[1fr_auto_2fr] w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto">
+                        <div
+                            id="statusName"
+                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
+                            contenteditable="true"
+                            oninput="togglePlaceholder(this);"
+                            onkeydown="handleNewline(event);"
+                            placeholder="Character"></div>
+                        <div class="w-[2px] bg-accent group-focus-within:bg-accent-light"></div>
+                        <div
+                            id="statusBox"
+                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
+                                contenteditable="true"
+                                oninput="togglePlaceholder(this);"
+                                onkeydown="handleNewline(event);"
+                                placeholder="Status (ex: poisoned)"></div>
+                    </div>
+                </div>
+
+                <div id="notes" class="hidden mt-2">
+                    <textarea
+                        class="w-full max-h-full focus:outline-none focus:border-accent-light px-3 py-2 rounded-xl bg-light-accent border-2 border-accent"
+                        placeholder="Enter private notes here"></textarea>
+                </div>
             </div>
-
-            <!-- buttons -->
-            <div class="flex flex-col sm:flex-row w-full pt-2 gap-2 sm:gap-4 leading-[1.2] text-[12px] text-center justify-self-center">
-                <!-- Upload bg image for combat map -->
-                <label for="fileInput"
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    CHOOSE<br>NEW MAP
-                </label>
-                <input type="file" id="fileInput" accept="image/*" class="hidden">
-                <button
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    EDIT<br>GRID
-                </button>
-                <button
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    ADD<br>CHARACTER
-                </button>
-                <button
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    ADD<br>OBJECT
-                </button>
-                <button
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    EXPLAIN<br>CONTROLS
-                </button>
-                <button
-                    class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
-                    FULLSCREEN<br>MODE
-                </button>
-            </div>
-
         </div>
-    </main>
+    </div>
+</div>
 
-    <!-- footer -->
-    <footer class="mt-auto flex items-end p-4 justify-center">
-        <img class="w-auto h-[52px] pr-4" src="images/mm_footer.png">
-        <div class="triangle"></div>
-        <div class="flex-1 bg-light-accent px-8 py-2 rounded-md">
-            Map Mimic is open-source. Check out our
-            <a href="https://github.com/voronv27/combat-map"
-                class="text-accent underline hover:text-accent-hover">
-                Github Repo</a>, it (probably) doesn't bite!
-        </div>
-    </footer>
+<!-- buttons -->
+<div class="flex flex-col sm:flex-row w-full pt-2 gap-2 sm:gap-4 leading-[1.2] text-[12px] text-center justify-self-center">
+    <!-- Upload bg image for combat map -->
+    <label for="fileInput"
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        CHOOSE<br>NEW MAP
+    </label>
+    <input type="file" id="fileInput" accept="image/*" class="hidden">
+    <button
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        EDIT<br>GRID
+    </button>
+    <button
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        ADD<br>CHARACTER
+    </button>
+    <button
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        ADD<br>OBJECT
+    </button>
+    <button
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        EXPLAIN<br>CONTROLS
+    </button>
+    <button
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        FULLSCREEN<br>MODE
+    </button>
+</div>
+
+</div>
+</main>
+
+<!-- footer -->
+<footer class="mt-auto flex items-end p-4 justify-center">
+    <img class="w-auto h-[52px] pr-4" src="images/mm_footer.png">
+    <div class="triangle"></div>
+    <div class="flex-1 bg-light-accent px-8 py-2 rounded-md">
+        Map Mimic is open-source. Check out our
+        <a href="https://github.com/voronv27/combat-map"
+            class="text-accent underline hover:text-accent-hover">
+            Github Repo</a>, it (probably) doesn't bite!
+    </div>
+</footer>
 </body>
 </html>

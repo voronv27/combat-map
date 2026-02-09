@@ -41,3 +41,48 @@ async function eatCode() {
     mouth.classList.remove("mouth-animation");
     fang.classList.remove("fang-animation");
 }
+
+/* CODE FOR DISPLAYING PLACEHOLDER TEXT */
+// clears any newlines so that we can get the placeholder back
+function togglePlaceholder(elem) {
+    if (!elem.textContent.length) {
+        elem.innerHTML = '';
+    }
+}
+
+/* CODE FOR HITTING ENTER ON FAKE TEXTAREA */
+// move the text cursor selection thing to the end of the line
+function moveCursor(elem) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    range.selectNodeContents(elem);
+    range.collapse(false);
+
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+// fix broken enter due to flex--turn enter into <br>
+// this is pretty hacky but it works (at least on chrome, anyhow)
+function handleNewline(e) {
+    if (e.key == "Enter") {
+        e.preventDefault();
+
+        if (e.target.textContent.length) {
+            // I have no clue why but you need to double up the
+            // <br> if the line doesn't end with it but you do
+            if (e.target.innerHTML.slice(-4) != "<br>") {
+                e.target.innerHTML += "<br>";
+            }
+            e.target.innerHTML += "<br>";
+        } else {
+            // there needs to be some sort of text for newline to work
+            // just add an invisible space
+            e.target.innerHTML = "<br>\u200B";
+        }
+
+        // need to move the cursor to end of newline
+        moveCursor(e.target);
+    }
+}
