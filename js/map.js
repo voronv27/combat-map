@@ -221,3 +221,34 @@ function swapTab(tab) {
     const activeTab = document.getElementById(`${tab}-tab`);
     activeTab.classList.add("bg-dark", "text-light-accent");
 }
+
+/* CODE TO ADD/REMOVE NOTES */
+// add a new note
+function addNewNote() {
+    // make a copy of the desired textbox but with no text
+    const tab = document.getElementById("notes");
+    const exampleTextbox = tab.firstElementChild;
+    const newTextbox = exampleTextbox.cloneNode(true);
+    const textarea = newTextbox.children[0];
+    textarea.value = "";
+
+    // append item at bottom just above the button
+    const btn = tab.lastElementChild;
+    tab.insertBefore(newTextbox, btn);
+}
+
+// remove note unless there is only 1 left, then 
+// clear the textarea instead
+function removeNote(note) {
+    // make a copy of the desired textbox but with no text
+    const tab = document.getElementById("notes");
+    const children = tab.children;
+    
+    // check if we only have 1 item + the add button
+    if (children.length > 2) {
+        note.remove();
+    } else {
+        const textarea = note.children[0];
+        textarea.value = "";
+    }
+}

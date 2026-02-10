@@ -4,13 +4,88 @@
 
 // store updated items as { "itemId": { "changeablePropertyName": value }}
 var updatedItems = {};
+var socket = null;
+
+// adds an eventListener so changes to textbox input are
+// sent over socket
+// TODO: fix issue where every character typed resets cursor to the top of the box lol
+function addTextboxListener(id) {
+    const input = document.getElementById(id);
+    input.addEventListener('input', function() {
+        const data = { "innerHTML": input.innerHTML };
+        updatedItems[id] = data;
+        socket.send(JSON.stringify({
+            event: "update-item",
+            item: id,
+            values: data
+        }));
+    });
+}
+
+// creates a new child in the container and adds a
+// listener for it
+var idCounters = {"initiative": 0, "conditions": 0};
+function addNewTextbox(tabName) {
+    // make a copy of the desired textbox
+    const tab = document.getElementById(tabName);
+    const exampleTextbox = tab.firstElementChild;
+    const newTextbox = exampleTextbox.cloneNode(true);
+    
+    // add new ids and clear any text for the name and
+    // box parts of the textbox
+    const children = newTextbox.children;
+
+    const nameText = children[0];
+    nameText.id = `${tabName}Name-${idCounters[tabName]}`;
+    nameText.innerHTML = "";
+
+    const boxText = children[2];
+    boxText.id = `${tabName}Box-${idCounters[tabName]}`;
+    boxText.innerHTML = "";
+
+    idCounters[tabName] += 1;
+
+    // TODO: send message over the socket that this
+    // item should be created
+
+    // append item at bottom just above the button
+    const btn = tab.lastElementChild;
+    tab.insertBefore(newTextbox, btn);
+
+    // add event listeners for the new item
+    addTextboxListener(nameText.id);
+    addTextboxListener(boxText.id);
+}
+
+// remove textbox from the container unless its the last one,
+// in which case just clear the text
+function removeTextbox(textbox, tabName) {
+    // TODO: send message over the socket that this
+    // item should be removed
+
+    // remove from updatedItems
+    delete updatedItems[textbox.id];
+
+    const tab = document.getElementById(tabName);
+    const children = tab.children;
+    
+    // check if we only have 1 item + the add button
+    if (children.length > 2) {
+        textbox.remove();
+    } else {
+        const nameText = textbox.children[0];
+        nameText.innerHTML = "";
+        const boxText = textbox.children[2];
+        boxText.innerHTML = "";
+    }
+}
 
 async function startWebSocket(roomId) {
     // Connect to server
     var url = new URL("./start_web_socket?room=" + roomId,
         location.href);
     url.protocol = url.protocol.replace("http", "ws");
-    const socket = new WebSocket(url);
+    socket = new WebSocket(url);
 
     document.getElementById("roomCode").textContent = roomId;
 
@@ -82,57 +157,12 @@ async function startWebSocket(roomId) {
     // socket with "item" corresponding to the item id and "values"
     // being a dictionary of { changed HTML element: value }
 
-    // TODO: make an array with all of these and iterate through the array instead
-    // TODO 2: fix issue where every character typed resets cursor to the top of the box lol
-    // initiativeName
-    const initiativeNameInput = document.getElementById("initiativeName");
-    initiativeNameInput.addEventListener('input', function() {
-        const data = { "innerHTML": initiativeNameInput.innerHTML };
-        updatedItems["initiativeName"] = data;
-        socket.send(JSON.stringify({
-            event: "update-item",
-            item: "initiativeName",
-            values: data
-        }));
-    });
-
-
-    // initiativeBox
-    const initiativeBoxInput = document.getElementById("initiativeBox");
-    initiativeBoxInput.addEventListener('input', function() {
-        const data = { "innerHTML": initiativeBoxInput.innerHTML };
-        updatedItems["initiativeBox"] = data;
-        socket.send(JSON.stringify({
-            event: "update-item",
-            item: "initiativeBox",
-            values: data
-        }));
-    });
-
-    // statusName
-    const statusNameInput = document.getElementById("statusName");
-    statusNameInput.addEventListener('input', function() {
-        const data = { "innerHTML": statusNameInput.innerHTML };
-        updatedItems["statusName"] = data;
-        socket.send(JSON.stringify({
-            event: "update-item",
-            item: "statusName",
-            values: data
-        }));
-    });
-
-    // statusBox
-    const statusBoxInput = document.getElementById("statusBox");
-    statusBoxInput.addEventListener('input', function() {
-        const data = { "innerHTML": statusBoxInput.innerHTML };
-        updatedItems["statusBox"] = data;
-        socket.send(JSON.stringify({
-            event: "update-item",
-            item: "statusBox",
-            values: data
-        }));
-    });
-
+    // setup listener on initial input boxes
+    const inputs = ["initiativeName", "initiativeBox", "conditionsName", "conditionsBox"];
+    for (i of inputs) {
+        addTextboxListener(i);
+    }
+    
     // ALL ITEMS WITH UPLOADED IMAGES GO BELOW THIS LINE
     // To handle items with uploaded images, give the item a unique
     // id and an eventListener for the image being uploaded. When an
