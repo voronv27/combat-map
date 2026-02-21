@@ -3,6 +3,8 @@
 /* CODE FOR MAP CONTAINER IMAGE FITTING */
 const mapBg = document.getElementById("mapBg");
 const mapCtr = document.getElementById("mapCtr");
+var zoom = 1;
+var minZoom = 1;
 async function fitImg() {
     const imgRatio = mapBg.naturalWidth / mapBg.naturalHeight;
     const ctrRatio = mapCtr.clientWidth / mapCtr.clientHeight;
@@ -17,22 +19,60 @@ async function fitImg() {
     if (imgRatio > ctrRatio) {
         // scale by height, let width overflow
         mapBg.classList.remove("sm:w-full", "sm:h-auto");
-        mapBg.classList.add("sm:h-full", "sm:w-auto")
+        mapBg.classList.add("sm:h-full", "sm:w-auto");
+
+        // update minZoom
+        const renderedWidth = mapBg.clientWidth;
+        minZoom = mapCtr.clientWidth / renderedWidth;
+        
+        // update zoom if too zoomed out now
+        if (zoom < minZoom) {
+            zoom = minZoom;
+            mapBg.style.transform = `scale(${zoom})`;
+        }
     } else {
         // scale by width, let height overflow
         mapBg.classList.remove("sm:h-full", "sm:w-auto");
         mapBg.classList.add("sm:w-full", "sm:h-auto");
+
+        // update minZoom
+        const renderedHeight = mapBg.clientHeight;
+        minZoom = mapCtr.clientHeight / renderedHeight;
+        
+        // update zoom if too zoomed out now
+        if (zoom < minZoom) {
+            zoom = minZoom;
+            mapBg.style.transform = `scale(${zoom})`;
+        }
     }
 }
 
 // Upon new image upload, fit img to container, reset zoom
-var zoom = 1;
-var minZoom = 1;
 mapBg.onload = () => {
     fitImg();
     mapBg.style.transform = "scale(1)";
     zoom = 1;
 }
+
+// we need to calculate minZoom when the image is rendered
+// (i.e. roomContent is no longer hidden)
+const roomContent = document.getElementById("roomContent");
+function mutationBehavior(_, observer) {
+    if (roomContent.checkVisibility()) {
+        fitImg();
+        zoom = 1;
+        mapBg.style.transform = "scale(1)";
+        observer.disconnect();
+    }
+}
+// observe the style and class attributes to see when no
+// longer hidden
+const observerOptions = {
+    attributes: true,
+    attributeFilter: ['style', 'class']
+};
+const observer = new MutationObserver(mutationBehavior);
+observer.observe(roomContent, observerOptions);
 
 // Upon container resize (due to page resize), refit img
 const resizeObserver = new ResizeObserver(fitImg);
@@ -160,7 +200,7 @@ function mapZoom(e, pinch=false) {
 
     zoom = newZoom;
     mapBg.style.transform = `scale(${zoom})`;
-    mapBg.style.transformOrigin = "top left";
+    mapBg.style.transformOrigin = "left top";
 }
 mapCtr.addEventListener("wheel", (e) => {
     mapZoom(e);
