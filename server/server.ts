@@ -2,6 +2,9 @@
 // broadcasts messages to connected websockets after receiving messages from
 // a client (essentially "passing on" the message to other clients)
 
+// Yjs to handle textbox updates
+import * as Y from "https://esm.sh/yjs";
+
 type AppEvent = { event: string; [key: string]: any };
 
 export default class MapServer {
@@ -13,6 +16,9 @@ export default class MapServer {
 
     // Keep track of items that are changed per room
     private updatedItems = new Map<string, Record<string, any>>();
+
+    // Keep track of textboxes per room
+    private ydocs = new Map<string, Y.Doc>();
 
     // Keep track of how many clients are connected to a room
     private roomIds = {};
@@ -39,6 +45,9 @@ export default class MapServer {
             }
             if (!this.updatedItems.has(roomId)) {
                 this.updatedItems.set(roomId, {});
+            }
+            if (!this.ydocs.has(roomId)) {
+                this.ydocs.set(roomId, new Y.Doc());
             }
             if (!this.roomIds[roomId]) {
                 this.roomIds[roomId] = 0;
@@ -69,13 +78,20 @@ export default class MapServer {
                 this.connecting.delete(roomId);
                 this.connected.delete(roomId);
                 this.updatedItems.delete(roomId);
+                this.ydocs.delete(roomId);
                 delete this.roomIds[roomId];
                 await this.kv.set(["broadcast", roomId], {"delete": this.serverId});
+                await this.kv.set(["broadcastBinary", roomId], {"delete": this.serverId});
             }
         });
 
         // After recieving a client message server will send out its own message
         socket.addEventListener("message", (m) => {
+            // yjs updates are binary, handle differently
+            if (m.data instanceof ArrayBuffer) {
+                this.broadcastBinary(m.data, roomId);
+                return;
+            }
             this.send(m, roomId);
         });
 
@@ -97,8 +113,9 @@ export default class MapServer {
         }
     }
 
-    // Helper function to broadcast a message to all connected clients
-    public async broadcast(message: AppEvent, roomId: string, broadcastToServers: boolean = true) {
+    // Helper function to broadcast a JSON message to all connected clients
+    public async broadcast(message: AppEvent, roomId: string,
+                           broadcastToServers: boolean = true) {
         if (!this.connected.has(roomId)) {
             console.log("Room id not found", roomId)
             return;
@@ -121,6 +138,33 @@ export default class MapServer {
         }
     }
 
+    // Helper function to broadcast a binary message to all connected clients
+    public async broadcastBinary(message: ArrayBuffer, roomId: string,
+                                 broadcastToServers: boolean = true) {
+        if (!this.connected.has(roomId)) {
+            console.log("Room id not found", roomId)
+            return;
+        }
+        for (let user of this.connected.get(roomId)) {
+            user.send(message);
+        }
+
+        // update server ydoc
+        const update = new Uint8Array(message);
+        Y.applyUpdate(this.ydocs.get(roomId), update);
+        
+        // if we should broadcast this message to other servers, do so
+        if (broadcastToServers) {
+            const ydoc = this.ydocs.get(roomId);
+            const state = Y.encodeStateAsUpdate(ydoc);
+            await this.kv.set(["yjs", roomId], state, {expireIn: 20000});
+            await this.kv.set(["broadcastBinary", roomId], {
+                id: this.serverId,
+                msg: update
+            });
+        }
+    }
+
     // Update room items (for new server)
     public updateItems(items: any, roomId: string) {
         this.updatedItems.set(roomId, items);
@@ -130,14 +174,30 @@ export default class MapServer {
         }, roomId, false);
     }
 
+    // Update yjs ydoc (for new server)
+    public updateYDoc(updates: Uint8Array, roomId: string) {
+        this.ydocs.set(roomId, new Y.Doc());
+        Y.applyUpdate(this.ydocs.get(roomId), updates);
+
+        this.broadcastBinary(updates, roomId, false);
+    }
+
     // Send updatedItems data to connecting sockets
     private updateNewClients(roomId: string) {
         var connectingSockets = this.connecting.get(roomId);
         for (let socket of connectingSockets) {
+            // send updatedItems
             socket.send(JSON.stringify({
                 event: "update-all",
                 data: this.updatedItems.get(roomId),
             }));
+
+            // send all textbox updates
+            const ydoc = this.ydocs.get(roomId);
+            if (ydoc) {
+                const state = Y.encodeStateAsUpdate(ydoc);
+                socket.send(state);
+            }
             this.connecting.get(roomId).delete(socket);
             this.connected.get(roomId).add(socket);
             console.log("Client connected");

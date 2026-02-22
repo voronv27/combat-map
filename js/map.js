@@ -56,12 +56,15 @@ mapBg.onload = () => {
 
 // we need to calculate minZoom when the image is rendered
 // (i.e. roomContent is no longer hidden)
+// also add the onclick methods for the wrapper class
 const roomContent = document.getElementById("roomContent");
 function mutationBehavior(_, observer) {
     if (roomContent.checkVisibility()) {
         fitImg();
         zoom = 1;
         mapBg.style.transform = "scale(1)";
+
+        addWrapperOnclick();
         observer.disconnect();
     }
 }
@@ -292,3 +295,18 @@ function removeNote(note) {
         textarea.value = "";
     }
 }
+
+/* FIX TEXTAREA CLICK */
+// clicking inside the wrapper should count as clicking
+// inside the textbox, regardless of padding
+function addWrapperOnclick() {
+    document.querySelectorAll('.wrapper').forEach(w => {
+        const inner = w.querySelector('[contenteditable]');
+        w.onmousedown = (e) => {
+            if (e.target === w) {
+                e.preventDefault(); // prevent unfocus
+                inner.focus();
+            }
+        }
+    });
+};

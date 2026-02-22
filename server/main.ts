@@ -35,6 +35,7 @@ const roomIds = new Set<string>();
 // Server pings the updatedItems for its rooms every 5s.
 // If after 20s no server has pinged updatedItems for the roomId,
 // the entry will expire
+// TODO: yjs as well?
 async function pingRoomServers(rooms) {
   for (const roomId of rooms) {
     const updatedItems = await kv.get(["updatedItems", roomId]);
@@ -66,6 +67,25 @@ async function serverBroadcast(roomId) {
   }
 }
 
+async function serverBroadcastBinary(roomId) {
+  const watcher = kv.watch([["broadcastBinary", roomId]]);
+  for await (const [entry] of watcher) {
+    const value = entry.value;
+
+    if (!value || value.id === serverId) {
+      // Invalid message or message from the server
+      continue;
+    }  else if (value.delete === serverId) {
+      return; // stop watching
+    } else if (value.delete) {
+      continue;
+    }
+
+    // Pass on other server's broadcast msg
+    server.broadcastBinary(value.msg, roomId, false);
+  }
+}
+
 // Update the items for a room for a server and set up a watcher
 // for the room to listen for new broadcast messages
 async function updateServer(roomId) {
@@ -83,8 +103,15 @@ async function updateServer(roomId) {
     console.log(`Create new room ${roomId} in server ${serverId}`);
   }
 
+  // Fetch the textbox data for this room and update server's ydoc
+  const updates = await kv.get(["yjs", roomId]);
+  if (updates.value) {
+    server.updateYDoc(updates.value, roomId);
+  }
+
   // Set up kv watch on the room
   serverBroadcast(roomId);
+  serverBroadcastBinary(roomId);
   roomIds.add(roomId);
 }
 

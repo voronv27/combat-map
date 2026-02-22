@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="js/layout.js" defer></script>
     <script src="js/map.js" defer></script>
-    <script src="js/client.js" defer></script>
+    <script type="module" src="js/client.js"></script>
 </head>
 
 <body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
@@ -185,23 +185,21 @@
             <div class="w-full flex-1 min-h-0 px-4 py-2 bg-dark overflow-y-auto">
                 <div id="initiative" class="mt-2 space-y-2">
                     <div class="group grid grid-cols-[2fr_auto_1fr_auto] w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto">
-                        <div
-                            id="initiativeName"
-                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
-                            contenteditable="true"
-                            oninput="togglePlaceholder(this);"
-                            onkeydown="handleNewline(event);"
-                            placeholder="Character"></div>
+                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                            <div
+                                id="initiativeName"
+                                class="w-full text-center name"
+                                data-placeholder="Character"></div>
+                        </div>
                         <div class="w-[2px] bg-accent group-focus-within:bg-accent-light"></div>
-                        <div
-                            id="initiativeBox"
-                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
-                            contenteditable="true"
-                            oninput="togglePlaceholder(this);"
-                            onkeydown="handleNewline(event);"
-                            placeholder="Initiative"></div>
+                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                            <div
+                                id="initiativeBox"
+                                class="w-full text-center box"
+                                data-placeholder="Initiative"></div>
+                        </div>
                         <button
-                            class="h-1/2 px-2 leading-none bg-accent text-light hover:bg-accent-hover hover:group-focus-within:bg-accent group-focus-within:bg-accent-light text-[20px]"
+                            class="h-[25px] px-2 leading-none bg-accent text-light hover:bg-accent-hover hover:group-focus-within:bg-accent group-focus-within:bg-accent-light text-[20px]"
                             onclick="removeTextbox(this.parentNode, 'initiative');">
                             x
                         </button>
@@ -219,23 +217,21 @@
 
                 <div id="conditions" class="hidden w-full flex-1 min-h-0 mt-2 space-y-2 overflow-y-auto">
                     <div class="group grid grid-cols-[1fr_auto_1fr_auto] w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto">
-                        <div
-                            id="conditionsName"
-                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
-                            contenteditable="true"
-                            oninput="togglePlaceholder(this);"
-                            onkeydown="handleNewline(event);"
-                            placeholder="Character"></div>
+                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                            <div
+                                id="conditionsName"
+                                class="w-full text-center name"
+                                data-placeholder="Character"></div>
+                        </div>
                         <div class="w-[2px] bg-accent group-focus-within:bg-accent-light"></div>
-                        <div
-                            id="conditionsBox"
-                            class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto"
-                            contenteditable="true"
-                            oninput="togglePlaceholder(this);"
-                            onkeydown="handleNewline(event);"
-                            placeholder="Status (ex: sleep)"></div>
+                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                            <div
+                                id="conditionsBox"
+                                class="w-full text-center box"
+                                data-placeholder="Status (ex: sleep)"></div>
+                        </div>
                         <button
-                            class="h-1/2 px-2 leading-none bg-accent text-light hover:bg-accent-hover group-focus-within:bg-accent-light text-[20px]"
+                            class="h-[25px] px-2 leading-none bg-accent text-light hover:bg-accent-hover group-focus-within:bg-accent-light text-[20px]"
                             onclick="removeTextbox(this.parentNode, 'conditions');">
                             x
                         </button>
@@ -257,7 +253,7 @@
                             class="col-span-2 col-start-1 row-start-1 placeholder-dark placeholder-opacity-70 w-full max-h-full focus:outline-none focus:border-accent-light px-3 py-2 rounded-xl bg-light-accent border-2 border-accent"
                             placeholder="Enter private notes here"></textarea>
                         <button
-                            class="col-start-2 row-start-1 justify-self-right h-1/2 px-2 leading-none bg-accent text-light hover:bg-accent-hover group-focus-within:bg-accent-light text-[20px]"
+                            class="col-start-2 row-start-1 justify-self-right h-[25px] px-2 leading-none bg-accent text-light hover:bg-accent-hover group-focus-within:bg-accent-light text-[20px]"
                             onclick="removeNote(this.parentNode);">
                             x
                         </button>
