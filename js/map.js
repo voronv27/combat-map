@@ -326,3 +326,18 @@ function addWrapperOnclick() {
         }
     });
 };
+
+/* CODE FOR FULLSCREEN MODE */
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        exitFullscreen();
+    }
+})
+function enterFullscreen() {
+    if (!document.fullscreenElement) {
+        mapCtr.requestFullscreen();
+    }
+}
+function exitFullscreen() {
+    document.exitFullscreen?.();
+}
