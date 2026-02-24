@@ -5,6 +5,15 @@
 // Yjs to handle textbox updates
 import * as Y from "https://esm.sh/yjs";
 
+// TODO: TROUBLESHOOT THESE ISSUES
+// cross-server updates are very bad lol
+// it did actually communicate something after i had a second client join on phone
+// type on first phone tab --> next to nothing
+// join on second phone tab --> everything synced up :)
+
+// the site is slow on my phone and idk why bc it's fine on computer
+// loads image slowly, loads homepage (before even connecting to websocket) slowly as well
+
 type AppEvent = { event: string; [key: string]: any };
 
 export default class MapServer {

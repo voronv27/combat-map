@@ -2,6 +2,7 @@
 
 /* CODE FOR MAP CONTAINER IMAGE FITTING */
 const mapBg = document.getElementById("mapBg");
+const gridCtr = document.getElementById("gridCtr");
 const mapCtr = document.getElementById("mapCtr");
 var zoom = 1;
 var minZoom = 1;
@@ -24,11 +25,16 @@ async function fitImg() {
         // update minZoom
         const renderedWidth = mapBg.clientWidth;
         minZoom = mapCtr.clientWidth / renderedWidth;
+
+        // set width of gridCtr to full width
+        gridCtr.style.width = `${renderedWidth + 2}px`;
+        gridCtr.style.height = `${mapCtr.clientHeight + 2}px`;
         
         // update zoom if too zoomed out now
         if (zoom < minZoom) {
             zoom = minZoom;
             mapBg.style.transform = `scale(${zoom})`;
+            gridCtr.style.transform = `scale(${zoom})`;
         }
     } else {
         // scale by width, let height overflow
@@ -38,20 +44,26 @@ async function fitImg() {
         // update minZoom
         const renderedHeight = mapBg.clientHeight;
         minZoom = mapCtr.clientHeight / renderedHeight;
+
+        // set height of gridCtr to full width
+        gridCtr.style.height = `${renderedHeight + 2}px`;
+        gridCtr.style.width = `${mapCtr.clientWidth + 2}px`;
         
         // update zoom if too zoomed out now
         if (zoom < minZoom) {
             zoom = minZoom;
             mapBg.style.transform = `scale(${zoom})`;
+            gridCtr.style.transform = `scale(${zoom})`;
         }
     }
 }
 
 // Upon new image upload, fit img to container, reset zoom
 mapBg.onload = () => {
-    fitImg();
     mapBg.style.transform = "scale(1)";
+    gridCtr.style.transform = "scale(1)";
     zoom = 1;
+    fitImg();
 }
 
 // we need to calculate minZoom when the image is rendered
@@ -60,10 +72,11 @@ mapBg.onload = () => {
 const roomContent = document.getElementById("roomContent");
 function mutationBehavior(_, observer) {
     if (roomContent.checkVisibility()) {
-        fitImg();
         zoom = 1;
         mapBg.style.transform = "scale(1)";
-
+        gridCtr.style.transform = "scale(1)";
+        fitImg();
+        
         addWrapperOnclick();
         observer.disconnect();
     }
@@ -203,13 +216,16 @@ function mapZoom(e, pinch=false) {
 
     zoom = newZoom;
     mapBg.style.transform = `scale(${zoom})`;
+    gridCtr.style.transform = `scale(${zoom})`;
     mapBg.style.transformOrigin = "left top";
+    gridCtr.style.transformOrigin = "left top";
 }
 mapCtr.addEventListener("wheel", (e) => {
     mapZoom(e);
 }, {passive: false});
 
 // touchscreen (pinch to zoom)
+// TODO: troubleshoot bad behavior on safari (doesn't work sometimes, can't do pinch in then out zoom)
 const fingersDown = [];
 var pinchDiff = -1;
 function fingerUp(e) {

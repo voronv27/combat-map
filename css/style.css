@@ -31,3 +31,22 @@ on this line */
 .ProseMirror p:first-child.is-empty .ProseMirror-trailingBreak {
   display: none;
 }
+
+/* GRID */
+/* gridlines on map */
+.gridlines {
+  position: relative;
+  z-index: 5; /* make sure it shows up over the image */
+  
+  /* hide the topmost and leftmost gridline */
+  margin-top: -2px;
+  margin-left: -2px;
+  height: calc(100% + 2px);
+  width: calc(100% + 2px);
+
+  /* setup gridlines */
+  background-image:
+    linear-gradient(to right, black 1px, transparent 1px),
+    linear-gradient(to bottom, black 1px, transparent 1px);
+  background-size: 10% 10%; /* change this to change number of boxes */
+}
