@@ -41,12 +41,18 @@ on this line */
   /* hide the topmost and leftmost gridline */
   margin-top: -2px;
   margin-left: -2px;
-  height: calc(100% + 2px);
   width: calc(100% + 2px);
+  height: calc(100% + 2px); /* on mobile, parent height is set to auto */
 
   /* setup gridlines */
   background-image:
     linear-gradient(to right, black 1px, transparent 1px),
     linear-gradient(to bottom, black 1px, transparent 1px);
   background-size: 10% 10%; /* change this to change number of boxes */
+}
+
+@media screen and (min-width: 640px) {
+  .gridlines {
+    height: calc(100% + 2px);
+  }
 }

@@ -25,10 +25,22 @@ async function fitImg() {
         // update minZoom
         const renderedWidth = mapBg.clientWidth;
         minZoom = mapCtr.clientWidth / renderedWidth;
+        if (window.innerWidth < 640) {
+            minZoom = 1; // already zoomed out to max on mobile
+        }
 
         // set width of gridCtr to full width
-        gridCtr.style.width = `${renderedWidth + 2}px`;
-        gridCtr.style.height = `${mapCtr.clientHeight + 2}px`;
+        // tailwind sm screen size is 640 px
+        if (window.innerWidth >= 640) {
+            gridCtr.style.width = `${renderedWidth + 2}px`;
+            gridCtr.style.height = `${mapCtr.clientHeight + 2}px`;
+        } else {
+            // on mobile, the layout is different--height is allowed to grow
+            // as much as needed, so if we don't fix these values the container
+            // will grow, trigger the resize observer, grow again... infinite
+            gridCtr.style.height = "100%";
+            gridCtr.style.width = "100%";
+        }
         
         // update zoom if too zoomed out now
         if (zoom < minZoom) {
@@ -44,11 +56,23 @@ async function fitImg() {
         // update minZoom
         const renderedHeight = mapBg.clientHeight;
         minZoom = mapCtr.clientHeight / renderedHeight;
+        if (window.innerWidth < 640) {
+            minZoom = 1; // already zoomed out to max on mobile
+        }
 
-        // set height of gridCtr to full width
-        gridCtr.style.height = `${renderedHeight + 2}px`;
-        gridCtr.style.width = `${mapCtr.clientWidth + 2}px`;
-        
+        // set height of gridCtr to full height (unless >sm screen)
+        // tailwind sm screen size is 640 px
+        if (window.innerWidth >= 640) {
+            gridCtr.style.height = `${renderedHeight + 2}px`;
+            gridCtr.style.width = `${mapCtr.clientWidth + 2}px`;
+        } else {
+            // on mobile, the layout is different--height is allowed to grow
+            // as much as needed, so if we don't fix these values the container
+            // will grow, trigger the resize observer, grow again... infinite
+            gridCtr.style.height = "100%";
+            gridCtr.style.width = "100%";
+        }
+            
         // update zoom if too zoomed out now
         if (zoom < minZoom) {
             zoom = minZoom;
@@ -90,7 +114,7 @@ const observerOptions = {
 const observer = new MutationObserver(mutationBehavior);
 observer.observe(roomContent, observerOptions);
 
-// Upon container resize (due to page resize), refit img
+// Upon page resize, refit img
 const resizeObserver = new ResizeObserver(fitImg);
 resizeObserver.observe(mapCtr);
 
@@ -340,4 +364,5 @@ function enterFullscreen() {
 }
 function exitFullscreen() {
     document.exitFullscreen?.();
+    fitImg(); // needs refit to prevent bug on small screens
 }
