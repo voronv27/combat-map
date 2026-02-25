@@ -174,7 +174,7 @@ export default class MapServer {
             await this.kv.set(["yjs", roomId], state, {expireIn: 20000});
             await this.kv.set(["broadcastBinary", roomId], {
                 id: this.serverId,
-                msg: update
+                msg: state
             });
             console.log("broadcasting to other servers...");
         }

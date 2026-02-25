@@ -32,17 +32,20 @@ function contentType(filePath:string): string {
 
 const roomIds = new Set<string>();
 
-// Server pings the updatedItems for its rooms every 5s.
+// Server pings the updatedItems and yjs for its rooms every 5s.
 // If after 20s no server has pinged updatedItems for the roomId,
 // the entry will expire
-// TODO: yjs as well?
 async function pingRoomServers(rooms) {
   for (const roomId of rooms) {
     const updatedItems = await kv.get(["updatedItems", roomId]);
-    await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
+    if (updatedItems.value) {
+      await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
+    }
 
     const yjs = await kv.get(["yjs", roomId]);
-    await kv.set(["yjs", roomId], yjs.value, {expireIn: 20000});
+    if (yjs.value) {
+      await kv.set(["yjs", roomId], yjs.value, {expireIn: 20000});
+    }
   }
 }
 setInterval(() => {pingRoomServers(roomIds)}, 5000);
@@ -72,10 +75,10 @@ async function serverBroadcast(roomId) {
 
 async function serverBroadcastBinary(roomId) {
   const watcher = kv.watch([["broadcastBinary", roomId]]);
+  //const watcher = kv.watch([["yjs", roomId]]);
   for await (const [entry] of watcher) {
     const value = entry.value;
-    console.log("recvd binary broadcast");
-
+    
     if (!value || value.id === serverId) {
       // Invalid message or message from the server
       continue;
@@ -86,9 +89,10 @@ async function serverBroadcastBinary(roomId) {
       continue;
     }
 
-    // Pass on other server's broadcast msg
+    // Pass on other server's ydoc to this server and its clients
     console.log(`broadcasting textbox data for room ${roomId} from another server`);
-    server.broadcastBinary(value.msg, roomId, false);
+    //server.broadcastBinary(value.msg, roomId, false);
+    server.updateYDoc(value.msg, roomId);
   }
 }
 
