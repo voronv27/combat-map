@@ -11,9 +11,13 @@ import * as Y from "https://esm.sh/yjs";
 // type on first phone tab --> next to nothing
 // join on second phone tab --> everything synced up :)
 
-// the site is slow on my phone and idk why bc it's fine on computer
-// loads image slowly, loads homepage (before even connecting to websocket) slowly as well
+// preliminary investigation results: img upload is shared cross server
+// text is weird--phone sends to computer, but computer doesn't send updates to phone
+// shares cross-server one-way, for some reason
+// when I joined the server on my phone first and then the computer, it was the opposite issue
+// so whichever server creates the room can't broadcast to other servers... for unknown reasons
 
+// improve load speed--try downloading some things locally instead of using the cdns
 type AppEvent = { event: string; [key: string]: any };
 
 export default class MapServer {
@@ -155,6 +159,7 @@ export default class MapServer {
             return;
         }
         for (let user of this.connected.get(roomId)) {
+            console.log("sending ydoc update to user");
             user.send(message);
         }
 
@@ -171,6 +176,7 @@ export default class MapServer {
                 id: this.serverId,
                 msg: update
             });
+            console.log("broadcasting to other servers...");
         }
     }
 
@@ -185,6 +191,7 @@ export default class MapServer {
 
     // Update yjs ydoc (for new server)
     public updateYDoc(updates: Uint8Array, roomId: string) {
+        console.log("updating ydoc")
         this.ydocs.set(roomId, new Y.Doc());
         Y.applyUpdate(this.ydocs.get(roomId), updates);
 

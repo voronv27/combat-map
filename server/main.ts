@@ -40,6 +40,9 @@ async function pingRoomServers(rooms) {
   for (const roomId of rooms) {
     const updatedItems = await kv.get(["updatedItems", roomId]);
     await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
+
+    const yjs = await kv.get(["yjs", roomId]);
+    await kv.set(["yjs", roomId], yjs.value, {expireIn: 20000});
   }
 }
 setInterval(() => {pingRoomServers(roomIds)}, 5000);
@@ -71,17 +74,20 @@ async function serverBroadcastBinary(roomId) {
   const watcher = kv.watch([["broadcastBinary", roomId]]);
   for await (const [entry] of watcher) {
     const value = entry.value;
+    console.log("recvd binary broadcast");
 
     if (!value || value.id === serverId) {
       // Invalid message or message from the server
       continue;
     }  else if (value.delete === serverId) {
+      console.log("no more clients in room in this server");
       return; // stop watching
     } else if (value.delete) {
       continue;
     }
 
     // Pass on other server's broadcast msg
+    console.log(`broadcasting textbox data for room ${roomId} from another server`);
     server.broadcastBinary(value.msg, roomId, false);
   }
 }
@@ -94,19 +100,19 @@ async function updateServer(roomId) {
     return;
   }
 
-  // Fetch the items for this room and update rooms server manages
+  // Fetch the items and textbox data for this room and update rooms server manages
   const items = await kv.get(["updatedItems", roomId]);
-  if (items.value) {
-    console.log(`Add room ${roomId} to server ${serverId}`);
-    server.updateItems(items.value, roomId);
-  } else {
-    console.log(`Create new room ${roomId} in server ${serverId}`);
-  }
-
-  // Fetch the textbox data for this room and update server's ydoc
   const updates = await kv.get(["yjs", roomId]);
-  if (updates.value) {
-    server.updateYDoc(updates.value, roomId);
+  if (updates.value || items.value) {
+    console.log(`Add existing room ${roomId} to server ${serverId}`);
+    if (updates.value) {
+      server.updateYDoc(updates.value, roomId);
+    }
+    if (items.value) {
+      server.updateItems(items.value, roomId);
+    }
+  } else {
+    console.log(`Create new room (or unmodified) ${roomId} in server ${serverId}`);
   }
 
   // Set up kv watch on the room
