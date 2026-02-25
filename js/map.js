@@ -117,6 +117,12 @@ observer.observe(roomContent, observerOptions);
 // Upon page resize, refit img
 const resizeObserver = new ResizeObserver(fitImg);
 resizeObserver.observe(mapCtr);
+window.addEventListener('orientationchange', () => {
+    // resize breaks when rotating from portrait to landscape, fix it
+    resizeObserver.disconnect();
+    fitImg();
+    resizeObserver.observe(mapCtr);
+})
 
 /* CODE FOR SHOWING PAN CONTROLS MESSAGE */
 const msgCtr = document.getElementById("ctrlMsgCtr");
@@ -372,13 +378,21 @@ function enterFullscreen() {
     if (!document.fullscreenElement) {
         if (mapCtr.requestFullscreen) {
             mapCtr.requestFullscreen();
+        } else if (mapCtr.webkitRequestFullscreen) {
+            mapCtr.webkitRequestFullscreen(); // safari on mac/ipad
         } else {
-            mapCtr.webkitRequestFullscreen(); // safari
+            // on iphone, fullscreen isn't supported for non-videos
+            // best we can do is hide all other page elements
+            // TODO once we create the proper zoom container
         }
     }
 }
 function exitFullscreen() {
     document.exitFullscreen?.();
-    document.webkitExitFullscreen();
+    document.cancelFullscreen?.();
+    document.webkitCancelFullscreen?.();
+
+    // TODO: exit out of fake iphone fullscreen mode once that's implemented
+    
     fitImg(); // needs refit to prevent bug on small screens
 }
