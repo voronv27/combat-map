@@ -259,7 +259,9 @@ function fingerUp(e) {
     const index = fingersDown.findIndex(
         (f) => f.pointerId == e.pointerId
     );
-    fingersDown.splice(index, 1);
+    if (index != -1) {
+        fingersDown.splice(index, 1);
+    }
     if (fingersDown.length < 2) {
         pinchDiff = -1;
     }
@@ -276,12 +278,12 @@ mapCtr.addEventListener("pointerup", (e) => {
 mapCtr.addEventListener("pointercancel", (e) => {
     fingerUp(e);
 });
-mapCtr.addEventListener("pointerout", (e) => {
+/*mapCtr.addEventListener("pointerout", (e) => {
     fingerUp(e);
 });
 mapCtr.addEventListener("pointerleave", (e) => {
     fingerUp(e);
-});
+});*/
 
 /* CODE FOR SWAPPING NOTES TABS */
 const tabs = [
