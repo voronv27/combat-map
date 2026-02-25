@@ -5,19 +5,17 @@
 // Yjs to handle textbox updates
 import * as Y from "https://esm.sh/yjs";
 
+// TODO: eventually generate room codes
+// either that or users can create their own + a password and
+// it will let you know if the room already exists
+// leaning towards option 2--but perhaps you have the
+// option to generate a random room code as well
+
 // TODO: TROUBLESHOOT THESE ISSUES
-// cross-server updates are very bad lol
-// it did actually communicate something after i had a second client join on phone
-// type on first phone tab --> next to nothing
-// join on second phone tab --> everything synced up :)
-
-// preliminary investigation results: img upload is shared cross server
-// text is weird--phone sends to computer, but computer doesn't send updates to phone
-// shares cross-server one-way, for some reason
-// when I joined the server on my phone first and then the computer, it was the opposite issue
-// so whichever server creates the room can't broadcast to other servers... for unknown reasons
-
 // improve load speed--try downloading some things locally instead of using the cdns
+// get off of tailwind cdn, consider bundling yjs+Tiptap+tailwind+etc
+// server should cache our files instead of using readTextFile every time
+
 type AppEvent = { event: string; [key: string]: any };
 
 export default class MapServer {
@@ -159,7 +157,6 @@ export default class MapServer {
             return;
         }
         for (let user of this.connected.get(roomId)) {
-            console.log("sending ydoc update to user");
             user.send(message);
         }
 
@@ -176,7 +173,6 @@ export default class MapServer {
                 id: this.serverId,
                 msg: state
             });
-            console.log("broadcasting to other servers...");
         }
     }
 
@@ -191,7 +187,6 @@ export default class MapServer {
 
     // Update yjs ydoc (for new server)
     public updateYDoc(updates: Uint8Array, roomId: string) {
-        console.log("updating ydoc")
         this.ydocs.set(roomId, new Y.Doc());
         Y.applyUpdate(this.ydocs.get(roomId), updates);
 

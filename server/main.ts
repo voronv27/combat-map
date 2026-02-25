@@ -83,15 +83,12 @@ async function serverBroadcastBinary(roomId) {
       // Invalid message or message from the server
       continue;
     }  else if (value.delete === serverId) {
-      console.log("no more clients in room in this server");
       return; // stop watching
     } else if (value.delete) {
       continue;
     }
 
     // Pass on other server's ydoc to this server and its clients
-    console.log(`broadcasting textbox data for room ${roomId} from another server`);
-    //server.broadcastBinary(value.msg, roomId, false);
     server.updateYDoc(value.msg, roomId);
   }
 }
