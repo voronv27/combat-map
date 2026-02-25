@@ -252,7 +252,6 @@ mapCtr.addEventListener("wheel", (e) => {
 }, {passive: false});
 
 // touchscreen (pinch to zoom)
-// TODO: troubleshoot bad behavior on safari (doesn't work sometimes, can't do pinch in then out zoom)
 const fingersDown = [];
 var pinchDiff = -1;
 function fingerUp(e) {
@@ -371,10 +370,15 @@ document.addEventListener("keydown", (e) => {
 })
 function enterFullscreen() {
     if (!document.fullscreenElement) {
-        mapCtr.requestFullscreen();
+        if (mapCtr.requestFullscreen) {
+            mapCtr.requestFullscreen();
+        } else {
+            mapCtr.webkitRequestFullscreen(); // safari
+        }
     }
 }
 function exitFullscreen() {
     document.exitFullscreen?.();
+    document.webkitExitFullscreen();
     fitImg(); // needs refit to prevent bug on small screens
 }
