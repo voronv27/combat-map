@@ -220,9 +220,7 @@ function mapZoom(e, pinch=false) {
             );
 
             if (pinchDiff > 0) {
-                //change = (newPinchDiff - pinchDiff) * 0.01;
-                change = newPinchDiff / pinchDiff * zoom;
-                change = change - zoom; // temporary workaround since we do zoom + change, will clean up if this works
+                change = (newPinchDiff - pinchDiff) * 0.01;
             }
             pinchDiff = newPinchDiff;
         }
@@ -293,12 +291,6 @@ mapCtr.addEventListener("pointercancel", (e) => {
     }
     fingerUp(e);
 });
-/*mapCtr.addEventListener("pointerout", (e) => {
-    fingerUp(e);
-});
-mapCtr.addEventListener("pointerleave", (e) => {
-    fingerUp(e);
-});*/
 
 /* CODE FOR SWAPPING NOTES TABS */
 const tabs = [
