@@ -277,10 +277,10 @@ mapCtr.addEventListener("pointermove", (e) => {
 mapCtr.addEventListener("pointerup", (e) => {
     fingerUp(e);
 });
-mapCtr.addEventListener("pointercancel", (e) => {
+/*mapCtr.addEventListener("pointercancel", (e) => {
     fingerUp(e);
 });
-/*mapCtr.addEventListener("pointerout", (e) => {
+mapCtr.addEventListener("pointerout", (e) => {
     fingerUp(e);
 });
 mapCtr.addEventListener("pointerleave", (e) => {
