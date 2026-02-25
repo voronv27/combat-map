@@ -153,6 +153,9 @@ var click = false;
 var mouseX, mouseY;
 function startDrag(e) {
     if (!panMode) return;
+    if (fingersDown.length > 1) {
+        return; // user is trying to pinch, not drag
+    }
 
     // on click, record x and y and set click to true
     click = true;
