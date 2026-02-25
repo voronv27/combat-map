@@ -265,14 +265,12 @@ function fingerUp(e) {
     }
 }
 mapCtr.addEventListener("pointerdown", (e) => {
-    mapCtr.setPointerCapture(e.pointerId);
     fingersDown.push(e);
 });
 mapCtr.addEventListener("pointermove", (e) => {
     mapZoom(e, pinch=true);
 }, {passive: false});
 mapCtr.addEventListener("pointerup", (e) => {
-    mapCtr.releasePointerCapture(e.pointerId);
     fingerUp(e);
 });
 mapCtr.addEventListener("pointercancel", (e) => {
