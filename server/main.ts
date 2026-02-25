@@ -165,7 +165,7 @@ async function handler(req: Request): Promise<Response> {
       await Deno.readTextFile(`${Deno.cwd()}/index.html`), {
         headers: {"Content-type": "text/html"}
     });
-  } else if (url.pathname.startsWith("/images/")) {
+  } else if (url.pathname.startsWith("/images/") || url.pathname.startsWith("/favicon/")) {
     const filePath = `${Deno.cwd()}${url.pathname}`;
     try {
       const fileData = await Deno.readFile(filePath);
