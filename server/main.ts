@@ -75,7 +75,6 @@ async function serverBroadcast(roomId) {
 
 async function serverBroadcastBinary(roomId) {
   const watcher = kv.watch([["broadcastBinary", roomId]]);
-  //const watcher = kv.watch([["yjs", roomId]]);
   for await (const [entry] of watcher) {
     const value = entry.value;
     

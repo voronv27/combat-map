@@ -277,29 +277,38 @@ function fingerUp(e) {
     }
 }
 mapCtr.addEventListener("pointerdown", (e) => {
-    fingersDown.push(e);
-    if (fingersDown.length == 1) {
-        startDrag(e);
+    // mouse behavior handled above in mousedown
+    if (e.pointerType != "mouse") {
+        fingersDown.push(e);
+        if (fingersDown.length == 1) {
+            startDrag(e);
+        }
     }
 });
 mapCtr.addEventListener("pointermove", (e) => {
-    if (fingersDown.length == 1) {
-        duringDrag(e);
-    } else {
-        mapZoom(e, pinch=true);
+    if (e.pointerType != "mouse") {
+        if (fingersDown.length == 1) {
+            duringDrag(e);
+        } else {
+            mapZoom(e, pinch=true);
+        }
     }
 }, {passive: false});
 mapCtr.addEventListener("pointerup", (e) => {
-    if (fingersDown.length == 1) {
-        endDrag();
+    if (e.pointerType != "mouse") {
+        if (fingersDown.length == 1) {
+            endDrag();
+        }
+        fingerUp(e);
     }
-    fingerUp(e);
 });
 mapCtr.addEventListener("pointercancel", (e) => {
-    if (fingersDown.length == 1) {
-        endDrag();
+    if (e.pointerType != "mouse") {
+        if (fingersDown.length == 1) {
+            endDrag();
+        }
+        fingerUp(e);
     }
-    fingerUp(e);
 });
 
 /* CODE FOR SWAPPING NOTES TABS */
