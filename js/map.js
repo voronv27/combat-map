@@ -14,6 +14,17 @@ async function fitImg() {
     // (prevents some flickering)
     const eps = 0.01;
     if (Math.abs(imgRatio - ctrRatio) < eps) {
+        // need this for orientation flip to work
+        if (window.innerWidth < 640) {
+            minZoom = 1; // already zoomed out to max on mobile
+            gridCtr.style.height = "100%";
+            gridCtr.style.width = "100%";
+            if (zoom < minZoom) {
+                zoom = minZoom;
+                mapBg.style.transform = `scale(${zoom})`;
+                gridCtr.style.transform = `scale(${zoom})`;
+            }
+        }
         return;
     }
     
@@ -117,12 +128,6 @@ observer.observe(roomContent, observerOptions);
 // Upon page resize, refit img
 const resizeObserver = new ResizeObserver(fitImg);
 resizeObserver.observe(mapCtr);
-window.addEventListener('orientationchange', () => {
-    // resize breaks when rotating from portrait to landscape, fix it
-    resizeObserver.disconnect();
-    fitImg();
-    resizeObserver.observe(mapCtr);
-})
 
 /* CODE FOR SHOWING PAN CONTROLS MESSAGE */
 const msgCtr = document.getElementById("ctrlMsgCtr");
@@ -393,6 +398,6 @@ function exitFullscreen() {
     document.webkitCancelFullscreen?.();
 
     // TODO: exit out of fake iphone fullscreen mode once that's implemented
-    
+
     fitImg(); // needs refit to prevent bug on small screens
 }
