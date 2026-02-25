@@ -270,17 +270,30 @@ function fingerUp(e) {
 }
 mapCtr.addEventListener("pointerdown", (e) => {
     fingersDown.push(e);
+    if (fingersDown.length == 1) {
+        startDrag(e);
+    }
 });
 mapCtr.addEventListener("pointermove", (e) => {
-    mapZoom(e, pinch=true);
+    if (fingersDown.length == 1) {
+        duringDrag(e);
+    } else {
+        mapZoom(e, pinch=true);
+    }
 }, {passive: false});
 mapCtr.addEventListener("pointerup", (e) => {
+    if (fingersDown.length == 1) {
+        endDrag();
+    }
     fingerUp(e);
 });
-/*mapCtr.addEventListener("pointercancel", (e) => {
+mapCtr.addEventListener("pointercancel", (e) => {
+    if (fingersDown.length == 1) {
+        endDrag();
+    }
     fingerUp(e);
 });
-mapCtr.addEventListener("pointerout", (e) => {
+/*mapCtr.addEventListener("pointerout", (e) => {
     fingerUp(e);
 });
 mapCtr.addEventListener("pointerleave", (e) => {
