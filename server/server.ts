@@ -37,9 +37,13 @@ export default class MapServer {
     // Information to broadcast cross-server
     private kv: Deno.Kv;
     private serverId: string;
-    constructor(kv: Deno.Kv, serverId: string) {
+    private supabase;
+    private channels: Map<string, any>;
+    constructor(kv: Deno.Kv, serverId: string, supabase: any, channels: Map<string, any>) {
         this.kv = kv;
         this.serverId = serverId;
+        this.supabase = supabase;
+        this.channels = channels;
     }
 
     public async handleConnection(request: Request): Response {
@@ -47,7 +51,7 @@ export default class MapServer {
         const roomId = url.searchParams.get("room") || "default";
         const {socket, response} = Deno.upgradeWebSocket(request);
 
-        socket.addEventListener("open", () => {
+        socket.addEventListener("open", async () => {
             if (!this.connected.has(roomId)) {
                 this.connected.set(roomId, new Set());
             }
@@ -73,6 +77,24 @@ export default class MapServer {
             } else {
                 console.log("Client connected");
                 this.connected.get(roomId).add(socket);
+
+                  // setup initial room data--must be done after this.connected has the roomId
+                  // Fetch the items and textbox data for this room and update rooms server manages
+                  try {
+                    const items = await this.kv.get(["updatedItems", roomId]);
+                    const updates = await this.kv.get(["yjs", roomId]);
+                    if (updates.value || items.value) {
+                      console.log(`Add existing room data for ${roomId} to server ${this.serverId}`);
+                      if (updates.value) {
+                        this.updateYDoc(updates.value, roomId);
+                      }
+                      if (items.value) {
+                        this.updateItems(items.value, roomId);
+                      }
+                    }
+                  } catch (err) {
+                    console.error("updateServer error:", err);
+                  }
             }
             this.roomIds[roomId] += 1;
         });
@@ -91,8 +113,11 @@ export default class MapServer {
                 this.updatedItems.delete(roomId);
                 this.ydocs.delete(roomId);
                 delete this.roomIds[roomId];
-                await this.kv.set(["broadcast", roomId], {"delete": this.serverId});
-                await this.kv.set(["broadcastBinary", roomId], {"delete": this.serverId});
+                const channel = this.channels.get(roomId);
+                if (channel) {
+                    await channel.unsubscribe();
+                    this.channels.delete(roomId);
+                }
             }
         });
 
@@ -141,11 +166,19 @@ export default class MapServer {
 
         // if we should broadcast this message to other servers, do so
         if (broadcastToServers) {
-            await this.kv.set(["updatedItems", roomId], this.updatedItems.get(roomId), {expireIn: 20000});
-            await this.kv.set(["broadcast", roomId], {
-                id: this.serverId,
-                msg: message
-            });
+            try {
+                await this.kv.set(["updatedItems", roomId], this.updatedItems.get(roomId), {expireIn: 20000});
+            } catch (err) {
+                console.error("Error in updating server's updatedItems:", err);
+            }
+            const channel = this.channels.get(roomId);
+            if (channel && channel.state == "joined") {
+                await channel.send({
+                    type: "broadcast",
+                    event: "update-item",
+                    message: message
+                });
+            }
         }
     }
 
@@ -168,11 +201,19 @@ export default class MapServer {
         if (broadcastToServers) {
             const ydoc = this.ydocs.get(roomId);
             const state = Y.encodeStateAsUpdate(ydoc);
-            await this.kv.set(["yjs", roomId], state, {expireIn: 20000});
-            await this.kv.set(["broadcastBinary", roomId], {
-                id: this.serverId,
-                msg: state
-            });
+            try {
+                await this.kv.set(["yjs", roomId], state, {expireIn: 20000});
+            } catch (err) {
+                console.error("Error in updating server binary data:", error);
+            }
+            const channel = this.channels.get(roomId);
+            if (channel && channel.state == "joined") {
+                await channel.send({
+                    type: "broadcast",
+                    event: "update-yjs",
+                    message: Array.from(new Uint8Array(state)) // convert for Supabase
+                });
+            }
         }
     }
 

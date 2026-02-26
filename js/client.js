@@ -151,7 +151,7 @@ function updateAll(items) {
 
 // Uploads an image file to the server stored under the id
 // of the element
-async function uploadImage(file, id) {
+async function uploadImage(file, id, roomId) {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('element', id);
@@ -185,6 +185,7 @@ async function connectSocket(roomId) {
         ydoc = new Y.Doc(); // don't overwrite existing ydoc if it exists
     }
     ydoc.on("update", (update) => {
+        // todo: add handling for if socket is down and comes back up?
         socket.send(update);
     });
 
@@ -257,7 +258,7 @@ async function startWebSocket(roomId) {
     // ALL ITEMS WITH UPLOADED IMAGES GO BELOW THIS LINE
     // To handle items with uploaded images, give the item a unique
     // id and an eventListener for the image being uploaded. When an
-    // image is uploaded by the client, call uploadImage(file, item id)
+    // image is uploaded by the client, call uploadImage(file, item id, roomId)
     // to upload the image to the server. Then send an "update-item" 
     // message over the socket, with values: { "src": "/server-image/[element id]"}
     //
@@ -271,7 +272,7 @@ async function startWebSocket(roomId) {
     const mapFile = document.getElementById('fileInput');
     mapFile.addEventListener('change', async function() {
         const file = this.files[0];
-        const imgUploaded = await uploadImage(file, 'mapBg');
+        const imgUploaded = await uploadImage(file, 'mapBg', roomId);
         if (!imgUploaded) {
             // failed image upload, don't send a message
             return;

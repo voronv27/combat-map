@@ -8,12 +8,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 import MapServer from "./server.ts";
 const port = 8080;
 
-// We need to use Deno KV to ensure we are broadcasting to websockets
-// across servers (Deno Deploy will run this as multiple servers)
-const kv = await Deno.openKv(); // TODO: ensure that we have set this up before the rest of the code executes, is it awaiting properly?
+// We use Deno KV to store existing room states and
+// supabase channels to listen to broadcasts on how the
+// room state has changed
+//const kv = await Deno.openKv("http://localhost:7999"); // used for local testing
+const kv = await Deno.openKv();
+const channels = new Map<string, ReturnType<typeof supabase.channel>>();
 const serverId = crypto.randomUUID();
-const server = new MapServer(kv, serverId);
+const server = new MapServer(kv, serverId, supabase, channels);
 console.log(`Started server with id ${serverId}`);
+
+// Override console.error to print the serverId for logging purposes
+const consoleError = console.error;
+console.error = (...args: any[]) => {
+  consoleError(`SERVER ${serverId} ERROR:\n`, ...args);
+}
 
 // Helper function to get Content-type header for a file
 function contentType(filePath:string): string {
@@ -30,95 +39,51 @@ function contentType(filePath:string): string {
   return "application/octet-stream"
 }
 
-const roomIds = new Set<string>();
-
 // Server pings the updatedItems and yjs for its rooms every 5s.
 // If after 20s no server has pinged updatedItems for the roomId,
 // the entry will expire
 async function pingRoomServers(rooms) {
   for (const roomId of rooms) {
-    const updatedItems = await kv.get(["updatedItems", roomId]);
-    if (updatedItems.value) {
-      await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
-    }
+    try {
+      const updatedItems = await kv.get(["updatedItems", roomId]);
+      if (updatedItems.value) {
+        await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
+      }
 
-    const yjs = await kv.get(["yjs", roomId]);
-    if (yjs.value) {
-      await kv.set(["yjs", roomId], yjs.value, {expireIn: 20000});
+      const yjs = await kv.get(["yjs", roomId]);
+      if (yjs.value) {
+        await kv.set(["yjs", roomId], yjs.value, {expireIn: 20000});
+      }
+    } catch (err) {
+      console.error("pingRoomServers error:", err);
     }
   }
 }
-setInterval(() => {pingRoomServers(roomIds)}, 5000);
-
-// Listen for broadcast messages from other servers and
-// pass them along to this server's connected clients
-async function serverBroadcast(roomId) {
-  const watcher = kv.watch([["broadcast", roomId]]);
-  for await (const [entry] of watcher) {
-    const value = entry.value;
-
-    if (!value || value.id === serverId) {
-      // Invalid message or message from the server
-      continue;
-    } else if (value.delete === serverId) {
-      // Remove this room from rooms the server is managing
-      roomIds.delete(roomId);
-      return; // stop watching
-    } else if (value.delete) {
-      continue;
-    }
-
-    // Pass on other server's broadcast msg
-    server.broadcast(value.msg, roomId, false);
-  }
-}
-
-async function serverBroadcastBinary(roomId) {
-  const watcher = kv.watch([["broadcastBinary", roomId]]);
-  for await (const [entry] of watcher) {
-    const value = entry.value;
-    
-    if (!value || value.id === serverId) {
-      // Invalid message or message from the server
-      continue;
-    }  else if (value.delete === serverId) {
-      return; // stop watching
-    } else if (value.delete) {
-      continue;
-    }
-
-    // Pass on other server's ydoc to this server and its clients
-    server.updateYDoc(value.msg, roomId);
-  }
-}
+setInterval(() => {pingRoomServers(channels.keys())}, 5000);
 
 // Update the items for a room for a server and set up a watcher
 // for the room to listen for new broadcast messages
 async function updateServer(roomId) {
   // This server already has the data for this room
-  if (roomIds.has(roomId)) {
+  if (channels.has(roomId)) {
     return;
   }
+  
+  // setup channel subscription for broadcast updates
+  const channel = supabase.channel(roomId, {
+    config: {broadcast: {self: false}}
+  });
+  channel.on("broadcast", {event: "update-item"}, ({message}) => {
+    server.broadcast(message, roomId, false);
+  });
+  channel.on("broadcast", {event: "update-yjs"}, ({message}) => {
+    const state = new Uint8Array(message);
+    server.updateYDoc(state, roomId);
+  });
+  await channel.subscribe();
 
-  // Fetch the items and textbox data for this room and update rooms server manages
-  const items = await kv.get(["updatedItems", roomId]);
-  const updates = await kv.get(["yjs", roomId]);
-  if (updates.value || items.value) {
-    console.log(`Add existing room ${roomId} to server ${serverId}`);
-    if (updates.value) {
-      server.updateYDoc(updates.value, roomId);
-    }
-    if (items.value) {
-      server.updateItems(items.value, roomId);
-    }
-  } else {
-    console.log(`Create new room (or unmodified) ${roomId} in server ${serverId}`);
-  }
-
-  // Set up kv watch on the room
-  serverBroadcast(roomId);
-  serverBroadcastBinary(roomId);
-  roomIds.add(roomId);
+  channels.set(roomId, channel);
+  console.log(`Server ${serverId} subscribed to room ${roomId}`);
 }
 
 async function handler(req: Request): Promise<Response> {
@@ -154,8 +119,12 @@ async function handler(req: Request): Promise<Response> {
     // Store URL
     const urlData = supabase.storage.from("images").getPublicUrl(`images/${id}-${room}.png`);
     const imageUrl = `${urlData.data.publicUrl}?t=${Date.now()}`; // add in date to avoid caching issues
-    await kv.set(["server-image", room, id], imageUrl);
-    console.log(`Image ${id}-${room}.png uploaded`);
+    try {
+      await kv.set(["server-image", room, id], imageUrl);
+      console.log(`Image ${id}-${room}.png uploaded`);
+    } catch (err) {
+      console.error("Error uploading image to kv:", err);
+    }
     return new Response({status: 200});
   }
 
