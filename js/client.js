@@ -12,6 +12,7 @@ import Placeholder from 'https://esm.sh/@tiptap/extension-placeholder'
 // store updated items as { "itemId": { "changeablePropertyName": value }}
 var updatedItems = {};
 var socket = null;
+var reconnectAttempts = 0; // keep track of reconnects on close
 var ydoc = null;
 var textboxBindings = {};
 
@@ -125,7 +126,53 @@ export function removeTextbox(textbox, tabName) {
 }
 window.removeTextbox = removeTextbox;
 
-async function startWebSocket(roomId) {
+// Function to update an item's specified HTML elements
+function updateItem(itemName, itemData) {
+    var item = document.getElementById(itemName);
+    for (let valueName in itemData) {
+        if (valueName === "src") {
+            // forces the image to be re-requested so page doesn't
+            // need to be refreshed
+            item[valueName] = itemData[valueName] + "&_=" + performance.now();
+        } else {
+            item[valueName] = itemData[valueName];
+        }
+    }
+    updatedItems[itemName] = itemData;
+}
+
+// Updates all of the HTML elements in items
+function updateAll(items) {
+    updatedItems = items;
+    for (let item in updatedItems) {
+        updateItem(item, updatedItems[item]);
+    }
+}
+
+// Uploads an image file to the server stored under the id
+// of the element
+async function uploadImage(file, id) {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('element', id);
+    formData.append('roomId', roomId);
+
+    // upload image to server
+    const res = await fetch("/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    // We return true if the image has been successfully uploaded
+    if (res.status === 200) {
+        return true;
+    } else {
+        console.error(`Failed to upload image for element ${id}`);
+        return false;
+    }
+}
+
+async function connectSocket(roomId) {
     // Connect to server
     var url = new URL("./start_web_socket?room=" + roomId,
         location.href);
@@ -134,12 +181,17 @@ async function startWebSocket(roomId) {
     
     // yjs for group editing on textboxes
     socket.binaryType = "arraybuffer";
-    ydoc = new Y.Doc();
+    if (!ydoc) {
+        ydoc = new Y.Doc(); // don't overwrite existing ydoc if it exists
+    }
     ydoc.on("update", (update) => {
         socket.send(update);
     });
-    
-    document.getElementById("roomCode").textContent = roomId;
+
+    socket.onopen = () => {
+        console.log("Connected to websocket");
+        reconnectAttempts = 0; // reset reconnect attempts
+    };
 
     // Listen for server messages and update page elements
     socket.onmessage = (event) => {
@@ -162,51 +214,29 @@ async function startWebSocket(roomId) {
         }
     };
 
-    // Function to update an item's specified HTML elements
-    function updateItem(itemName, itemData) {
-        var item = document.getElementById(itemName);
-        for (let valueName in itemData) {
-            if (valueName === "src") {
-                // forces the image to be re-requested so page doesn't
-                // need to be refreshed
-                item[valueName] = itemData[valueName] + "&_=" + performance.now();
-            } else {
-                item[valueName] = itemData[valueName];
-            }
-        }
-        updatedItems[itemName] = itemData;
+    // if server disconnects, attempt to reconnect
+    function attemptReconnect() {
+        console.log("Attempting to reconnect...");
+        setTimeout(() => {
+            connectSocket(roomId);
+            reconnectAttempts++;
+        }, 2000);
     }
 
-    // Updates all of the HTML elements in items
-    function updateAll(items) {
-        updatedItems = items;
-        for (let item in updatedItems) {
-            updateItem(item, updatedItems[item]);
-        }
-    }
-
-    // Uploads an image file to the server stored under the id
-    // of the element
-    async function uploadImage(file, id) {
-        const formData = new FormData();
-        formData.append('image', file);
-        formData.append('element', id);
-        formData.append('roomId', roomId);
-
-        // upload image to server
-        const res = await fetch("/upload", {
-            method: "POST",
-            body: formData
-        });
-
-        // We return true if the image has been successfully uploaded
-        if (res.status === 200) {
-            return true;
+    socket.onclose = () => {
+        console.log("Closed websocket");
+        if (reconnectAttempts < 5) {
+            attemptReconnect();
         } else {
-            console.error(`Failed to upload image for element ${id}`);
-            return false;
+            console.log("Reconnecting failed");
         }
     }
+}
+
+async function startWebSocket(roomId) {
+    // Connect to server
+    connectSocket(roomId);
+    document.getElementById("roomCode").textContent = roomId;
 
     // ALL UPDATEABLE ITEMS GO BELOW THIS LINE
     // To add an item, give it a unique id and add it to updatedItems

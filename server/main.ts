@@ -10,7 +10,7 @@ const port = 8080;
 
 // We need to use Deno KV to ensure we are broadcasting to websockets
 // across servers (Deno Deploy will run this as multiple servers)
-const kv = await Deno.openKv();
+const kv = await Deno.openKv(); // TODO: ensure that we have set this up before the rest of the code executes, is it awaiting properly?
 const serverId = crypto.randomUUID();
 const server = new MapServer(kv, serverId);
 console.log(`Started server with id ${serverId}`);
