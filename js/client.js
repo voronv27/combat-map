@@ -136,10 +136,7 @@ window.addNewTextbox = addNewTextbox;
 
 // remove textbox from the container unless its the last one,
 // in which case just clear the text
-export function removeTextbox(textbox, tabName) {
-    // TODO: send message over the socket that this
-    // item should be removed
-
+export function removeTextbox(textbox, tabName, broadcast=true) {
     const tab = document.getElementById(tabName);
     const children = tab.children;
     
@@ -158,6 +155,42 @@ export function removeTextbox(textbox, tabName) {
         if (textboxBindings[boxText.id]) {
             textboxBindings[boxText.id].destroy();
             delete textboxBindings[boxText.id];
+        }
+
+        // Send message over the socket that this
+        // item should be removed
+        const defaultItems = ["initiativeName", "conditionsName"];
+        if (defaultItems.includes(nameText.id)) {
+            // we are modifying the default, use index -1
+            // to store deleted default values
+            const values = { counter: -1,
+                             nameId: nameText.id,
+                             boxId: boxText.id }
+
+            // send to server so it's broadcast to other clients
+            if (broadcast) {
+                socket.send(JSON.stringify({
+                    event: "create-item",
+                    location: tabName,
+                    values: values,
+                }));
+            }
+            createdItems[tabName][-1] = values;
+        } else {
+            const counter = nameText.id.substring(nameText.id.lastIndexOf("-") + 1);
+            const values = { counter: counter,
+                             nameId: nameText.id,
+                             boxId: boxText.id }
+                             
+            // send to server so it's broadcast to other clients
+            if (broadcast) {
+                socket.send(JSON.stringify({
+                    event: "delete-item",
+                    location: tabName,
+                    values: values,
+                }));
+            }
+            delete createdItems[tabName][counter];
         }
     } else {
         // don't delete, just clear
@@ -195,6 +228,12 @@ function updateAll(items) {
 
 // Creates a new element in the specified location
 function createItem(location, data) {
+    // delete a default item
+    if (data.counter == -1) {
+        deleteItem(location, data);
+        return;
+    }
+
     // create textbox
     const textboxLocations = ["initiative", "conditions"];
     if (textboxLocations.includes(location)) {
@@ -209,12 +248,33 @@ function createItem(location, data) {
     }
 }
 
+// Create all elements in items
 function createAll(items) {
     for (let location in items) {
+        // create items
         for (let ctr in items[location]) {
             const item = items[location][ctr];
             createItem(location, item);
         }
+    }
+}
+
+// Delete a created element
+function deleteItem(location, data) {
+    // delete textbox
+    const textboxLocations = ["initiative", "conditions"];
+    if (textboxLocations.includes(location)) {
+        // item doesn't exist in createdItems
+        if (!(location in createdItems) || !(data.counter in createdItems[location])) {
+            const defaultItems = ["initiativeName", "conditionsName"];
+            if (!(defaultItems.includes(data.nameId))) {
+                return;
+            }
+        } else if (location in createdItems && data.counter == -1) {
+            return; // -1 counter is used for deleted default items, so already deleted
+        }
+        let textbox = document.getElementById(data.nameId).parentNode.parentNode;
+        removeTextbox(textbox, location, false);
     }
 }
 
@@ -287,6 +347,9 @@ async function connectSocket(roomId) {
             case "create-item":
                 createItem(data.location, data.values);
                 break;
+            case "delete-item":
+                deleteItem(data.location, data.values);
+                break;
         }
     };
 
@@ -329,7 +392,7 @@ async function startWebSocket(roomId) {
     for (let i of inputs) {
         bindTextboxToYjs(i);
     }
-    
+
     // ALL ITEMS WITH UPLOADED IMAGES GO BELOW THIS LINE
     // To handle items with uploaded images, give the item a unique
     // id and an eventListener for the image being uploaded. When an

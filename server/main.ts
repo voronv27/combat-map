@@ -84,6 +84,9 @@ async function updateServer(roomId) {
   channel.on("broadcast", {event: "create-item"}, ({message}) => {
     server.broadcast(message, roomId, false);
   });
+  channel.on("broadcast", {event: "delete-item"}, ({message}) => {
+    server.broadcast(message, roomId, false);
+  });
   channel.on("broadcast", {event: "update-yjs"}, ({message}) => {
     const state = new Uint8Array(message);
     server.updateYDoc(state, roomId);

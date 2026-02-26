@@ -174,6 +174,16 @@ export default class MapServer {
                 }
                 this.createdItems.get(roomId)[data.location][data.values.counter] = data.values;
                 break;
+            case "delete-item":
+                this.broadcast({
+                    event: "delete-item",
+                    location: data.location,
+                    values: data.values
+                }, roomId);
+                if (data.location in this.createdItems.get(roomId)) {
+                    delete this.createdItems.get(roomId)[data.location][data.values.counter];
+                }
+                break;
         }
     }
 
@@ -195,6 +205,10 @@ export default class MapServer {
                 this.createdItems.get(roomId)[message.location] = {};
             }
             this.createdItems.get(roomId)[message.location][message.values.counter] = message.values;
+        } else if (message.event === "delete-item") {
+            if (message.location in this.createdItems.get(roomId)) {
+                delete this.createdItems.get(roomId)[message.location][message.values.counter];
+            }
         }
 
         // if we should broadcast this message to other servers, do so
@@ -202,7 +216,7 @@ export default class MapServer {
             try {
                 if (message.event === "update-item") {
                     await this.kv.set(["updatedItems", roomId], this.updatedItems.get(roomId), {expireIn: 20000});
-                } else if (message.event === "create-item") {
+                } else if (message.event === "create-item" || message.event === "delete-item") {
                     await this.kv.set(["createdItems", roomId], this.createdItems.get(roomId), {expireIn: 20000});
                 }
             } catch (err) {
@@ -210,19 +224,11 @@ export default class MapServer {
             }
             const channel = this.channels.get(roomId);
             if (channel && channel.state == "joined") {
-                if (message.event === "update-item") {
-                    await channel.send({
-                        type: "broadcast",
-                        event: "update-item",
-                        message: message
-                    });
-                } else if (message.event === "create-item") {
-                    await channel.send({
-                        type: "broadcast",
-                        event: "create-item",
-                        message: message
-                    });
-                }
+                await channel.send({
+                    type: "broadcast",
+                    event: message.event,
+                    message: message
+                });
             }
         }
     }
