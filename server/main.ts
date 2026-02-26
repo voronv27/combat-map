@@ -45,6 +45,11 @@ function contentType(filePath:string): string {
 async function pingRoomServers(rooms) {
   for (const roomId of rooms) {
     try {
+      const createdItems = await kv.get(["createdItems", roomId]);
+      if (createdItems.value) {
+        await kv.set(["createdItems", roomId], createdItems.value, {expireIn: 20000});
+      }
+
       const updatedItems = await kv.get(["updatedItems", roomId]);
       if (updatedItems.value) {
         await kv.set(["updatedItems", roomId], updatedItems.value, {expireIn: 20000});
@@ -74,6 +79,9 @@ async function updateServer(roomId) {
     config: {broadcast: {self: false}}
   });
   channel.on("broadcast", {event: "update-item"}, ({message}) => {
+    server.broadcast(message, roomId, false);
+  });
+  channel.on("broadcast", {event: "create-item"}, ({message}) => {
     server.broadcast(message, roomId, false);
   });
   channel.on("broadcast", {event: "update-yjs"}, ({message}) => {

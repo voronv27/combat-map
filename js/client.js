@@ -11,6 +11,7 @@ import Placeholder from 'https://esm.sh/@tiptap/extension-placeholder'
 
 // store updated items as { "itemId": { "changeablePropertyName": value }}
 var updatedItems = {};
+var createdItems = {};
 var socket = null;
 var reconnectAttempts = 0; // keep track of reconnects on close
 var ydoc = null;
@@ -47,7 +48,17 @@ function bindTextboxToYjs(id) {
 // creates a new child in the container and adds a
 // listener for it
 var idCounters = {"initiative": 0, "conditions": 0};
-export function addNewTextbox(tabName) {
+export function addNewTextbox(tabName, itemData=null) {
+    // if we have a template, read in values
+    var nameId = null;
+    var boxId = null;
+    var counter = null;
+    if (itemData) {
+        nameId = itemData.nameId;
+        boxId = itemData.boxId;
+        counter = itemData.counter;
+    }
+
     // make a copy of the desired textbox
     const tab = document.getElementById(tabName);
     const exampleTextbox = tab.firstElementChild;
@@ -58,16 +69,48 @@ export function addNewTextbox(tabName) {
     const nameText = newTextbox.querySelector('.name');
     const boxText = newTextbox.querySelector('.box');
 
-    nameText.id = `${tabName}Name-${idCounters[tabName]}`;
+    if (!nameId) {
+        nameText.id = `${tabName}Name-${idCounters[tabName]}`;
+    } else {
+        nameText.id = nameId;
+    }
     nameText.innerHTML = "";
 
-    boxText.id = `${tabName}Box-${idCounters[tabName]}`;
+    if (!boxId) {
+        boxText.id = `${tabName}Box-${idCounters[tabName]}`;
+    } else {
+        boxText.id = boxId;
+    }
     boxText.innerHTML = "";
 
-    idCounters[tabName] += 1;
+    // Send message over the socket that this item should
+    // be created if client was the one to create it
+    // (if itemData is not null, this was broadcast to the
+    // client and shouldn't be broadcast again)
+    if (!itemData) {
+        const values = { counter: idCounters[tabName],
+                         nameId: nameText.id,
+                         boxId: boxText.id }
+        socket.send(JSON.stringify({
+            event: "create-item",
+            location: tabName,
+            values: values,
+        }));
+        // update createdItems
+        if (!(tabName in createdItems)) {
+            createdItems[tabName] = {};
+        }
+        createdItems[tabName][idCounters[tabName]] = values;
+    } else if (itemData) {
+        // update createdItems
+        createdItems[tabName][counter] = itemData;
+    }
 
-    // TODO: send message over the socket that this
-    // item should be created
+    if (!counter || counter < idCounters[tabName]) {
+        idCounters[tabName] += 1;
+    } else {
+        idCounters[tabName] = counter + 1;
+    }
 
     // append item at bottom just above the button
     const btn = tab.lastElementChild;
@@ -149,6 +192,32 @@ function updateAll(items) {
     }
 }
 
+// Creates a new element in the specified location
+function createItem(location, data) {
+    // create textbox
+    const textboxLocations = ["initiative", "conditions"];
+    if (textboxLocations.includes(location)) {
+        if (!(location in createdItems)) {
+            console.log("test");
+            createdItems[location] = {};
+        }
+
+        // only create the textbox if it hasn't already been created
+        if (!(data.counter in createdItems[location])) {
+            addNewTextbox(location, data);
+        }
+    }
+}
+
+function createAll(items) {
+    for (let location in items) {
+        for (let ctr in items[location]) {
+            const item = items[location][ctr];
+            createItem(location, item);
+        }
+    }
+}
+
 // Uploads an image file to the server stored under the id
 // of the element
 async function uploadImage(file, id, roomId) {
@@ -204,6 +273,9 @@ async function connectSocket(roomId) {
         }
         const data = JSON.parse(event.data);
         switch (data.event) {
+            case "create-all":
+                createAll(data.data);
+                break;
             case "update-all":
                 // TODO: once we allow users to add/remove elements,
                 // create all elements before updating their values
@@ -211,6 +283,9 @@ async function connectSocket(roomId) {
                 break;
             case "update-item":
                 updateItem(data.item, data.values);
+                break;
+            case "create-item":
+                createItem(data.location, data.values);
                 break;
         }
     };
