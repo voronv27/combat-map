@@ -26,6 +26,7 @@ function bindTextboxToYjs(id) {
         extensions: [
             StarterKit.configure({
                 history: false, // Collaboration has its own, disable to avoid warnings
+                undoRedo: false, // see above
             }),
             Collaboration.configure({
                 document: ydoc,
@@ -37,7 +38,7 @@ function bindTextboxToYjs(id) {
         ],
         content: ""
     });
-
+    
     textboxBindings[id] = {
         destroy() {
             editor.destroy();
@@ -198,7 +199,6 @@ function createItem(location, data) {
     const textboxLocations = ["initiative", "conditions"];
     if (textboxLocations.includes(location)) {
         if (!(location in createdItems)) {
-            console.log("test");
             createdItems[location] = {};
         }
 
