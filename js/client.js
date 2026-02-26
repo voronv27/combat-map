@@ -181,7 +181,7 @@ export function removeTextbox(textbox, tabName, broadcast=true) {
             const values = { counter: counter,
                              nameId: nameText.id,
                              boxId: boxText.id }
-                             
+
             // send to server so it's broadcast to other clients
             if (broadcast) {
                 socket.send(JSON.stringify({
@@ -337,8 +337,6 @@ async function connectSocket(roomId) {
                 createAll(data.data);
                 break;
             case "update-all":
-                // TODO: once we allow users to add/remove elements,
-                // create all elements before updating their values
                 updateAll(data.data);
                 break;
             case "update-item":
