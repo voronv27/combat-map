@@ -160,6 +160,12 @@
         <div id="edit-grid" class="hidden px-2 py-2" data-title="Grid Editor">
             <p>TODO: edit-grid popup</p>
         </div>
+        <div id="add-character" class="hidden px-2 py-2" data-title="New Character">
+            <p>TODO: add-character popup</p>
+        </div>
+        <div id="add-object" class="hidden px-2 py-2" data-title="New Object">
+            <p>TODO: add-object popup</p>
+        </div>
         <div id="explain-controls" class="hidden px-2 py-2" data-title="Explain Controls">
             <p>TODO: explain-controls popup</p>
         </div>
@@ -312,28 +318,28 @@
 <div class="flex flex-col md:flex-row w-full pt-2 gap-2 md:gap-4 leading-[1.2] text-[12px] text-center justify-self-center">
     <!-- Upload bg image for combat map -->
     <label for="fileInput"
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
         CHOOSE<br>NEW MAP
     </label>
     <input type="file" id="fileInput" accept="image/*" class="hidden">
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('edit-grid');">
+        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('edit-grid');">
         EDIT<br>GRID
     </button>
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('add-character');">
         ADD<br>CHARACTER
     </button>
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('add-object');">
         ADD<br>OBJECT
     </button>
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('explain-controls');">
+        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('explain-controls');">
         EXPLAIN<br>CONTROLS
     </button>
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="enterFullscreen();">
+        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="enterFullscreen();">
         FULLSCREEN<br>MODE
     </button>
 </div>
