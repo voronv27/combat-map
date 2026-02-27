@@ -15,7 +15,7 @@ async function fitImg() {
     const eps = 0.01;
     if (Math.abs(imgRatio - ctrRatio) < eps) {
         // need this for orientation flip to work
-        if (window.innerWidth < 640) {
+        if (window.innerWidth < 768) {
             minZoom = 1; // already zoomed out to max on mobile
             gridCtr.style.height = "100%";
             gridCtr.style.width = "100%";
@@ -30,19 +30,19 @@ async function fitImg() {
     
     if (imgRatio > ctrRatio) {
         // scale by height, let width overflow
-        mapBg.classList.remove("sm:w-full", "sm:h-auto");
-        mapBg.classList.add("sm:h-full", "sm:w-auto");
+        mapBg.classList.remove("md:w-full", "md:h-auto");
+        mapBg.classList.add("md:h-full", "md:w-auto");
 
         // update minZoom
         const renderedWidth = mapBg.clientWidth;
         minZoom = mapCtr.clientWidth / renderedWidth;
-        if (window.innerWidth < 640) {
+        if (window.innerWidth < 768) {
             minZoom = 1; // already zoomed out to max on mobile
         }
 
         // set width of gridCtr to full width
-        // tailwind sm screen size is 640 px
-        if (window.innerWidth >= 640) {
+        // tailwind md screen size is 768 px
+        if (window.innerWidth >= 768) {
             gridCtr.style.width = `${renderedWidth + 2}px`;
             gridCtr.style.height = `${mapCtr.clientHeight + 2}px`;
         } else {
@@ -61,19 +61,19 @@ async function fitImg() {
         }
     } else {
         // scale by width, let height overflow
-        mapBg.classList.remove("sm:h-full", "sm:w-auto");
-        mapBg.classList.add("sm:w-full", "sm:h-auto");
+        mapBg.classList.remove("md:h-full", "md:w-auto");
+        mapBg.classList.add("md:w-full", "md:h-auto");
 
         // update minZoom
         const renderedHeight = mapBg.clientHeight;
         minZoom = mapCtr.clientHeight / renderedHeight;
-        if (window.innerWidth < 640) {
+        if (window.innerWidth < 768) {
             minZoom = 1; // already zoomed out to max on mobile
         }
 
-        // set height of gridCtr to full height (unless >sm screen)
-        // tailwind sm screen size is 640 px
-        if (window.innerWidth >= 640) {
+        // set height of gridCtr to full height (unless >md screen)
+        // tailwind md screen size is 768 px
+        if (window.innerWidth >= 768) {
             gridCtr.style.height = `${renderedHeight + 2}px`;
             gridCtr.style.width = `${mapCtr.clientWidth + 2}px`;
         } else {
