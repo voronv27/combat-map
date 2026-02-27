@@ -144,6 +144,28 @@
 <!-- inside game room -->
 <div id="roomContent" class="hidden pt-2">
 
+<!-- popup window container -->
+<div id="popup-window" class="hidden w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-black/50">
+    <!-- popup window content -->
+    <div class="w-2/3 h-1/2 sm:h-2/3 bg-light-accent text-dark rounded-xl overflow-hidden border-[3px] border-accent">
+        <!-- title bar -->
+        <div class="bg-dark text-light w-full h-10 items-center justify-center grid grid-cols-1 grid-rows-1 border-b-[3px] border-accent">
+            <div id="popup-title" class="col-start-1 row-start-1 text-center text-[20px]">Popup</div>
+            <button
+                class="ml-auto col-start-1 row-start-1 h-full w-10 px-2 leading-none bg-accent hover:bg-accent-hover text-[20px]"
+                onclick="closePopup();">
+                x
+            </button>
+        </div>
+        <div id="edit-grid" class="hidden px-2 py-2" data-title="Grid Editor">
+            <p>TODO: edit-grid popup</p>
+        </div>
+        <div id="explain-controls" class="hidden px-2 py-2" data-title="Explain Controls">
+            <p>TODO: explain-controls popup</p>
+        </div>
+    </div>
+</div>
+
 <!--display room code at top-->
 <p class="text-[18px]">
     Room code: <b id="roomCode" class="text-accent"></b>
@@ -295,7 +317,7 @@
     </label>
     <input type="file" id="fileInput" accept="image/*" class="hidden">
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('edit-grid');">
         EDIT<br>GRID
     </button>
     <button
@@ -307,7 +329,7 @@
         ADD<br>OBJECT
     </button>
     <button
-        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('explain-controls');">
         EXPLAIN<br>CONTROLS
     </button>
     <button

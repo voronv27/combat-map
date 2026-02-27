@@ -410,3 +410,28 @@ function exitFullscreen() {
 
     fitImg(); // needs refit to prevent bug on small screens
 }
+
+/* CODE TO DISPLAY POPUP WINDOW */
+const popupWindow = document.getElementById("popup-window");
+const popupTitle = document.getElementById("popup-title");
+var currentPopup = null;
+function openPopup(popupId) {
+    // show popup window
+    popupWindow.classList.remove("hidden");
+
+    // show this popup's content
+    const popupContent = document.getElementById(popupId);
+    popupContent.classList.remove("hidden");
+    currentPopup = popupContent;
+
+    // set popup window title
+    popupTitle.innerHTML = popupContent.dataset.title;
+}
+function closePopup() {
+    // hide popup window, hide popup window content, reset title
+    popupWindow.classList.add("hidden");
+    if (openPopup) {
+        currentPopup.classList.add("hidden");
+        popupTitle.innerHTML = "Popup";
+    }
+}
