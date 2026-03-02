@@ -455,16 +455,16 @@ const previewGrid = document.getElementById("previewGridLines");
 /* current grid state (changes upon apply), preview
    reverted back to this upon revert*/
 const gridState = {
-    "gridX": 10,
-    "gridY": 10,
-    "lineWidth": 2,
+    "gridX": 12,
+    "gridY": 9,
+    "lineWidth": 1,
     "color": "#000000",
     "opacity": 100,
     "show": true,
 };
 var gridRatio = 9/12; // gridY/gridX for preserveGridAspect
 
-// grid preview based on changed value
+// update grid preview based on changed value
 function updatePreview(elem) {
     switch (elem) {
         case "gridX":
@@ -541,3 +541,17 @@ gridX.onchange = () => {setMinOnNull(gridX, 1, "gridX"); setMinOnNull(gridY, 1, 
 gridY.onchange = () => {setMinOnNull(gridY, 1, "gridY");};
 gridOpacity.onchange = () => {setMinOnNull(gridOpacity, 0, "opacity");};
 gridLineWidth.onchange = () => {setMinOnNull(gridLineWidth, 1, "lineWidth");};
+
+// revert grid preview back to actual grid state
+function revertGridState() {
+    gridX.value = gridState.gridX;
+    gridY.value = gridState.gridY;
+    gridLineWidth.value = gridState.lineWidth;
+    gridColor.value = gridState.color;
+    gridOpacity.value = gridState.opacity;
+    showGrid.checked = gridState.show;
+
+    for (elem in gridState) {
+        updatePreview(elem);
+    }
+}
