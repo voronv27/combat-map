@@ -451,6 +451,7 @@ const gridOpacity = document.getElementById("grid-opacity");
 const showGrid = document.getElementById("show-grid");
 const previewText = document.getElementById("previewText");
 const previewGrid = document.getElementById("previewGridLines");
+const actualGrid = document.getElementById("gridLines");
 
 /* current grid state (changes upon apply), preview
    reverted back to this upon revert*/
@@ -465,7 +466,7 @@ const gridState = {
 var gridRatio = 9/12; // gridY/gridX for preserveGridAspect
 
 // update grid preview based on changed value
-function updatePreview(elem) {
+function updateGrid(elem, gridToUpdate=previewGrid) {
     switch (elem) {
         case "gridX":
             if (gridX.value < 1) {
@@ -489,7 +490,7 @@ function updatePreview(elem) {
             gridRatio = gridY.value / gridX.value;
             const x = 100 / gridX.value;
             const y = 100 / gridY.value;
-            previewGrid.style.backgroundSize = `${x}% ${y}%`;
+            gridToUpdate.style.backgroundSize = `${x}% ${y}%`;
             break;
         case "color":
             previewText.style.color = `${gridColor.value}`;
@@ -497,12 +498,12 @@ function updatePreview(elem) {
             if (gridLineWidth.value < 1) {
                 return;
             }
-            previewGrid.style.backgroundImage = `linear-gradient(to right, ${gridColor.value} ${gridLineWidth.value}px, transparent ${gridLineWidth.value}px), linear-gradient(to bottom, ${gridColor.value} ${gridLineWidth.value}px, transparent ${gridLineWidth.value}px)`
+            gridToUpdate.style.backgroundImage = `linear-gradient(to right, ${gridColor.value} ${gridLineWidth.value}px, transparent ${gridLineWidth.value}px), linear-gradient(to bottom, ${gridColor.value} ${gridLineWidth.value}px, transparent ${gridLineWidth.value}px)`
             const offset = gridLineWidth.value;
-            previewGrid.style.marginTop = `-${offset}px`;
-            previewGrid.style.marginLeft = `-${offset}px`;
-            previewGrid.style.width = `calc(100% + ${offset}px`;
-            previewGrid.style.height = `calc(100% + ${offset}px`;
+            gridToUpdate.style.marginTop = `-${offset}px`;
+            gridToUpdate.style.marginLeft = `-${offset}px`;
+            gridToUpdate.style.width = `calc(100% + ${offset}px`;
+            gridToUpdate.style.height = `calc(100% + ${offset}px`;
             break;
         case "opacity":
             if (gridOpacity.value < 0) {
@@ -510,31 +511,31 @@ function updatePreview(elem) {
             } else if (gridOpacity.value > 100) {
                 gridOpacity.value = 100;
             }
-            previewGrid.style.opacity = `${gridOpacity.value}%`;
+            gridToUpdate.style.opacity = `${gridOpacity.value}%`;
         case "showGrid":
             if (showGrid.checked) {
-                previewGrid.classList.remove("hidden");
+                gridToUpdate.classList.remove("hidden");
             } else {
-                previewGrid.classList.add("hidden");
+                gridToUpdate.classList.add("hidden");
             }
             break;
         default:
             break;
     }
 }
-gridX.oninput = () => {updatePreview("gridX");};
-gridY.oninput = () => {updatePreview("gridY");};
-gridColor.onchange = () => {updatePreview("color");};
-gridOpacity.oninput = () => {updatePreview("opacity");};
-gridLineWidth.oninput = () => {updatePreview("lineWidth");};
-showGrid.onchange = () => {updatePreview("showGrid");};
+gridX.oninput = () => {updateGrid("gridX");};
+gridY.oninput = () => {updateGrid("gridY");};
+gridColor.onchange = () => {updateGrid("color");};
+gridOpacity.oninput = () => {updateGrid("opacity");};
+gridLineWidth.oninput = () => {updateGrid("lineWidth");};
+showGrid.onchange = () => {updateGrid("showGrid");};
 
 // allow null values while editing but set to minimum if
 // left null upon unfocusing
 function setMinOnNull(elem, minVal, updateStr) {
     if (elem.value == "" || elem.value < minVal) {
         elem.value = minVal;
-        updatePreview(updateStr);
+        updateGrid(updateStr);
     }
 }
 gridX.onchange = () => {setMinOnNull(gridX, 1, "gridX"); setMinOnNull(gridY, 1, "gridY");}; // add in gridY to prevent it from being < 1 due to scaling
@@ -552,6 +553,21 @@ function revertGridState() {
     showGrid.checked = gridState.show;
 
     for (elem in gridState) {
-        updatePreview(elem);
+        updateGrid(elem);
+    }
+}
+
+// apply changes from grid preview to current grid
+function applyGridChanges() {
+    // update gridState
+    gridState.gridX = gridX.value;
+    gridState.gridY = gridY.value;
+    gridState.lineWidth = gridLineWidth.value;
+    gridState.color = gridColor.value;
+    gridState.opacity = gridOpacity.value;
+    gridState.show = showGrid.checked;
+
+    for (elem in gridState) {
+        updateGrid(elem, actualGrid);
     }
 }
