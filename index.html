@@ -20,7 +20,7 @@
     </style>
 
     <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -37,7 +37,7 @@
                     }
                 }
             }
-        }
+        };
     </script>
 
     <!-- local scripts -->
@@ -121,7 +121,7 @@
     <div class="relative justify-self-center overflow-hidden">
         <input id="roomId"
             type="text"
-            class="w-60 md:w-72 uppercase px-3 py-2 rounded-lg border-2 border-accent bg-light-accent focus:outline-accent-hover placeholder-dark-fade"
+            class="focus:ring-light/60 focus:ring-2 w-60 md:w-72 uppercase px-3 py-2 rounded-lg border-2 border-accent bg-light-accent hover:border-accent-hover focus:border-accent-hover outline-none  placeholder-dark-fade"
             placeholder="ROOM CODE">
         <img id="fang" class="absolute right-5 top-0 h-[20px]" src="images/fang.png">
         <img id="fang-darker" class="absolute right-5 top-0 h-[20px] z-10" src="images/fang_darker.png">
@@ -145,21 +145,105 @@
 <div id="roomContent" class="hidden pt-2">
 
 <!-- popup window container -->
-<div id="popup-window" class="hidden w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-black/50">
+<div id="popup-window" class="hidden w-full h-full fixed inset-0 flex items-center justify-center z-50 bg-black/50">
     <!-- popup window content -->
-    <div class="w-3/4 h-1/2 sm:h-2/3 max-w-[750px] bg-light-accent text-dark rounded-xl overflow-hidden border-[3px] border-accent">
+    <div class="m-4 w-3/4 min-h-[50vh] max-h-[90vh] max-w-[750px] bg-light-accent text-dark rounded-xl overflow-hidden border-[3px] border-accent flex flex-col">
         <!-- title bar -->
-        <div class="bg-dark text-light w-full h-10 items-center justify-center grid grid-cols-1 grid-rows-1 border-b-[3px] border-accent">
-            <div id="popup-title" class="col-start-1 row-start-1 text-center text-[20px]">Popup</div>
+        <div class="bg-dark text-light w-full h-12 items-center justify-center grid grid-cols-1 grid-rows-1 border-b-[3px] border-accent">
+            <div id="popup-title" class="col-start-1 row-start-1 text-center text-[24px]">Popup</div>
             <button
                 class="ml-auto col-start-1 row-start-1 h-full w-10 px-2 leading-none bg-accent hover:bg-accent-hover text-[20px]"
                 onclick="closePopup();">
                 x
             </button>
         </div>
-        <div id="edit-grid" class="hidden px-2 py-2" data-title="Grid Editor">
-            <p>TODO: edit-grid popup</p>
+
+        <!-- edit-grid content -->
+        <div id="edit-grid" class="hidden px-2 py-2 space-y-2 overflow-y-auto" data-title="Grid Editor">
+        <!-- left div = options, right div = preview, turns into one column on small screens -->
+        <div class="grid md:grid-cols-2 space-y-2">
+            <!-- options -->
+            <div>
+            <!-- set grid dimensions -->
+            <div class="flex flex-row flex-wrap gap-2 items-center text-[20px]">
+                <div>Dimensions: </div>
+                <input type="number" min="0" id="grid-x"
+                 class="focus:ring-light/60 focus:ring-2 rounded-lg w-[40px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-center text-[16px] p-0" value=12>
+                <div> x </div>
+                <input type="number" min="0" id="grid-y"
+                 class="focus:ring-light/60 focus:ring-2 rounded-lg w-[40px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-center text-[16px] p-0" value=9>
+                 <div class="flex gap-2 mt-auto">
+                     <div class="text-[14px]">preserve aspect ratio:</div>
+                     <input type="checkbox" id="grid-preserve-aspect"
+                     class="rounded-sm mt-auto mb-[3px] w-[14px] h-[14px] border border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover">
+                 </div>
+            </div>
+            <!-- set grid line width -->
+            <div class="flex flex-row flex-wrap gap-2 items-end text-[20px]">
+                <div>Line width:</div>
+                <div class="relative">
+                    <input type="number" min="1" id="grid-line-width"
+                     class="focus:ring-light/60 focus:ring-2 rounded-lg w-[60px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-[16px] p-0 pl-2" value=1>
+                     <span class="text-[14px] top-0 absolute left-0 pl-[40px] pt-[6px] pointer-events-none opacity-75">px</span>
+                </div>
+            </div>
+            <!-- set grid line color -->
+            <div class="flex flex-row flex-wrap gap-2 items-end text-[20px]">
+                <div>Line color:</div>
+                <input type="color" id="grid-line-color"
+                 class="focus:ring-light/60 focus:ring-2  rounded-lg w-[40px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-center m-0" value=#000000>
+            </div>
+            <!-- set grid line opacity -->
+            <div class="flex flex-row flex-wrap gap-2 text-[20px]">
+               <div>Line opacity:</div>
+               <div class="relative">
+                   <input type="number" min="0" max="100" id="grid-opacity"
+                    class="focus:ring-light/60 focus:ring-2 rounded-lg w-[60px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-[16px] p-0 pl-2" value=100>
+                   <span class="text-[14px] top-0 absolute left-0 pl-[40px] pt-[6px] pointer-events-none opacity-75">%</span>
+               </div>
+            </div>
+            <!-- toggle gridline visibility -->
+            <div class="flex flex-row flex-wrap gap-2 items-center text-[20px]">
+                <div>Show grid:</div>
+                <input type="checkbox" id="show-grid"
+                     class="rounded-sm w-[20px] h-[20px] border border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover" checked>
+            </div>
         </div>
+
+        <!-- preview -->
+        <div>
+            <div id="previewCtr" class="w-full h-auto overflow-hidden border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative">
+                <img id="previewBg"
+                src="images/sample_map.png" 
+                draggable="false"
+                class="col-start-1 row-start-1 w-full h-full object-contain">
+
+                <div id="previewText" class="pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl">
+                    PREVIEW
+                </div>
+
+                <!--grid overlay-->
+                <div id="previewGridCtr" class="pointer-events-none col-start-1 row-start-1">
+                    <div id="previewGridLines" class="grid gridlines">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+        <!-- buttons to apply/discard changes -->
+        <div class="flex flex-row flex-wrap items-center justify-center gap-2">
+            <button class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="console.log('todo');">
+                Revert Changes</button>
+            <button class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="console.log('todo');">
+                Apply Changes</button>
+            <button class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="console.log('todo');">
+                Apply & Exit</button>
+        </div>
+        </div>
+
+        <!-- add-character content -->
         <div id="add-character" class="hidden px-2 py-2" data-title="New Character">
             <p>TODO: add-character popup</p>
         </div>

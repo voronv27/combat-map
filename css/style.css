@@ -48,11 +48,47 @@ on this line */
   background-image:
     linear-gradient(to right, black 1px, transparent 1px),
     linear-gradient(to bottom, black 1px, transparent 1px);
-  background-size: 10% 10%; /* change this to change number of boxes */
+  background-size: 8.33% 11.11%; /* initially 12x9 because it looks nice with default img */
 }
 
-@media screen and (min-width: 640px) {
+@media screen and (min-width: 768px) {
   .gridlines {
     height: calc(100% + 2px);
   }
+}
+
+/* remove the default styling (padding + grey outline) on input type=color */
+input[type="color"] {
+  -webkit-appearance: none;
+  outline: none;
+  background-color: transparent;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border: none;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+}
+input[type="color"]::-moz-color-swatch {
+  border: none;
+}
+
+/* remove the default styling on input type="text" and input type="number" */
+input[type="text"], input[type="number"]{
+  appearance: textfield;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+} 
+input[type="text"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+input[type="text"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
