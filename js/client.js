@@ -17,6 +17,14 @@ var reconnectAttempts = 0; // keep track of reconnects on close
 var ydoc = null;
 var textboxBindings = {};
 
+// functions that need to be called after a broadcast updates the item's value
+var broadcastFuncs = {
+    "show-grid": () => {updateGrid("showGrid", actualGrid);}
+}
+
+// global variables that fall under updatedItems['variable']
+var globalVariables = {'gridState': window.gridState};
+
 function bindTextboxToYjs(id) {
     const input = document.getElementById(id);
     const placeholder = input.dataset.placeholder;
@@ -205,14 +213,27 @@ window.removeTextbox = removeTextbox;
 
 // Function to update an item's specified HTML elements
 function updateItem(itemName, itemData) {
+    // updating a global variable rather than an element
+    if (itemName === "variable") {
+        for (let variableName in itemData) {
+            Object.assign(globalVariables[variableName], itemData[variableName]);
+        }
+        return;
+    }
     var item = document.getElementById(itemName);
     for (let valueName in itemData) {
         if (valueName === "src") {
             // forces the image to be re-requested so page doesn't
             // need to be refreshed
             item[valueName] = itemData[valueName] + "&_=" + performance.now();
+        } else if (valueName === "cssText") {
+            item.style.cssText = itemData[valueName];
         } else {
             item[valueName] = itemData[valueName];
+            if (broadcastFuncs[itemName]) {
+                // may need to call a function after changing some values
+                broadcastFuncs[itemName]();
+            }
         }
     }
     updatedItems[itemName] = itemData;
@@ -436,3 +457,72 @@ export function joinRoom() {
     startWebSocket(encodeURIComponent(roomId));
 }
 window.joinRoom = joinRoom;
+
+// function to broadcast changes to gridLines style
+// (called in map.js by applyGridChanges)
+const gridLines = document.getElementById("gridLines");
+async function broadcastGridlines() {
+    var data = {
+        "cssText": gridLines.style.cssText
+    };
+    updatedItems["gridLines"] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: "gridLines",
+        values: data
+    }));
+
+    for (let id of ["grid-x", "grid-y", "grid-line-width",
+                    "grid-line-color", "grid-opacity",
+                    "previewText"]) {
+        data = { "value": `${document.getElementById(id).value}` };
+        updatedItems[id] = data;
+        socket.send(JSON.stringify({
+            event: "update-item",
+            item: id,
+            values: data
+        }));
+    }
+
+    data = {
+        'cssText': document.getElementById('previewGridLines').style.cssText
+    };
+    updatedItems['previewGridLines'] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: 'previewGridLines',
+        values: data
+    }));
+
+    data = {
+        'cssText': document.getElementById('previewText').style.cssText
+    };
+    updatedItems['previewText'] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: 'previewText',
+        values: data
+    }));
+
+    data = { 
+        "checked": document.getElementById('show-grid').checked 
+    };
+    updatedItems['show-grid'] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: 'show-grid',
+        values: data
+    }));
+
+    data = {'gridState': gridState};
+    if (!updatedItems['variable']) {
+        updatedItems['variable'] = {};
+    }
+    updatedItems['variable']['gridState'] = data;
+    socket.send(JSON.stringify({
+        event: "update-item",
+        item: 'variable',
+        values: data
+    }));
+};
+window.broadcastGridlines = broadcastGridlines;

@@ -420,6 +420,12 @@ const popupWindow = document.getElementById("popup-window");
 const popupTitle = document.getElementById("popup-title");
 var currentPopup = null;
 function openPopup(popupId) {
+    // for the edit-grid popup make sure we update gridState
+    // this is in case of grid changes sent over socket
+    if (popupId == "edit-grid") {
+        applyGridChanges();
+    }
+
     // show popup window
     popupWindow.classList.remove("hidden");
 
@@ -434,7 +440,7 @@ function openPopup(popupId) {
 function closePopup() {
     // hide popup window, hide popup window content, reset title
     popupWindow.classList.add("hidden");
-    if (openPopup) {
+    if (currentPopup) {
         currentPopup.classList.add("hidden");
         popupTitle.innerHTML = "Popup";
     }
@@ -455,7 +461,7 @@ const actualGrid = document.getElementById("gridLines");
 
 /* current grid state (changes upon apply), preview
    reverted back to this upon revert*/
-const gridState = {
+window.gridState = {
     "gridX": 12,
     "gridY": 9,
     "lineWidth": 1,
@@ -512,11 +518,12 @@ function updateGrid(elem, gridToUpdate=previewGrid) {
                 gridOpacity.value = 100;
             }
             gridToUpdate.style.opacity = `${gridOpacity.value}%`;
+            break;
         case "showGrid":
             if (showGrid.checked) {
-                gridToUpdate.classList.remove("hidden");
+                gridToUpdate.style.display = "block";
             } else {
-                gridToUpdate.classList.add("hidden");
+                gridToUpdate.style.display = "none";
             }
             break;
         default:
@@ -566,8 +573,12 @@ function applyGridChanges() {
     gridState.color = gridColor.value;
     gridState.opacity = gridOpacity.value;
     gridState.show = showGrid.checked;
+    gridRatio = gridY.value / gridX.value;
 
     for (elem in gridState) {
         updateGrid(elem, actualGrid);
     }
+    
+    // broadcast applied changes
+    broadcastGridlines();
 }
