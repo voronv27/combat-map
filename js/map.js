@@ -267,6 +267,8 @@ mapCtr.addEventListener("wheel", (e) => {
 }, {passive: false});
 
 // touchscreen (pinch to zoom)
+// todo: troubleshoot mildly jank behavior when both
+// fingers in pinch don't lift at exact same time
 const fingersDown = [];
 var pinchDiff = -1;
 function fingerUp(e) {
@@ -582,3 +584,43 @@ function applyGridChanges() {
     // broadcast applied changes
     broadcastGridlines();
 }
+
+/* CODE TO SHOW/HIDE MAP CONTROLS BAR */
+const mapWrapper = document.getElementById("mapControlsWrapper");
+const mapControls = document.getElementById("mapControls");
+var controlsTimer;
+function hideMapControls() {
+    mapControls.style.opacity = "0";
+    clearTimeout(controlsTimer);
+}
+function displayMapControls() {
+    mapControls.classList.remove('hidden');
+    mapControls.style.opacity = "1";
+    clearTimeout(controlsTimer);
+    controlsTimer = setTimeout(hideMapControls, 3000);
+}
+// after the controls have faded, hide them to prevent false clicks
+mapControls.addEventListener('transitionend', () => {
+    if (mapControls.style.opacity == "0") {
+        mapControls.classList.add('hidden');
+    }
+});
+
+// when the mapCtr is clicked or a mouse moves, show controls bar
+mapWrapper.addEventListener('pointermove', (e) => {
+    if (e.pointerType == "mouse") {
+        displayMapControls();
+    }
+});
+mapWrapper.addEventListener('pointerdown', (e) => {
+    if (mapControls.style.opacity < 1) {
+        displayMapControls();
+    } else {
+        if (mapControls.contains(e.target)) {
+           displayMapControls(); // don't hide controls if clicking on them
+        } else {
+            hideMapControls(); // clicking again hides the controls
+        }
+    }
+});
+mapWrapper.addEventListener('mouseleave', hideMapControls); // hide controls when cursor not on map
