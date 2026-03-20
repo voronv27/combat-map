@@ -597,7 +597,7 @@ function displayMapControls() {
     mapControls.classList.remove('hidden');
     mapControls.style.opacity = "1";
     clearTimeout(controlsTimer);
-    controlsTimer = setTimeout(hideMapControls, 3000);
+    controlsTimer = setTimeout(hideMapControls, 5000);
 }
 // after the controls have faded, hide them to prevent false clicks
 mapControls.addEventListener('transitionend', () => {
