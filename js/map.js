@@ -147,17 +147,13 @@ mapCtr.addEventListener("wheel", hideMsg, {once:true});
 mapCtr.addEventListener("mousedown", hideMsg, {once:true})
 
 /* CODE FOR MAP CONTAINER PAN */
-// TODO: update cursor style when in pan mode
-//mapCtr.style.cursor = "TODO";
-
 // enable/disable pan
-// TODO: actually use this function (when we implement swapping modes)
-var panMode = true;
+var panMode = false;
 function setPanMode(enabled) {
     panMode = enabled;
     if (enabled) {
-        // TODO: update cursor style when in pan mode
-        //mapCtr.style.cursor = "TODO";
+        // update cursor style when in pan mode
+        mapCtr.style.cursor = "move";
     } else {
         mapCtr.style.cursor = "default";
     }
@@ -176,9 +172,6 @@ function startDrag(e) {
     click = true;
     mouseX = e.clientX + mapCtr.scrollLeft;
     mouseY = e.clientY + mapCtr.scrollTop;
-
-    // TODO: update cursor style when click-dragging
-    //mapCtr.style.cursor = "TODO";
 }
 
 mapCtr.addEventListener("mousedown", (e) => {
@@ -201,8 +194,6 @@ window.addEventListener("mousemove", (e) => {
 
 function endDrag() {
     click = false;
-    // TODO: update cursor style when done click-dragging
-    //mapCtr.style.cursor = "TODO";
 }
 window.addEventListener("mouseup", () => {
     endDrag();
@@ -213,8 +204,6 @@ window.addEventListener("mouseleave", () => {
 
 // zoom
 function mapZoom(e, pinch=false) {
-    if (!panMode) return;
-
     // must be holding shift or using pinch to zoom
     if (!e.shiftKey && !pinch) return;
     e.preventDefault();

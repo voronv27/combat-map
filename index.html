@@ -291,19 +291,19 @@
 
         <!-- controls overlay -->
         <div id="mapControls" class="col-start-1 row-start-1 w-[10%] h-auto absolute right-2 top-2 bottom-2 bg-white/70 rounded-lg border-2 border-accent flex flex-col z-5 items-center justify-evenly transition-opacity duration-300 opacity-0">
-            <button class="w-2/3" onclick="console.log(1);">
+            <button class="w-2/3" onclick="setPanMode(false);">
                 <img class="w-[90%] justify-self-center" src="images/icons8-cursor.svg">
             </button>
-            <button class="w-2/3" onclick="console.log(2);">
+            <button class="w-2/3" onclick="setPanMode(true);">
                 <img class="w-[75%] justify-self-center" src="images/move-svgrepo-com.svg">
             </button>
-            <button class="w-2/3" onclick="console.log(3);">
+            <button class="w-2/3" onclick="console.log('zoom in');">
                 <img class="w-[90%] justify-self-end" src="images/zoom-in-svgrepo-com.svg">
             </button>
-            <button class="w-2/3" onclick="console.log(4);">
+            <button class="w-2/3" onclick="console.log('zoom out');">
                 <img class="w-[90%] justify-self-end" src="images/zoom-out-svgrepo-com.svg">
             </button>
-            <button class="w-2/3" onclick="console.log(5);">
+            <button class="w-2/3" onclick="console.log('fullscreen');">
                 <img class="w-[80%] justify-self-center" src="images/full-screen-svgrepo-com.svg">
             </button>
         </div>
