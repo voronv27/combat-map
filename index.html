@@ -274,7 +274,7 @@
             class="col-start-1 row-start-1 w-full h-full object-contain md:max-w-none">
 
             <!--overlay to explain controls-->
-            <div id="ctrlMsgCtr" class="pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300 z-20">
+            <div id="ctrlMsgCtr" class="pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300 z-10">
                 <div class="rounded-lg w-2/3 text-light bg-black/70 px-4 py-2">
                     Scroll to pan<br>
                     Shift + Scroll or pinch to zoom<br>
@@ -290,19 +290,22 @@
         </div>
 
         <!-- controls overlay -->
-        <div id="mapControls" class="col-start-1 row-start-1 w-[10%] h-auto absolute right-2 top-2 bottom-2 bg-white/70 rounded-lg border-2 border-accent flex flex-col z-10 items-center justify-evenly transition-opacity duration-300 opacity-0">
+        <div id="mapControls" class="col-start-1 row-start-1 w-[10%] h-auto absolute right-2 top-2 bottom-2 bg-white/70 rounded-lg border-2 border-accent flex flex-col z-5 items-center justify-evenly transition-opacity duration-300 opacity-0">
             <button class="w-2/3" onclick="console.log(1);">
-                <img class="w-full" src="images/icons8-cursor.svg">
+                <img class="w-[90%] justify-self-center" src="images/icons8-cursor.svg">
             </button>
             <button class="w-2/3" onclick="console.log(2);">
-                <img class="w-full" src="images/move-svgrepo-com.svg">
+                <img class="w-[75%] justify-self-center" src="images/move-svgrepo-com.svg">
             </button>
             <button class="w-2/3" onclick="console.log(3);">
-                <img class="w-full" src="images/zoom-in-svgrepo-com.svg">
+                <img class="w-[90%] justify-self-end" src="images/zoom-in-svgrepo-com.svg">
             </button>
-            <button class="w-2/3" onclick="console.log(4);">4</button>
-            <button class="w-2/3" onclick="console.log(5);">5</button>
-            <button class="w-2/3" onclick="console.log(6);">6</button>
+            <button class="w-2/3" onclick="console.log(4);">
+                <img class="w-[90%] justify-self-end" src="images/zoom-out-svgrepo-com.svg">
+            </button>
+            <button class="w-2/3" onclick="console.log(5);">
+                <img class="w-[80%] justify-self-center" src="images/full-screen-svgrepo-com.svg">
+            </button>
         </div>
     </div>
 
