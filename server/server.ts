@@ -182,6 +182,7 @@ export default class MapServer {
                 }, roomId);
                 if (data.location in this.createdItems.get(roomId)) {
                     delete this.createdItems.get(roomId)[data.location][data.values.counter];
+                    // todo: when we support image uploads for deletable items, delete from supabase
                 }
                 break;
         }

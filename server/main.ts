@@ -34,10 +34,51 @@ function contentType(filePath:string): string {
     return "text/css";
   } else if (filePath.endsWith('png')) {
     return "image/png";
+  } else if (filePath.endsWith('.svg')) {
+    return "image/svg+xml";
   }
   // default: arbitrary binary data
   return "application/octet-stream"
 }
+
+// cleans up unused images from rooms in supabase image storage
+// this is for when the room expires with images still intact, we handle
+// deleted images in an active room as soon as they are deleted
+async function clearExpiredRoomImages(roomId) {
+  const urls = [];
+  for await (const entry of kv.list({ prefix: ["server-image", roomId] })) {
+    const id = entry.key[2];
+    urls.push(`images/${id}-${roomId}.png`);
+    await kv.delete(entry.key);
+  }
+
+  if (urls.length) {
+    const { err } = await supabase.storage
+      .from("images")
+      .remove(urls);
+
+    if (err) {
+      console.error(`Issue clearing images for room ${roomId}:`, err);
+    }
+  }
+}
+async function clearExpiredImages() {
+  const checkedRooms = new Set<string>();
+  for await (const entry of kv.list({ prefix: ["server-image"] })) {
+    const roomId = entry.key[1];
+    if (checkedRooms.has(roomId)) {
+      continue;
+    }
+    checkedRooms.add(roomId);
+
+    const updatedItems = await kv.get(["updatedItems", roomId]);
+    const createdItems = await kv.get(["createdItems", roomId]);
+    if (!updatedItems.value && !createdItems.value) {
+      await clearExpiredRoomImages(roomId);
+    }
+  }
+}
+setInterval(clearExpiredImages, 30000);
 
 // Server pings the updatedItems and yjs for its rooms every 5s.
 // If after 20s no server has pinged updatedItems for the roomId,
@@ -152,7 +193,7 @@ async function handler(req: Request): Promise<Response> {
       return new Response(fileData, {
         headers: {
           "Content-type": contentType(filePath),
-          "Cache-Control": "public, max-age=2000000"
+          "Cache-Control": "no-cache"
         }
       });
     } catch (e) {
