@@ -24,6 +24,34 @@ console.error = (...args: any[]) => {
   consoleError(`SERVER ${serverId} ERROR:\n`, ...args);
 }
 
+// load in and cache files
+const files = new Map<string, Uint8Array | string>();
+async function loadFiles(dir) {
+  for await (const entry of Deno.readDir(dir)) {
+    const path = dir + "/" + entry.name;
+    if (entry.isDirectory) {
+      await loadFiles(path);
+    } else if (path.endsWith('.png') || path.endsWith('.svg')) {
+      try {
+        const fileData = await Deno.readFile(path);
+        files.set(path, fileData);
+      } catch (e) {
+        console.log(`Error reading file ${path}`);
+      }
+    } else {
+      try {
+        const fileData = await Deno.readTextFile(path);
+        files.set(path, fileData);
+      } catch (e) {
+        console.log(`Error reading file ${path}`);
+      }
+    }
+  }
+}
+loadFiles(Deno.cwd())
+  .then(() => console.log(`Loaded server files in server ${serverId}`))
+  .catch((err) => console.error(`Failed to load server files in server ${serverId}`, err));
+
 // Helper function to get Content-type header for a file
 function contentType(filePath:string): string {
   if (filePath.endsWith('html')) {
@@ -182,14 +210,34 @@ async function handler(req: Request): Promise<Response> {
 
   // Provide files (images, html, js, etc)
   if (url.pathname === "/") {
-    return new Response(
-      await Deno.readTextFile(`${Deno.cwd()}/index.html`), {
+    const filePath = `${Deno.cwd()}/index.html`;
+    const cachedFile = files.get(filePath);
+
+    if (cachedFile) {
+      return new Response(cachedFile, {
+          headers: {"Content-type": "text/html"}
+      });
+    }
+    const fileData = await Deno.readTextFile(`${Deno.cwd()}/index.html`);
+    files.set(filePath, fileData);
+    return new Response(fileData, {
         headers: {"Content-type": "text/html"}
     });
   } else if (url.pathname.startsWith("/images/") || url.pathname.startsWith("/favicon/")) {
     const filePath = `${Deno.cwd()}${url.pathname}`;
+    const cachedFile = files.get(filePath);
+
+    if (cachedFile) {
+      return new Response(cachedFile, {
+          headers: {
+            "Content-type": contentType(filePath),
+            "Cache-Control": "no-cache"
+        }
+      });
+    }
     try {
       const fileData = await Deno.readFile(filePath);
+      files.set(filePath, fileData);
       return new Response(fileData, {
         headers: {
           "Content-type": contentType(filePath),
@@ -218,8 +266,16 @@ async function handler(req: Request): Promise<Response> {
   } else {
     // The url pathname is requesting one of the files
     const filePath = `${Deno.cwd()}${url.pathname}`;
+    const cachedFile = files.get(filePath);
+
+    if (cachedFile) {
+      return new Response(cachedFile, {
+          headers: {"Content-type": contentType(filePath)}
+      });
+    }
     try {
       const fileData = await Deno.readTextFile(filePath);
+      files.set(filePath, fileData);
       return new Response(fileData, {
         headers: {"Content-type": contentType(filePath)}
       });
