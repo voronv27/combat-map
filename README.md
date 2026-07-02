@@ -13,6 +13,7 @@ Setup:
 EXAMPLE combat-map/.env FILE:  
 SUPABASE_URL="your-url"  
 SUPABASE_SERVICE_KEY="your-service-role-key"  
+* (Optional) If you would like to rebuild the tailwind css file when you commit your changes, go to the scripts directory and run "bash setup-git"
 
 Steps to run:
 * In the command line, navigate to the combat-map/server directory  

@@ -1,2 +1,4 @@
 .env
 /server/kv-data/*
+/node_modules/*
+package-lock.json

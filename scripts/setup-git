@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# run this script to setup git hooks for tailwind generation
+HOOK_DIR="$(pwd)/../.git/hooks"
+HOOK_PATH="$HOOK_DIR/pre-commit"
+SCRIPT_PATH="$(pwd)/pre-commit"
+
+mkdir -p "$HOOK_DIR"
+
+cp "$SCRIPT_PATH" "$HOOK_PATH"
+chmod +x "$SCRIPT_PATH"
+
+npm install -D @tailwindcss/cli

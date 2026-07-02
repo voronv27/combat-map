@@ -84,6 +84,11 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@1"
-    ]
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@tailwindcss/cli@^4.3.2"
+      ]
+    }
   }
 }
