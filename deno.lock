@@ -87,7 +87,9 @@
     ],
     "packageJson": {
       "dependencies": [
-        "npm:@tailwindcss/cli@^4.3.2"
+        "npm:@tailwindcss/cli@^4.3.2",
+        "npm:@tailwindcss/forms@~0.5.11",
+        "npm:tailwindcss@^3.4.19"
       ]
     }
   }

@@ -1,4 +1,166 @@
-/* used to generate tailwind.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* This file is used to generate tailwind.css. We apply common
+   shared classes into larger classes to avoid HTML bloat */
+@layer components {
+  /* CONTAINERS */
+  .site-body {
+    @apply flex flex-col min-h-screen bg-light text-dark text-[16px];
+  }
+  .landing {
+    @apply grid justify-center space-x-2 space-y-2 mt-8
+  }
+  .popup-panel {
+    @apply px-2 py-2;
+  }
+  .notes-ctr {
+    @apply w-full h-auto max-h-[calc(85vh-90px)] md:h-[calc(85vh-90px)] border-2 border-accent rounded-xl bg-light-accent text-dark overflow-hidden flex flex-col;
+  }
+  .buttons-ctr {
+    @apply flex flex-col md:flex-row w-full pt-2 gap-2 md:gap-4 leading-[1.2] text-[12px] text-center justify-self-center;
+  }
+
+  /* HEADER */
+  .site-header {
+    @apply sticky top-0 bg-light-accent text-[24px] z-20;
+  }
+  .header-inner {
+    @apply items-center h-[90px] flex justify-center md:justify-normal;
+  }
+  .logo-img {
+    @apply max-h-[80px] px-8;
+  }
+  .site-title {
+    @apply hidden md:flex pr-8 text-accent;
+  }
+  /* Desktop menu */
+  .desktop-menu {
+    @apply hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[500px];
+  }
+  .nav-link {
+    @apply grid overflow-hidden w-full justify-center;
+  }
+  .nav-selector-img {
+    @apply h-[90px] col-start-1 row-start-1;
+  }
+  .nav-label {
+    @apply col-start-1 row-start-1 justify-self-center;
+  }
+  /* Mobile menu */
+  .mobile-menu-btn {
+    @apply lg:hidden text-light text-3xl absolute right-2 top-4;
+  }
+  .mobile-dropdown {
+    @apply lg:hidden absolute top-[90px] left-0 w-full;
+  }
+  .mobile-nav {
+    @apply flex flex-col bg-light-accent text-light py-4 px-8 gap-4 border-y-2 border-light;
+  }
+  .mobile-nav-link {
+    @apply bg-dark rounded-md px-4;
+  }
+
+  /* FOOTER */
+  .site-footer {
+    @apply mt-auto flex items-end p-4 justify-center;
+  }
+  .footer-logo {
+    @apply w-auto h-[52px] pr-4;
+  }
+  .footer-text {
+    @apply flex-1 bg-light-accent px-8 py-2 rounded-md;
+  }
+  
+  /* GENERAL UTILITY */
+  /* Links */
+  .link-accent {
+    @apply text-accent hover:text-accent-hover;
+  }
+  /* Buttons */
+  .btn-primary {
+    @apply bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition;
+  }
+  .btn-add {
+    @apply px-8 bg-light-accent text-accent border-2 border-accent rounded-lg hover:bg-light-accent-hover transition text-[26px] items-center mt-2;
+  }
+  .btn-close {
+    @apply px-2 leading-none bg-accent text-light hover:bg-accent-hover text-[20px];
+  }
+  .btn-notes {
+    @apply h-[25px] group-focus-within:bg-accent-light;
+  }
+  .tab-button {
+    @apply w-1/3 overflow-hidden text-ellipsis py-2 px-4;
+  }
+  .buttons-ctr .btn-primary {
+    @apply md:w-[110px] px-4 py-2;
+  }
+  /* Inputs & form fields */
+  .input-field {
+    @apply focus:ring-light/60 focus:ring-2 rounded-lg border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none;
+  }
+  .checkbox-field {
+    @apply rounded-sm border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover;
+  }
+  /* Rows, cells & entries */
+  .form-row {
+    @apply flex flex-row flex-wrap gap-2 text-[20px];
+  }
+  .entry-row {
+    @apply grid w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto;
+  }
+  .entry-cell {
+    @apply flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text;
+  }
+  .entry-text {
+    @apply w-full text-center;
+  }
+
+  /* OTHER CLASSES */
+  .fang {
+    @apply absolute right-5 top-0 h-[20px];
+  }
+  .small-span {
+    @apply text-[14px] top-0 absolute left-0 pl-[40px] pt-[6px] pointer-events-none opacity-75;
+  }
+  .notes-textarea {
+    @apply col-span-2 col-start-1 row-start-1 placeholder-dark placeholder-opacity-70 w-full max-h-full focus:outline-none focus:border-accent-light px-3 py-2 rounded-xl bg-light-accent border-2 border-accent;
+  }
+
+  /* SPECIFIC ELEMENTS */
+  /* Some elements with non-shared styling have so many tailwind
+  classes applied it is worth it to create an entry here to avoid
+  clogging the HTML, even if the styling won't be reused */
+  #roomId {
+    @apply w-60 md:w-72 uppercase px-3 py-2 bg-light-accent placeholder-dark-fade;
+  }
+  .popup-window {
+    @apply w-full h-full fixed inset-0 flex items-center justify-center z-50 bg-black/50;
+  }
+  #popup-window-content {
+    @apply m-4 w-3/4 min-h-[50vh] max-h-[90vh] max-w-[750px] bg-light-accent text-dark rounded-xl overflow-hidden border-[3px] border-accent flex flex-col;
+  }
+  #popup-title-bar {
+    @apply bg-dark text-light w-full h-12 items-center justify-center grid grid-cols-1 grid-rows-1 border-b-[3px] border-accent;
+  }
+  #popup-title {
+    @apply col-start-1 row-start-1 text-center text-[24px];
+  }
+  #previewCtr {
+    @apply w-full h-auto overflow-hidden border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative;
+  }
+  #previewText {
+    @apply pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl;
+  }
+  #mapCtr {
+    @apply max-w-full max-h-full w-full md:max-h-[calc(85vh-90px)] flex-1 overflow-auto touch-none border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative;
+  }
+  #ctrlMsgCtr {
+    @apply pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300;
+  }
+  .map-controls {
+    @apply col-start-1 row-start-1 w-12 h-auto absolute right-2 top-2 bottom-2 bg-white/70 rounded-lg border-2 border-accent flex flex-col items-center justify-evenly transition-opacity duration-300 opacity-0;
+  }
+}

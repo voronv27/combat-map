@@ -18,67 +18,47 @@
             font-family: 'Quicksand', sans-serif;
         }
     </style>
-
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                    'accent': '#92229D',
-                    'accent-hover': '#67196F',
-                    'accent-light': '#C636D3',
-                    'light': '#F8F3F2',
-                    'light-accent': '#E5D0CC',
-                    'light-accent-hover': '#DCC1BC',
-                    'dark': '#003049',
-                    'dark-fade': "#004266"
-                    }
-                }
-            }
-        };
-    </script>
-
+   
     <!-- local scripts -->
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tailwind.css">
     <script src="js/layout.js" defer></script>
     <script src="js/map.js" defer></script>
     <script type="module" src="js/client.js"></script>
 </head>
 
-<body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
+<body class="site-body">
     
 <!-- header -->
-<header id="header" class="sticky top-0 bg-light-accent text-[24px] z-20">
-    <div class="items-center h-[90px] flex justify-center md:justify-normal">
+<header id="header" class="site-header">
+    <div class="header-inner">
         <a href="index.html">
-            <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
+            <img src="images/mapmimic.png" alt="Map Mimic logo" class="logo-img">
         </a>
-        <div class="hidden md:flex pr-8 text-accent">
+        <div class="site-title">
             Map Mimic - D&D Combat Map Site
         </div>
         
         <!--desktop menu (for large screen size)-->
-        <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[500px]">
-            <a class="grid mm-hover overflow-hidden w-full justify-center" href="about.html">
-                <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1">
-                <div class="col-start-1 row-start-1 justify-self-center self-center">About</div>
+        <nav class="desktop-menu">
+            <a class="nav-link mm-hover" href="about.html">
+                <img src="images/mm_selector.png" class="mm-selector-hidden nav-selector-img">
+                <div class="nav-label self-center">About</div>
             </a>
-            <a class="grid mm-hover overflow-hidden w-full justify-center" href="tutorial.html">
-                <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] w-[130px] col-start-1 row-start-1">
-                <div class="col-start-1 row-start-1 justify-self-center self-center">Tutorial</div>
+            <a class="nav-link mm-hover" href="tutorial.html">
+                <img src="images/mm_selector.png" class="mm-selector-hidden nav-selector-img w-[130px]">
+                <div class="nav-label self-center">Tutorial</div>
             </a>
-            <a class="grid mm-selected overflow-hidden w-full justify-center" href="index.html">
-                <img src="images/mm_selector.png" class="mm-selector h-[90px] col-start-1 row-start-1 z-30">
-                <div class="col-start-1 row-start-1 justify-self-center mt-12 mm-text">Home</div>
+            <a class="nav-link mm-selected" href="index.html">
+                <img src="images/mm_selector.png" class="mm-selector nav-selector-img z-30">
+                <div class="nav-label mt-12 mm-text">Home</div>
             </a>
         </nav>
 
         <!--mobile menu (for small and medium screen size)-->
         <!--button to open menu-->
-        <button class="lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
+        <button class="mobile-menu-btn z-30" id="header-dropdown-open" onclick="openHeaderDropdown();">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -90,7 +70,7 @@
             </svg>
         </button>
         <!--hidden button to close menu-->
-        <button class="hidden lg:hidden text-light text-3xl z-30 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
+        <button class="hidden mobile-menu-btn z-30" id="header-dropdown-close" onclick="closeHeaderDropdown();">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -102,11 +82,11 @@
             </svg>
         </button>
         <!--dropdown menu-->
-        <div id="header-dropdown" class="hidden lg:hidden absolute top-[90px] left-0 w-full">
-            <nav class="flex flex-col bg-light-accent text-light py-4 px-8 gap-4 border-y-2 border-light">
-                <a href="about.html" class="bg-dark rounded-md px-4">About</a>
-                <a href="tutorial.html" class="bg-dark rounded-md px-4">Tutorial</a>
-                <a href="index.html" class="bg-dark rounded-md px-4">Home</a>
+        <div id="header-dropdown" class="mobile-dropdown hidden">
+            <nav class="mobile-nav">
+                <a href="about.html" class="mobile-nav-link">About</a>
+                <a href="tutorial.html" class="mobile-nav-link">Tutorial</a>
+                <a href="index.html" class="mobile-nav-link">Home</a>
             </nav>
         </div>
     </div>
@@ -116,26 +96,26 @@
 <main class="px-4 gap-2 flex-1">
 
 <!-- landing page -->
-<div id="landing" class="grid justify-center space-2 mt-8">
+<div id="landing" class="landing">
     <div class="text-[20px] justify-self-center">Enter room code:</div>
     <div class="relative justify-self-center overflow-hidden">
         <input id="roomId"
             type="text"
-            class="focus:ring-light/60 focus:ring-2 w-60 md:w-72 uppercase px-3 py-2 rounded-lg border-2 border-accent bg-light-accent hover:border-accent-hover focus:border-accent-hover outline-none  placeholder-dark-fade"
+            class="input-field"
             placeholder="ROOM CODE">
-        <img id="fang" class="absolute right-5 top-0 h-[20px]" src="images/fang.png">
-        <img id="fang-darker" class="absolute right-5 top-0 h-[20px] z-10" src="images/fang_darker.png">
+        <img id="fang" class="fang" src="images/fang.png">
+        <img id="fang-darker" class="fang z-10" src="images/fang_darker.png">
     </div>
     
     <div class="mt-2 flex items-stretch gap-4 md:gap-8">
         <button id="joinRoom"
             onclick="eatCode().then(joinRoom);"
-            class="px-4 md:px-8 py-1 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+            class="btn-primary px-4 md:px-8 py-1">
             JOIN ROOM
         </button>
         <div class="self-center text-[20px]"> OR </div>
         <button id="createRoom"
-            class="px-4 md:px-8 py-1 bg-accent text-light leading-[1.2] border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+            class="btn-primary px-4 md:px-8 py-1 leading-[1.2]">
             CREATE NEW<br> ROOM
         </button>
     </div>
@@ -145,80 +125,80 @@
 <div id="roomContent" class="hidden pt-2">
 
 <!-- popup window container -->
-<div id="popup-window" class="hidden w-full h-full fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+<div id="popup-window" class="hidden popup-window">
     <!-- popup window content -->
-    <div class="m-4 w-3/4 min-h-[50vh] max-h-[90vh] max-w-[750px] bg-light-accent text-dark rounded-xl overflow-hidden border-[3px] border-accent flex flex-col">
+    <div id="popup-window-content">
         <!-- title bar -->
-        <div class="bg-dark text-light w-full h-12 items-center justify-center grid grid-cols-1 grid-rows-1 border-b-[3px] border-accent">
-            <div id="popup-title" class="col-start-1 row-start-1 text-center text-[24px]">Popup</div>
+        <div id="popup-title-bar">
+            <div id="popup-title">Popup</div>
             <button
-                class="ml-auto col-start-1 row-start-1 h-full w-10 px-2 leading-none bg-accent hover:bg-accent-hover text-[20px]"
+                class="btn-close ml-auto col-start-1 row-start-1 h-full w-10"
                 onclick="closePopup();">
                 x
             </button>
         </div>
 
         <!-- edit-grid content -->
-        <div id="edit-grid" class="hidden px-2 py-2 space-y-2 overflow-y-auto" data-title="Grid Editor">
+        <div id="edit-grid" class="popup-panel hidden space-y-2 overflow-y-auto" data-title="Grid Editor">
         <!-- left div = options, right div = preview, turns into one column on small screens -->
         <div class="grid md:grid-cols-2 space-y-2">
             <!-- options -->
             <div>
             <!-- set grid dimensions -->
-            <div class="flex flex-row flex-wrap gap-2 items-center text-[20px]">
+            <div class="form-row items-center">
                 <div>Dimensions: </div>
                 <input type="number" min="0" id="grid-x"
-                 class="focus:ring-light/60 focus:ring-2 rounded-lg w-[40px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-center text-[16px] p-0" value=12>
+                 class="input-field w-[40px] text-center text-[16px] p-0" value=12>
                 <div> x </div>
                 <input type="number" min="0" id="grid-y"
-                 class="focus:ring-light/60 focus:ring-2 rounded-lg w-[40px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-center text-[16px] p-0" value=9>
+                 class="input-field w-[40px] text-center text-[16px] p-0" value=9>
                  <div class="flex gap-2 mt-auto">
                      <div class="text-[14px]">preserve aspect ratio:</div>
                      <input type="checkbox" id="grid-preserve-aspect"
-                     class="rounded-sm mt-auto mb-[3px] w-[14px] h-[14px] border border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover">
+                     class="checkbox-field mt-auto mb-[3px] w-[14px] h-[14px]">
                  </div>
             </div>
             <!-- set grid line width -->
-            <div class="flex flex-row flex-wrap gap-2 items-end text-[20px]">
+            <div class="form-row items-end">
                 <div>Line width:</div>
                 <div class="relative">
                     <input type="number" min="1" id="grid-line-width"
-                     class="focus:ring-light/60 focus:ring-2 rounded-lg w-[60px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-[16px] p-0 pl-2" value=1>
-                     <span class="text-[14px] top-0 absolute left-0 pl-[40px] pt-[6px] pointer-events-none opacity-75">px</span>
+                     class="input-field w-[60px] text-[16px] p-0 pl-2" value=1>
+                     <span class="small-span">px</span>
                 </div>
             </div>
             <!-- set grid line color -->
-            <div class="flex flex-row flex-wrap gap-2 items-end text-[20px]">
+            <div class="form-row items-end">
                 <div>Line color:</div>
                 <input type="color" id="grid-line-color"
-                 class="focus:ring-light/60 focus:ring-2  rounded-lg w-[40px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-center m-0" value=#000000>
+                 class="input-field w-[40px] text-center m-0" value=#000000>
             </div>
             <!-- set grid line opacity -->
-            <div class="flex flex-row flex-wrap gap-2 text-[20px]">
+            <div class="form-row">
                <div>Line opacity:</div>
                <div class="relative">
                    <input type="number" min="0" max="100" id="grid-opacity"
-                    class="focus:ring-light/60 focus:ring-2 rounded-lg w-[60px] border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none text-[16px] p-0 pl-2" value=100>
-                   <span class="text-[14px] top-0 absolute left-0 pl-[40px] pt-[6px] pointer-events-none opacity-75">%</span>
+                    class="input-field w-[60px] text-[16px] p-0 pl-2" value=100>
+                   <span class="small-span">%</span>
                </div>
             </div>
             <!-- toggle gridline visibility -->
-            <div class="flex flex-row flex-wrap gap-2 items-center text-[20px]">
+            <div class="form-row items-center">
                 <div>Show grid:</div>
                 <input type="checkbox" id="show-grid"
-                     class="rounded-sm w-[20px] h-[20px] border border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover" checked>
+                     class="checkbox-field w-[20px] h-[20px]" checked>
             </div>
         </div>
 
         <!-- preview -->
         <div>
-            <div id="previewCtr" class="w-full h-auto overflow-hidden border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative">
+            <div id="previewCtr">
                 <img id="previewBg"
                 src="images/sample_map.png" 
                 draggable="false"
                 class="col-start-1 row-start-1 w-full h-full object-contain">
 
-                <div id="previewText" class="pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl">
+                <div id="previewText">
                     PREVIEW
                 </div>
 
@@ -234,23 +214,23 @@
 
         <!-- buttons to apply/discard changes -->
         <div class="flex flex-row flex-wrap items-center justify-center gap-2">
-            <button class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="revertGridState();">
+            <button class="btn-primary px-4 py-2" onclick="revertGridState();">
                 Revert Changes</button>
-            <button class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="applyGridChanges();">
+            <button class="btn-primary px-4 py-2" onclick="applyGridChanges();">
                 Apply Changes</button>
-            <button class="px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="applyGridChanges(); closePopup();">
+            <button class="btn-primary px-4 py-2" onclick="applyGridChanges(); closePopup();">
                 Apply & Exit</button>
         </div>
         </div>
 
         <!-- add-character content -->
-        <div id="add-character" class="hidden px-2 py-2" data-title="New Character">
+        <div id="add-character" class="popup-panel hidden" data-title="New Character">
             <p>TODO: add-character popup</p>
         </div>
-        <div id="add-object" class="hidden px-2 py-2" data-title="New Object">
+        <div id="add-object" class="popup-panel hidden" data-title="New Object">
             <p>TODO: add-object popup</p>
         </div>
-        <div id="explain-controls" class="hidden px-2 py-2" data-title="Explain Controls">
+        <div id="explain-controls" class="popup-panel hidden" data-title="Explain Controls">
             <p>TODO: explain-controls popup</p>
         </div>
     </div>
@@ -267,14 +247,14 @@
     <div id="mapControlsWrapper" class="grid grid-cols-1 grid-rows-1 relative">
 
         <!--map-->
-        <div id="mapCtr" class="max-w-full max-h-full w-full md:max-h-[calc(85vh-90px)] flex-1 overflow-auto hide-scrollbar touch-none border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative">
+        <div id="mapCtr" class="hide-scrollbar">
             <img id="mapBg"
             src="images/sample_map.png" 
             draggable="false"
             class="col-start-1 row-start-1 w-full h-full object-contain md:max-w-none">
 
             <!--overlay to explain controls-->
-            <div id="ctrlMsgCtr" class="pointer-events-none w-full h-full col-start-1 row-start-1 items-center justify-center flex bg-black/40 opacity-0 transition-opacity duration-300 z-10">
+            <div id="ctrlMsgCtr" class="z-10">
                 <div class="rounded-lg w-2/3 text-light bg-black/70 px-4 py-2">
                     Scroll to pan<br>
                     Shift + Scroll or pinch to zoom<br>
@@ -290,7 +270,7 @@
         </div>
 
         <!-- controls overlay -->
-        <div id="mapControls" class="col-start-1 row-start-1 w-12 h-auto absolute right-2 top-2 bottom-2 bg-white/70 rounded-lg border-2 border-accent flex flex-col z-5 items-center justify-evenly transition-opacity duration-300 opacity-0">
+        <div id="mapControls" class="map-controls">
             <button class="w-2/3" onclick="setPanMode(false);">
                 <img class="w-[90%] justify-self-center" src="images/icons8-cursor.svg">
             </button>
@@ -311,19 +291,19 @@
 
     <!--notes-->
     <div class="w-full md:max-w-[22rem] lg:max-w-md">
-        <div class="w-full h-auto max-h-[calc(85vh-90px)] md:h-[calc(85vh-90px)] border-2 border-accent rounded-xl bg-light-accent text-dark overflow-hidden flex flex-col">
+        <div class="notes-ctr">
 
             <!--notes tabs-->
             <div class="tab-selector flex flex-row flex-wrap justify-center">
-                <button class="w-1/3 overflow-hidden text-ellipsis bg-dark text-light-accent py-2 px-4"
+                <button class="tab-button bg-dark text-light-accent"
                 id="initiative-tab"
                 onclick="swapTab('initiative');">Initiative</button>
 
-                <button class="w-1/3 overflow-hidden text-ellipsis py-2 px-4"
+                <button class="tab-button"
                 id="conditions-tab"
                 onclick="swapTab('conditions');">Conditions</button>
 
-                <button class="w-1/3 overflow-hidden text-ellipsis py-2 px-4"
+                <button class="tab-button"
                 id="notes-tab"
                 onclick="swapTab('notes');">Notes</button>
             </div>
@@ -331,22 +311,22 @@
             <!--notes tab content-->
             <div class="w-full flex-1 min-h-0 px-4 py-2 bg-dark overflow-y-auto">
                 <div id="initiative" class="mt-2 space-y-2">
-                    <div class="group grid grid-cols-[2fr_auto_1fr_auto] w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto">
-                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                    <div class="entry-row group grid-cols-[2fr_auto_1fr_auto]">
+                        <div class="entry-cell wrapper">
                             <div
                                 id="initiativeName"
-                                class="w-full text-center name"
+                                class="entry-text name"
                                 data-placeholder="Character"></div>
                         </div>
                         <div class="w-[2px] bg-accent group-focus-within:bg-accent-light"></div>
-                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                        <div class="entry-cell wrapper">
                             <div
                                 id="initiativeBox"
-                                class="w-full text-center box"
+                                class="entry-text box"
                                 data-placeholder="Initiative"></div>
                         </div>
                         <button
-                            class="h-[25px] px-2 leading-none bg-accent text-light hover:bg-accent-hover hover:group-focus-within:bg-accent group-focus-within:bg-accent-light text-[20px]"
+                            class="btn-close btn-notes hover:group-focus-within:bg-accent"
                             onclick="removeTextbox(this.parentNode, 'initiative');">
                             x
                         </button>
@@ -355,7 +335,7 @@
                     <!--button to add more initiatives-->
                     <div class="flex justify-center">
                         <button 
-                            class="px-8 bg-light-accent text-accent border-2 border-accent rounded-lg hover:bg-light-accent-hover transition text-[26px] items-center mt-2"
+                            class="btn-add"
                             onclick="addNewTextbox('initiative');">
                             +
                         </button>
@@ -363,22 +343,22 @@
                 </div>
 
                 <div id="conditions" class="hidden w-full flex-1 min-h-0 mt-2 space-y-2 overflow-y-auto">
-                    <div class="group grid grid-cols-[1fr_auto_1fr_auto] w-full max-h-full focus-within:border-accent-light rounded-xl bg-light-accent border-2 border-accent overflow-y-auto">
-                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                    <div class="entry-row group grid-cols-[1fr_auto_1fr_auto]">
+                        <div class="entry-cell wrapper">
                             <div
                                 id="conditionsName"
-                                class="w-full text-center name"
+                                class="entry-text name"
                                 data-placeholder="Character"></div>
                         </div>
                         <div class="w-[2px] bg-accent group-focus-within:bg-accent-light"></div>
-                        <div class="flex items-center justify-center px-3 py-2 focus:outline-none text-center overflow-x-hidden overflow-y-auto cursor-text wrapper">
+                        <div class="entry-cell wrapper">
                             <div
                                 id="conditionsBox"
-                                class="w-full text-center box"
+                                class="entry-text box"
                                 data-placeholder="Status (ex: sleep)"></div>
                         </div>
                         <button
-                            class="h-[25px] px-2 leading-none bg-accent text-light hover:bg-accent-hover group-focus-within:bg-accent-light text-[20px]"
+                            class="btn-close btn-notes"
                             onclick="removeTextbox(this.parentNode, 'conditions');">
                             x
                         </button>
@@ -387,7 +367,7 @@
                     <!--button to add more conditions-->
                     <div class="flex justify-center">
                         <button 
-                            class="px-8 bg-light-accent text-accent border-2 border-accent rounded-lg hover:bg-light-accent-hover transition text-[26px] items-center mt-2"
+                            class="btn-add"
                             onclick="addNewTextbox('conditions');">
                             +
                         </button>
@@ -397,10 +377,10 @@
                 <div id="notes" class="hidden w-full flex-1 min-h-0 mt-2 space-y-2 overflow-y-auto">
                     <div class="group grid grid-cols-[1fr_auto] grid-rows-1 relative rounded-xl overflow-x-hidden">
                         <textarea
-                            class="col-span-2 col-start-1 row-start-1 placeholder-dark placeholder-opacity-70 w-full max-h-full focus:outline-none focus:border-accent-light px-3 py-2 rounded-xl bg-light-accent border-2 border-accent"
+                            class="notes-textarea"
                             placeholder="Enter private notes here"></textarea>
                         <button
-                            class="col-start-2 row-start-1 justify-self-right h-[25px] px-2 leading-none bg-accent text-light hover:bg-accent-hover group-focus-within:bg-accent-light text-[20px]"
+                            class="btn-close btn-notes col-start-2 row-start-1 justify-self-right"
                             onclick="removeNote(this.parentNode);">
                             x
                         </button>
@@ -409,7 +389,7 @@
                     <!--button to add more notes-->
                     <div class="flex justify-center">
                         <button 
-                            class="px-8 bg-light-accent text-accent border-2 border-accent rounded-lg hover:bg-light-accent-hover transition text-[26px] items-center mt-2"
+                            class="btn-add"
                             onclick="addNewNote();">
                             +
                         </button>
@@ -421,31 +401,31 @@
 </div>
 
 <!-- buttons -->
-<div class="flex flex-col md:flex-row w-full pt-2 gap-2 md:gap-4 leading-[1.2] text-[12px] text-center justify-self-center">
+<div class="buttons-ctr">
     <!-- Upload bg image for combat map -->
     <label for="fileInput"
-        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition">
+        class="btn-primary">
         CHOOSE<br>NEW MAP
     </label>
     <input type="file" id="fileInput" accept="image/*" class="hidden">
     <button
-        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('edit-grid');">
+        class="btn-primary" onclick="openPopup('edit-grid');">
         EDIT<br>GRID
     </button>
     <button
-        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('add-character');">
+        class="btn-primary" onclick="openPopup('add-character');">
         ADD<br>CHARACTER
     </button>
     <button
-        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('add-object');">
+        class="btn-primary" onclick="openPopup('add-object');">
         ADD<br>OBJECT
     </button>
     <button
-        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="openPopup('explain-controls');">
+        class="btn-primary" onclick="openPopup('explain-controls');">
         EXPLAIN<br>CONTROLS
     </button>
     <button
-        class="md:w-[110px] px-4 py-2 bg-accent text-light border-2 border-dark rounded-lg hover:bg-accent-hover transition" onclick="enterFullscreen();">
+        class="btn-primary" onclick="enterFullscreen();">
         FULLSCREEN<br>MODE
     </button>
 </div>
@@ -455,13 +435,13 @@
 
 <!-- footer -->
 <!--todo: on safari, footer requires scroll to see fully, fix this-->
-<footer class="mt-auto flex items-end p-4 justify-center">
-    <img class="w-auto h-[52px] pr-4" src="images/mm_footer.png">
+<footer class="site-footer">
+    <img class="footer-logo" src="images/mm_footer.png">
     <div class="triangle"></div>
-    <div class="flex-1 bg-light-accent px-8 py-2 rounded-md">
+    <div class="footer-text">
         Map Mimic is open-source. Check out our
         <a href="https://github.com/voronv27/combat-map"
-            class="text-accent underline hover:text-accent-hover">
+            class="link-accent underline">
             Github Repo</a>, it (probably) doesn't bite!
     </div>
 </footer>

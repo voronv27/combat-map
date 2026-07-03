@@ -13,7 +13,7 @@ import * as Y from "https://esm.sh/yjs";
 
 // TODO: TROUBLESHOOT THESE ISSUES
 // improve load speed--try downloading some things locally instead of using the cdns
-// get off of tailwind cdn, consider bundling yjs+Tiptap+tailwind+etc
+// consider bundling yjs+Tiptap+tailwind+etc
 
 type AppEvent = { event: string; [key: string]: any };
 

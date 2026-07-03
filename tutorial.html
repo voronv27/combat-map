@@ -19,61 +19,43 @@
         }
     </style>
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                    'accent': '#92229D',
-                    'accent-hover': '#67196F',
-                    'light': '#F8F3F2',
-                    'light-accent': '#E5D0CC',
-                    'dark': '#003049',
-                    'dark-fade': "#004266"
-                    }
-                }
-            }
-        }
-    </script>
-
     <!-- local scripts -->
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/tailwind.css">
     <script src="js/layout.js" defer></script>
 </head>
 
-<body class="flex flex-col min-h-screen bg-light text-dark text-[16px]">
+<body class="site-body">
     <!-- header -->
-    <header id="header" class="sticky top-0 bg-light-accent text-[24px] mb-4 z-20">
-        <div class="items-center h-[90px] flex justify-center md:justify-normal">
+    <header id="header" class="site-header mb-4">
+        <div class="header-inner">
             <a href="index.html">
-                <img src="images/mapmimic.png" alt="Map Mimic logo" class="max-h-[80px] px-8">
+                <img src="images/mapmimic.png" alt="Map Mimic logo" class="logo-img">
             </a>
-            <div class="hidden md:flex pr-8 text-accent">
+            <div class="site-title">
                 Map Mimic - D&D Combat Map Site
             </div>
             
             <!--desktop menu (for large screen size)-->
-            <nav class="hidden lg:flex items-center h-[90px] bg-dark text-light-accent flex-1 justify-evenly ml-auto max-w-[500px]">
-                <a class="grid mm-hover overflow-hidden w-full justify-center" href="about.html">
-                    <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1">
-                    <div class="col-start-1 row-start-1 justify-self-center self-center">About</div>
+            <nav class="desktop-menu">
+                <a class="nav-link mm-hover" href="about.html">
+                    <img src="images/mm_selector.png" class="mm-selector-hidden nav-selector-img">
+                    <div class="nav-label self-center">About</div>
                 </a>
-                <a class="grid mm-selected overflow-hidden w-full justify-center" href="tutorial.html">
-                    <img src="images/mm_selector.png" class="mm-selector h-[90px] w-[130px] col-start-1 row-start-1">
-                    <div class="col-start-1 row-start-1 justify-self-center mt-12 mm-text">Tutorial</div>
+                <a class="nav-link mm-selected" href="tutorial.html">
+                    <img src="images/mm_selector.png" class="mm-selector nav-selector-img w-[130px]">
+                    <div class="nav-label mt-12 mm-text">Tutorial</div>
                 </a>
-                <a class="grid mm-hover overflow-hidden w-full justify-center" href="index.html">
-                    <img src="images/mm_selector.png" class="mm-selector-hidden h-[90px] col-start-1 row-start-1 z-30">
-                    <div class="col-start-1 row-start-1 justify-self-center self-center">Home</div>
+                <a class="nav-link mm-hover" href="index.html">
+                    <img src="images/mm_selector.png" class="mm-selector-hidden nav-selector-img z-30">
+                    <div class="nav-label self-center">Home</div>
                 </a>
             </nav>
 
 
             <!--mobile menu (for small and medium screen size)-->
             <!--button to open menu-->
-            <button class="lg:hidden text-light text-3xl z-20 absolute right-2 top-4" id="header-dropdown-open" onclick="openHeaderDropdown();">
+            <button class="mobile-menu-btn z-20" id="header-dropdown-open" onclick="openHeaderDropdown();">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -85,7 +67,7 @@
                 </svg>
             </button>
             <!--hidden button to close menu-->
-            <button class="hidden lg:hidden text-light text-3xl z-20 absolute right-2 top-4" id="header-dropdown-close" onclick="closeHeaderDropdown();">
+            <button class="hidden mobile-menu-btn z-20" id="header-dropdown-close" onclick="closeHeaderDropdown();">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="64px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="Editable-line" version="1.1" xml:space="preserve" fill="#F8F3F2" stroke="#F8F3F2">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -97,11 +79,11 @@
                 </svg>
             </button>
             <!--dropdown menu-->
-            <div id="header-dropdown" class="hidden lg:hidden absolute top-[90px] left-0 w-full">
-                <nav class="flex flex-col bg-light-accent text-light py-4 px-8 gap-4 border-y-2 border-light">
-                    <a href="about.html" class="bg-dark rounded-md px-4">About</a>
-                    <a href="tutorial.html" class="bg-dark rounded-md px-4">Tutorial</a>
-                    <a href="index.html" class="bg-dark rounded-md px-4">Home</a>
+            <div id="header-dropdown" class="mobile-dropdown hidden">
+                <nav class="mobile-nav">
+                    <a href="about.html" class="mobile-nav-link">About</a>
+                    <a href="tutorial.html" class="mobile-nav-link">Tutorial</a>
+                    <a href="index.html" class="mobile-nav-link">Home</a>
                 </nav>
             </div>
         </div>
@@ -113,13 +95,13 @@
     </div>
 
     <!-- footer -->
-    <footer class="mt-auto flex items-end p-4 justify-center">
-        <img class="w-auto h-[52px] pr-4" src="images/mm_footer.png">
+    <footer class="site-footer">
+        <img class="footer-logo" src="images/mm_footer.png">
         <div class="triangle"></div>
-        <div class="flex-1 bg-light-accent px-8 py-2 rounded-md">
+        <div class="footer-text">
             Map Mimic is open-source. Check out our
             <a href="https://github.com/voronv27/combat-map"
-                class="text-accent underline hover:text-accent-hover">
+                class="link-accent underline">
                 Github Repo</a>, it (probably) doesn't bite!
         </div>
     </footer>
