@@ -91,8 +91,11 @@
   .btn-notes {
     @apply h-[25px] group-focus-within:bg-accent-light;
   }
-  .tab-button {
+  .tab-btn {
     @apply w-1/3 overflow-hidden text-ellipsis py-2 px-4;
+  }
+  .popup-tab-btn {
+    @apply rounded-lg w-auto flex-1 bg-light;
   }
   .buttons-ctr .btn-primary {
     @apply md:w-[110px] px-4 py-2;
@@ -108,7 +111,7 @@
     @apply rounded-sm border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover;
   }
   .dropdown {
-    @apply py-0 w-auto text-[16px];
+    @apply py-0 w-auto text-[16px] pr-8 pl-2;
   }
   .dropdown option {
     @apply last:rounded-b-lg;
@@ -143,11 +146,14 @@
   .preview-text {
     @apply pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl;
   }
-  .preview-shape {
+  .preview-shape-ctr {
     @apply w-full h-full col-start-1 row-start-1 flex items-center justify-center;
   }
+  .preview-shape {
+    @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0 bg-white border-black border-2;
+  }
   .circle {
-    @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0 aspect-square rounded-full bg-white border-black border-2;
+    @apply aspect-square rounded-full;
   }
 
   /* SPECIFIC ELEMENTS */

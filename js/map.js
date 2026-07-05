@@ -306,29 +306,27 @@ mapCtr.addEventListener("pointercancel", (e) => {
     }
 });
 
-/* CODE FOR SWAPPING NOTES TABS */
-const tabs = [
-    document.getElementById("initiative-tab"),
-    document.getElementById("conditions-tab"),
-    document.getElementById("notes-tab")
-]
-const tabConts = [
-    document.getElementById("initiative"),
-    document.getElementById("conditions"),
-    document.getElementById("notes")
-]
-function swapTab(tab) {
+/* CODE FOR SWAPPING TABS */
+function swapTab(tab, tabContainer, darkBg=true) {
+    const tabCtr = document.getElementById(tabContainer);
+    const tabs = tabCtr.querySelectorAll(".tab-btn");
+    const tabConts = tabCtr.querySelectorAll(".tab");
     for (let t of tabConts) {
         t.classList.add("hidden");
     }
     for (let t of tabs) {
-        t.classList.remove("bg-dark", "text-light-accent");
+        t.classList.remove("bg-dark", "bg-accent", "text-light-accent");
     }
     const activeTabCont = document.getElementById(tab);
     activeTabCont.classList.remove("hidden");
 
     const activeTab = document.getElementById(`${tab}-tab`);
-    activeTab.classList.add("bg-dark", "text-light-accent");
+    activeTab.classList.add("text-light-accent");
+    if (darkBg) {
+        activeTab.classList.add("bg-dark");
+    } else {
+        activeTab.classList.add("bg-accent");
+    }
 }
 
 /* CODE TO ADD/REMOVE NOTES */
