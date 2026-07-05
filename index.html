@@ -143,7 +143,7 @@
         <!-- left div = options, right div = preview, turns into one column on small screens -->
         <div class="grid md:grid-cols-2 space-y-2">
             <!-- options -->
-            <div>
+            <div class="space-y-1">
             <!-- set grid dimensions -->
             <div class="form-row items-center">
                 <div>Dimensions: </div>
@@ -152,7 +152,7 @@
                 <div> x </div>
                 <input type="number" min="0" id="grid-y"
                  class="input-field w-[40px] text-center text-[16px] p-0" value=9>
-                 <div class="flex gap-2 mt-auto">
+                 <div class="flex gap-2 mt-auto pb-[2px]">
                      <div class="text-[14px]">preserve aspect ratio:</div>
                      <input type="checkbox" id="grid-preserve-aspect"
                      class="checkbox-field mt-auto mb-[3px] w-[14px] h-[14px]">
@@ -192,13 +192,13 @@
 
         <!-- preview -->
         <div>
-            <div id="previewCtr">
+            <div id="previewCtr" class="preview-ctr">
                 <img id="previewBg"
                 src="images/sample_map.png" 
                 draggable="false"
                 class="col-start-1 row-start-1 w-full h-full object-contain">
 
-                <div id="previewText">
+                <div id="previewText" class="preview-text">
                     PREVIEW
                 </div>
 
@@ -224,9 +224,120 @@
         </div>
 
         <!-- add-character content -->
-        <div id="add-character" class="popup-panel hidden" data-title="New Character">
-            <p>TODO: add-character popup</p>
+        <div id="add-character" class="popup-panel hidden space-y-2 overflow-y-auto" data-title="Create New Character">
+        Todo: add in a tab for swapping to fx up here...
+        (May be good to separate position into a separate tab from appearance as well)
+        <!-- left div = options, right div = preview, turns into one column on small screens -->
+        <div class="grid md:grid-cols-2 space-y-2">
+            <!-- options -->
+            <div class="space-y-1">
+            <!-- character name -->
+            <div class="form-row items-center">
+                <div>Name: </div>
+                <input type="text" id="create-char-name"
+                 class="input-field text-center text-[16px] p-0" placeholder="New Character">
+            </div>
+            <!-- set character shape -->
+            <div class="form-row items-end">
+                <div>Shape: </div>
+                <!-- todo: can't style dropdowns (why css), replace this with custom implementation -->
+                <select id="char-shape" class="input-field dropdown">
+                  <option value="circle">Circle</option>
+                  <option value="square">Square</option>
+                  <option value="square">Triangle</option>
+                  <option value="star">Star</option>
+                </select>
+            </div>
+            <!-- upload image for character -->
+            <div class="form-row items-center">
+                <div>Image: </div>
+                <button class="btn-icon bg-white flex px-2">
+                    <div id="create-char-image" class="text-[16px] text-accent">todo.png</div>
+                    <img src="/images/image-plus-svgrepo-com.svg" class="w-[20px] h-[20px]">
+                </button>
+            </div>
+            <!-- set character color -->
+            <div class="form-row items-end">
+                <div>Background Color:</div>
+                <input type="color" id="create-char-color"
+                 class="input-field w-[40px] text-center m-0" value=#000000>
+            </div>
+            <!-- set character border color -->
+            <div class="form-row items-end">
+                <div>Border Color:</div>
+                <input type="color" id="create-char-border-color"
+                 class="input-field w-[40px] text-center m-0" value=#000000>
+            </div>
+            <!-- set character border width -->
+            <div class="form-row items-end">
+                <div>Border Width:</div>
+                <input type="number" min="0" max="9" id="create-char-border-width" class="input-field w-[30px] text-[14px] p-0 pl-2" value=2>
+                <div class="text-[14px]">px</div>
+            </div>
+            <!-- set character size -->
+            <!-- todo: move to another tab 
+            <div class="form-row items-center">
+                <div>Size: </div>
+                <input type="number" min="0" id="create-char-x"
+                 class="input-field w-[40px] text-center text-[16px] p-0" value=1>
+                <div> x </div>
+                <input type="number" min="0" id="create-char-y"
+                 class="input-field w-[40px] text-center text-[16px] p-0" value=1> -->
+                <!-- todo: can't style dropdowns (why css), replace this with custom implementation -->
+                <!-- select id="size-measure" class="input-field dropdown">
+                  <option value="grid">grid</option>
+                  <option value="px">px</option>
+                </select>
+                <div class="flex gap-2 mt-auto pb-[2px]">
+                    <div class="text-[14px]">preserve aspect ratio:</div>
+                    <input type="checkbox" id="create-char-preserve-aspect"
+                     class="checkbox-field mt-auto mb-[3px] w-[14px] h-[14px]" checked>
+                </div>
+            </div> -->
+            <!-- set character position -->
+            <!-- todo: move to another tab -->
+            <!--div class="form-row items-center">
+                <div>Position: </div>
+                <input type="number" min="1" id="create-char-pos-x"
+                 class="input-field w-[40px] text-center text-[16px] p-0" value=1>
+                <div> x </div>
+                <input type="number" min="1" id="create-char-pos-y"
+                 class="input-field w-[40px] text-center text-[16px] p-0" value=1>
+                <div class="flex gap-2 mt-auto pb-[2px]">
+                    <div class="text-[14px]">snap to grid:</div>
+                    <input type="checkbox" id="create-char-snap-grid"
+                     class="checkbox-field mt-auto mb-[3px] w-[14px] h-[14px]" checked>
+                </div>
+            </div> -->
         </div>
+
+        <!-- preview -->
+        <div>
+            <div id="previewCtr-char" class="preview-ctr">
+                <img id="previewBg-char"
+                src="images/sample_map.png" 
+                draggable="false"
+                class="col-start-1 row-start-1 w-full h-full object-contain">
+
+                <div id="previewText-char" class="preview-text">
+                    PREVIEW
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+        <!-- buttons to apply/discard changes -->
+        <div class="flex flex-row flex-wrap items-center justify-center gap-2">
+            <button class="btn-primary px-4 py-2" onclick="console.log('todo');">
+                Revert Changes</button>
+            <button class="btn-primary px-4 py-2" onclick="console.log('todo');">
+                Apply Changes</button>
+            <button class="btn-primary px-4 py-2" onclick="console.log('todo'); closePopup();">
+                Apply & Exit</button>
+        </div>
+        </div>
+
         <div id="add-object" class="popup-panel hidden" data-title="New Object">
             <p>TODO: add-object popup</p>
         </div>

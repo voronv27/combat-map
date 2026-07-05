@@ -97,12 +97,21 @@
   .buttons-ctr .btn-primary {
     @apply md:w-[110px] px-4 py-2;
   }
+  .btn-icon {
+    @apply gap-2 items-center border-2 border-accent rounded-lg hover:border-accent-hover transition;
+  }
   /* Inputs & form fields */
   .input-field {
     @apply focus:ring-light/60 focus:ring-2 rounded-lg border-2 border-accent hover:border-accent-hover focus:border-accent-hover outline-none;
   }
   .checkbox-field {
     @apply rounded-sm border-2 border-accent bg-light ring-0 hover:border-accent-hover hover:bg-accent-light checked:bg-accent checked:hover:bg-accent-hover focus:ring-light/60 focus:ring-2 focus:ring-offset-0 focus:checked:bg-accent focus:checked:hover:bg-accent-hover;
+  }
+  .dropdown {
+    @apply py-0 w-auto text-[16px];
+  }
+  .dropdown option {
+    @apply last:rounded-b-lg;
   }
   /* Rows, cells & entries */
   .form-row {
@@ -128,6 +137,12 @@
   .notes-textarea {
     @apply col-span-2 col-start-1 row-start-1 placeholder-dark placeholder-opacity-70 w-full max-h-full focus:outline-none focus:border-accent-light px-3 py-2 rounded-xl bg-light-accent border-2 border-accent;
   }
+  .preview-ctr {
+    @apply w-full h-auto overflow-hidden border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative;
+  }
+  .preview-text {
+    @apply pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl;
+  }
 
   /* SPECIFIC ELEMENTS */
   /* Some elements with non-shared styling have so many tailwind
@@ -147,12 +162,6 @@
   }
   #popup-title {
     @apply col-start-1 row-start-1 text-center text-[24px];
-  }
-  #previewCtr {
-    @apply w-full h-auto overflow-hidden border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative;
-  }
-  #previewText {
-    @apply pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl;
   }
   #mapCtr {
     @apply max-w-full max-h-full w-full md:max-h-[calc(85vh-90px)] flex-1 overflow-auto touch-none border-2 border-accent rounded-xl grid grid-cols-1 grid-rows-1 relative;
