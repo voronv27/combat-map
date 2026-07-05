@@ -143,6 +143,12 @@
   .preview-text {
     @apply pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl;
   }
+  .preview-shape {
+    @apply w-full h-full col-start-1 row-start-1 flex items-center justify-center;
+  }
+  .circle {
+    @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0 aspect-square rounded-full bg-white border-black border-2;
+  }
 
   /* SPECIFIC ELEMENTS */
   /* Some elements with non-shared styling have so many tailwind

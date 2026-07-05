@@ -225,10 +225,18 @@
 
         <!-- add-character content -->
         <div id="add-character" class="popup-panel hidden space-y-2 overflow-y-auto" data-title="Create New Character">
-        Todo: add in a tab for swapping to fx up here...
-        (May be good to separate position into a separate tab from appearance as well)
+        <!-- tabs to select between character creator menus -->
+        <div class="tab-selector flex flex-row flex-wrap justify-center">
+            <button class="tab-button rounded-lg bg-accent text-light-accent" id="appearance-tab" onclick="console.log('todo');">Appearance</button>
+
+            <button class="tab-button rounded-lg" id="size-pos-tab" onclick="console.log('todo');">Size & Position</button>
+
+            <button class="tab-button rounded-lg" id="effects-tab" onclick="console.log('todo');">Effects</button>
+        </div>
+
+        <!-- APPEARANCE TAB -->
         <!-- left div = options, right div = preview, turns into one column on small screens -->
-        <div class="grid md:grid-cols-2 space-y-2">
+        <div id="create-char-appearance" class="grid md:grid-cols-2 space-y-2">
             <!-- options -->
             <div class="space-y-1">
             <!-- character name -->
@@ -248,6 +256,12 @@
                   <option value="star">Star</option>
                 </select>
             </div>
+            <!-- text -->
+            <div class="form-row items-center">
+                <div>Text: </div>
+                <input type="text" id="create-char-text"
+                 class="input-field text-center text-[16px] p-0" placeholder="Character Text">
+            </div>
             <!-- upload image for character -->
             <div class="form-row items-center">
                 <div>Image: </div>
@@ -260,7 +274,7 @@
             <div class="form-row items-end">
                 <div>Background Color:</div>
                 <input type="color" id="create-char-color"
-                 class="input-field w-[40px] text-center m-0" value=#000000>
+                 class="input-field w-[40px] text-center m-0" value=#FFFFFF>
             </div>
             <!-- set character border color -->
             <div class="form-row items-end">
@@ -313,13 +327,14 @@
 
         <!-- preview -->
         <div>
-            <div id="previewCtr-char" class="preview-ctr">
-                <img id="previewBg-char"
-                src="images/sample_map.png" 
-                draggable="false"
-                class="col-start-1 row-start-1 w-full h-full object-contain">
-
-                <div id="previewText-char" class="preview-text">
+            <div id="previewCtr-char" class="preview-ctr h-full bg-white">
+                <div id="previewChar" class="preview-shape">
+                    <div id="previewChar-circle" class="circle"></div>
+                    <div id="previewChar-square" class="square hidden"></div>
+                    <div id="previewChar-triangle" class="triangle hidden"></div>
+                    <div id="previewChar-star" class="star hidden"></div>
+                </div>
+                <div id="previewText-char" class="preview-text opacity-60">
                     PREVIEW
                 </div>
             </div>
