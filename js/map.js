@@ -572,6 +572,63 @@ function applyGridChanges() {
     broadcastGridlines();
 }
 
+/* CODE TO EDIT CHARACTER */
+// inject svgs for shapes
+// the things we do for rounded borders and star shapes...
+async function loadSVG(shape){
+    const response = await fetch(`/images/${shape}.svg`);
+    const svg = await response.text();
+    return svg;
+}
+async function loadSVGs(){
+    const shapes = ['circle', 'square', 'triangle', 'star'];
+    for (shape of shapes) {
+        const svg = await loadSVG(shape);
+        document.querySelectorAll(`.${shape}`).forEach(e => {
+            e.innerHTML = svg;
+        });
+    }
+}
+loadSVGs();
+
+/* character appearance options */
+const charName = document.getElementById("create-char-name");
+const charShape = document.getElementById("create-char-shape");
+const charText = document.getElementById("create-char-text");
+const charImage = document.getElementById("create-char-image");
+const charBgColor = document.getElementById("create-char-color");
+const charBorderColor = document.getElementById("create-char-border-color");
+const charBorderWidth = document.getElementById("create-char-border-width");
+const appearancePreview = document.getElementById("previewChar")
+
+// update character appearance based on changed value
+function updateCharacter(elem, charToUpdate=appearancePreview) {
+    switch (elem) {
+        case "shape":
+            charToUpdate.querySelectorAll(".preview-shape").forEach(s => {
+                s.classList.add("hidden");
+            });
+            var shape = charToUpdate.querySelector(`.${charShape.value}`);
+            shape.classList.remove("hidden");
+            break;
+        case "backgroundColor":
+            var shape = charToUpdate.querySelector(".preview-shape");
+            shape.style.setProperty("--shape-background", "purple");
+            break;
+        case "borderColor":
+            var shape = charToUpdate.querySelector(".preview-shape");
+            shape.style.setProperty("--shape-border-color", "purple");
+            break;
+        case "borderWidth":
+            var shape = charToUpdate.querySelector(".preview-shape");
+            shape.style.setProperty("--shape-border-width", "4px");
+            break;
+        default:
+            break;
+    }
+}
+charShape.onchange = () => {updateCharacter("shape");};
+
 /* CODE TO SHOW/HIDE MAP CONTROLS BAR */
 const mapWrapper = document.getElementById("mapControlsWrapper");
 const mapControls = document.getElementById("mapControls");

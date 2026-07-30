@@ -150,12 +150,18 @@
     @apply w-full h-full col-start-1 row-start-1 flex items-center justify-center;
   }
   .preview-shape {
-    @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0 bg-white border-black border-2;
-  }
-  .circle {
-    @apply aspect-square rounded-full;
-  }
+    @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0;
 
+    --shape-background: white;
+    --shape-border-color: black;
+    --shape-border-width: 2;
+
+    background-color: var(--shape-background);
+  }
+  .circle, .square, .triangle, .star {
+    @apply aspect-square;
+  }
+  
   /* SPECIFIC ELEMENTS */
   /* Some elements with non-shared styling have so many tailwind
   classes applied it is worth it to create an entry here to avoid

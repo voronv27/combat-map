@@ -249,10 +249,10 @@
                 <div class="form-row items-end">
                     <div>Shape: </div>
                     <!-- todo: can't style dropdowns (why css), replace this with custom implementation -->
-                    <select id="char-shape" class="input-field dropdown">
+                    <select id="create-char-shape" class="input-field dropdown">
                       <option value="circle">Circle</option>
                       <option value="square">Square</option>
-                      <option value="square">Triangle</option>
+                      <option value="triangle">Triangle</option>
                       <option value="star">Star</option>
                     </select>
                 </div>
@@ -304,7 +304,6 @@
                             <div id="previewChar-triangle" class="triangle preview-shape hidden"></div>
                             <div id="previewChar-star" class="star preview-shape hidden"></div>
                         </div>
-
                         <div id="previewText-char" class="preview-text opacity-60">
                             PREVIEW
                         </div>
@@ -634,7 +633,7 @@
 <!--todo: on safari, footer requires scroll to see fully, fix this-->
 <footer class="site-footer">
     <img class="footer-logo" src="images/mm_footer.png">
-    <div class="triangle"></div>
+    <div class="triangle-footer"></div>
     <div class="footer-text">
         Map Mimic is open-source. Check out our
         <a href="https://github.com/voronv27/combat-map"
