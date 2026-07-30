@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "build": "./scripts/pre-commit && deno run --allow-env --env-file=.env --unstable-kv --allow-net --allow-read --allow-write --watch server/main.ts",
     "dev": "deno run --allow-env --env-file=.env --unstable-kv --allow-net --allow-read --allow-write --watch server/main.ts"
   },
   "imports": {

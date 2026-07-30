@@ -95,7 +95,7 @@
     @apply w-1/3 overflow-hidden text-ellipsis py-2 px-4;
   }
   .popup-tab-btn {
-    @apply rounded-lg w-auto flex-1 bg-light;
+    @apply rounded-lg w-full md:w-1/3 flex-1 bg-light;
   }
   .buttons-ctr .btn-primary {
     @apply md:w-[110px] px-4 py-2;
