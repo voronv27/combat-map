@@ -151,15 +151,15 @@
   }
   .preview-shape {
     @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0;
-
     --shape-background: white;
     --shape-border-color: black;
     --shape-border-width: 2;
-
-    background-color: var(--shape-background);
   }
   .circle, .square, .triangle, .star {
     @apply aspect-square;
+  }
+  .shape-image {
+    @apply w-full h-full object-cover;
   }
   
   /* SPECIFIC ELEMENTS */

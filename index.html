@@ -265,14 +265,18 @@
                 <!-- upload image for character -->
                 <div class="form-row items-center">
                     <div>Image: </div>
-                    <button class="btn-icon bg-white flex px-2">
-                        <div id="create-char-image" class="text-[16px] text-accent">todo.png</div>
+                    <label for="charImgInput" class="btn-icon bg-white flex px-2">
+                        <div id="create-char-image" class="text-[16px] text-accent">Upload...</div>
                         <img src="/images/image-plus-svgrepo-com.svg" class="w-[20px] h-[20px]">
+                    </label>
+                    <input type="file" id="charImgInput" accept="image/*" class="hidden">
+                    <button class="btn-primary px-2 text-[16px]" onclick="clearCharImage();">
+                        Clear
                     </button>
                 </div>
                 <!-- set character color -->
                 <div class="form-row items-end">
-                    <div>Background Color:</div>
+                    <div>Fill Color:</div>
                     <input type="color" id="create-char-color"
                      class="input-field w-[40px] text-center m-0" value=#FFFFFF>
                 </div>
@@ -285,7 +289,7 @@
                 <!-- set character border width -->
                 <div class="form-row items-end">
                     <div>Border Width:</div>
-                    <input type="number" min="0" max="9" id="create-char-border-width" class="input-field w-[30px] text-[14px] p-0 pl-2" value=2>
+                    <input type="number" min="0" id="create-char-border-width" class="input-field w-[30px] text-[14px] p-0 pl-2" value=2>
                     <div class="text-[14px]">px</div>
                 </div>
                 </div>

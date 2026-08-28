@@ -612,22 +612,85 @@ function updateCharacter(elem, charToUpdate=appearancePreview) {
             shape.classList.remove("hidden");
             break;
         case "backgroundColor":
-            var shape = charToUpdate.querySelector(".preview-shape");
-            shape.style.setProperty("--shape-background", "purple");
+            var shapes = charToUpdate.querySelectorAll(".preview-shape");
+            var color = charBgColor.value;
+            shapes.forEach(shape => {
+                shape.style.setProperty("--shape-background", color);
+            });
             break;
         case "borderColor":
-            var shape = charToUpdate.querySelector(".preview-shape");
-            shape.style.setProperty("--shape-border-color", "purple");
+            var shapes = charToUpdate.querySelectorAll(".preview-shape");
+            var color = charBorderColor.value;
+            shapes.forEach(shape => {
+                shape.style.setProperty("--shape-border-color", color);
+            });
             break;
+        case "borderWidthChange":
+            var width = charBorderWidth.value;
+            if (!width || width < 0) {
+                charBorderWidth.value = 0;
+            }
         case "borderWidth":
-            var shape = charToUpdate.querySelector(".preview-shape");
-            shape.style.setProperty("--shape-border-width", "4px");
+            var shapes = charToUpdate.querySelectorAll(".preview-shape");
+            var width = charBorderWidth.value;
+            if (!width || width < 0) {
+                width = 0;
+            }
+            shapes.forEach(shape => {
+                shape.style.setProperty("--shape-border-width", `${width}px`);
+            });
             break;
         default:
             break;
     }
 }
 charShape.onchange = () => {updateCharacter("shape");};
+charBgColor.onchange = () => {updateCharacter("backgroundColor");};
+charBorderColor.onchange = () => {updateCharacter("borderColor");};
+charBorderWidth.oninput = () => {updateCharacter("borderWidth");};
+charBorderWidth.onchange = () => {updateCharacter("borderWidthChange");}
+
+// Handle uploads/clearing preview character image
+// We don't go through the websocket channels here because
+// each user can customize their own new character without
+// impacting other users in the room. As such, we upload the
+// new character data, including the image, to the server only
+// when we create the new character via "Apply"
+charImage.onclick = () => {
+    charImage.innerText = "Processing...";
+}
+const charImgFile = document.getElementById('charImgInput');
+charImgFile.addEventListener('change', async function() {
+    const file = this.files[0];
+    if (!file) {
+        console.error("Issue uploading character image");
+        charImage.innerText = "Upload...";
+        return;
+    }
+    var shapeFills = appearancePreview.querySelectorAll(".shape-fill");
+    var shapeImgs = appearancePreview.querySelectorAll(".shape-image");
+    charImage.innerText = file.name;
+    shapeFills.forEach(fill => {
+        fill.classList.add("fill-none");
+    });
+    var imgUrl = URL.createObjectURL(file);
+    shapeImgs.forEach(img => {
+        img.setAttribute("href", imgUrl);
+        img.classList.remove("hidden");
+    });
+});
+
+function clearCharImage() {
+    var shapeFills = appearancePreview.querySelectorAll(".shape-fill");
+    var shapeImgs = appearancePreview.querySelectorAll(".shape-image");
+    shapeFills.forEach(fill => {
+        fill.classList.remove("fill-none");
+    });
+    shapeImgs.forEach(img => {
+        img.classList.add("hidden");
+    });
+    charImage.innerText = "Upload...";
+}
 
 /* CODE TO SHOW/HIDE MAP CONTROLS BAR */
 const mapWrapper = document.getElementById("mapControlsWrapper");

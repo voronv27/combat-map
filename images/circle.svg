@@ -1,7 +1,15 @@
-<svg fill="var(--shape-background)"
-  stroke="var(--shape-border-color)"
-  stroke-width="var(--shape-border-width)" 
+<svg fill="none"
   viewBox="0 0 100 100"
   xmlns="http://www.w3.org/2000/svg">
-  <circle cx="50" cy="50" r="40"/>
+  <defs>
+    <circle id="circle-shape" class="shape-fill"
+      fill="var(--shape-background)" cx="50" cy="50" r="40"/>
+    <clipPath id="circle-clip">
+      <use href="#circle-shape" />
+    </clipPath>
+  </defs>
+  <image class="shape-image hidden" 
+    clip-path="url(#circle-clip)"/>
+  <use href="#circle-shape" fill="none"
+    stroke="var(--shape-border-color)" stroke-width="var(--shape-border-width)"/>
 </svg>

@@ -1,16 +1,24 @@
-<svg fill="var(--shape-background)"
-  stroke="var(--shape-border-color)"
-  stroke-width="var(--shape-border-width)"
-  stroke-linejoin="round"
+<svg fill="none"
   viewBox="0 0 100 100"
   xmlns="http://www.w3.org/2000/svg">
-  <path d="M 50 10
-    Q 53 10 55 14
-    L 88 80
-    Q 92 88 83 88
-    L 17 88
-    Q 8 88 12 80
-    L 45 14
-    Q 47 10 50 10
-    Z"/>
+  <defs>
+    <path id="triangle-shape"
+      class="shape-fill"
+      fill="var(--shape-background)" d="M 50 10
+      Q 53 10 55 14
+      L 88 80
+      Q 92 88 83 88
+      L 17 88
+      Q 8 88 12 80
+      L 45 14
+      Q 47 10 50 10
+      Z"/>
+    <clipPath id="triangle-clip">
+      <use href="#triangle-shape" />
+    </clipPath>
+  </defs>
+  <image class="shape-image hidden" 
+    clip-path="url(#triangle-clip)"/>
+  <use href="#triangle-shape" fill="none"
+    stroke="var(--shape-border-color)" stroke-width="var(--shape-border-width)" stroke-linejoin="round"/>
 </svg>
