@@ -655,7 +655,8 @@ charBorderWidth.onchange = () => {updateCharacter("borderWidthChange");}
 // each user can customize their own new character without
 // impacting other users in the room. As such, we upload the
 // new character data, including the image, to the server only
-// when we create the new character via "Apply"
+// when we create the new character via the
+// "Create Character & Exit" button
 charImage.onclick = () => {
     charImage.innerText = "Processing...";
 }
