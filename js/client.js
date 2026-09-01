@@ -445,8 +445,16 @@ async function startWebSocket(roomId) {
     });
 }
 
+const roomIdTextbox = document.getElementById("roomId");
+const joinBtn = document.getElementById("joinRoom");
+roomIdTextbox.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        joinBtn.click();
+    }
+});
 export function joinRoom() {
-    const roomId = document.getElementById("roomId").value.trim().toUpperCase();
+    const roomId = roomIdTextbox.value.trim().toUpperCase();
     if (!roomId) {
         alert("Please enter a room id");
         return;

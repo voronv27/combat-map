@@ -27,6 +27,7 @@ document.addEventListener("click", (e) => {
 /* ANIMATE EATING THE ROOM CODE */
 const mouth = document.getElementById("roomId");
 const fang = document.getElementById("fang");
+const fangDark = document.getElementById("fang-darker");
 async function eatCode() {
     // skip animation for invalid room id
     const roomId = document.getElementById("roomId").value;
@@ -34,12 +35,14 @@ async function eatCode() {
         return;
     }
     fang.classList.add("fang-animation");
+    fangDark.classList.add("fang-animation");
     mouth.classList.add("mouth-animation");
     await new Promise(resolve => {
         fang.addEventListener('animationend', resolve, {once: true})
     });
     mouth.classList.remove("mouth-animation");
     fang.classList.remove("fang-animation");
+    fangDark.classList.remove("fang-animation");
 }
 
 /* CODE FOR DISPLAYING PLACEHOLDER TEXT */
