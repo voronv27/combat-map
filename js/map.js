@@ -601,6 +601,7 @@ const charTextColor = document.getElementById("create-char-text-color");
 const charBorderColor = document.getElementById("create-char-border-color");
 const charBorderWidth = document.getElementById("create-char-border-width");
 const appearancePreview = document.getElementById("previewChar")
+const charSizeUnit = document.getElementById("size-measure");
 
 // update character appearance based on changed value
 function updateCharacter(elem, charToUpdate=appearancePreview) {
@@ -703,6 +704,19 @@ function clearCharImage() {
         img.classList.add("hidden");
     });
     charImage.innerText = "Upload...";
+}
+
+// Swap between character size units
+charSizeUnit.onchange = () => {
+    const charGridSizer = document.getElementById("grid-sizer");
+    const charFreeScaleSizer = document.getElementById("free-scale-sizer");
+    if ( charSizeUnit.value == "grid") {
+        charGridSizer.classList.remove("hidden");
+        charFreeScaleSizer.classList.add("hidden");
+    } else {
+        charGridSizer.classList.add("hidden");
+        charFreeScaleSizer.classList.remove("hidden");
+    }
 }
 
 /* CODE TO SHOW/HIDE MAP CONTROLS BAR */

@@ -332,18 +332,35 @@
                 <!-- options -->
                 <div class="space-y-1">
                 <!-- set character size -->
+                <!-- set unit -->
                 <div class="form-row items-center">
                     <div>Size: </div>
+                    <!-- todo: can't style dropdowns (why css), replace this with custom implementation -->
+                    <select id="size-measure" class="input-field dropdown">
+                      <option value="grid">Grid</option>
+                      <option value="free-scale">Free Scale</option>
+                    </select>
+                </div>
+                <!-- grid sizing -->
+                <div id="grid-sizer" class="form-row items-center">
                     <input type="number" min="0" id="create-char-x"
                      class="input-field w-[40px] text-center text-[16px] p-0" value=1>
                     <div> x </div>
                     <input type="number" min="0" id="create-char-y"
                      class="input-field w-[40px] text-center text-[16px] p-0" value=1>
-                    <!-- todo: can't style dropdowns (why css), replace this with custom implementation -->
-                    <select id="size-measure" class="input-field dropdown">
-                      <option value="grid">grid</option>
-                      <option value="px">px</option>
-                    </select>
+                    <div class="text-[14px] mt-auto">(grid squares)</div>
+                </div>
+                <!-- free-scale sizing (sliders) -->
+                <div id="free-scale-sizer" class="hidden grid place-items-center grid-cols-[auto_1fr_auto] gap-2">
+                    <!-- width slider -->
+                    <div>Width: </div>
+                    <input type="range" min="0" max="100" step="1" value="0" id="char-scale-slider-x" class="accent-accent w-full">
+                    <input type="number" min="0" max="100" id="char-scale-value-x" class="input-field w-[50px] text-center text-[16px] p-0 md:mr-2" value=0>
+
+                    <!-- height slider -->
+                    <div>Height:</div>
+                    <input type="range" min="0" max="100" step="1" value="0" id="char-scale-slider-y" class=" accent-accent w-full">
+                    <input type="number" min="0" max="100" id="char-scale-value-y" class="input-field w-[50px] text-center text-[16px] p-0 md:mr-2" value=0>
                 </div>
                 <!-- preserve aspect ratio -->
                 <div class="form-row items-center">
