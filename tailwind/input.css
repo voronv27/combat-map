@@ -147,11 +147,11 @@
     @apply pointer-events-none w-full h-full col-start-1 row-start-1 flex items-center justify-center text-center text-black z-10 text-6xl;
   }
   .preview-shape-ctr {
-    @apply w-full h-full col-start-1 row-start-1 flex items-center justify-center;
+    @apply relative w-full h-full col-start-1 row-start-1 flex items-center justify-center;
   }
   .preview-shape {
-    @apply max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0;
-    --shape-background: white;
+    @apply absolute max-w-[80%] w-full my-4 md:max-h-[85%] md:w-auto md:h-full md:py-0;
+    --shape-background: #C636D3;
     --shape-border-color: black;
     --shape-border-width: 2;
   }
@@ -160,6 +160,11 @@
   }
   .shape-image {
     @apply w-full h-full object-cover;
+  }
+  .shape-text {
+    @apply absolute z-10 max-w-[80%] max-h-[80%] break-words text-center leading-none text-[length:var(--shape-font-size)] text-[color:var(--shape-text-color)];
+    --shape-text-color: black;
+    --shape-font-size: 10cqh;
   }
   
   /* SPECIFIC ELEMENTS */

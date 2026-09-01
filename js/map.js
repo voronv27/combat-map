@@ -597,6 +597,7 @@ const charShape = document.getElementById("create-char-shape");
 const charText = document.getElementById("create-char-text");
 const charImage = document.getElementById("create-char-image");
 const charBgColor = document.getElementById("create-char-color");
+const charTextColor = document.getElementById("create-char-text-color");
 const charBorderColor = document.getElementById("create-char-border-color");
 const charBorderWidth = document.getElementById("create-char-border-width");
 const appearancePreview = document.getElementById("previewChar")
@@ -611,12 +612,21 @@ function updateCharacter(elem, charToUpdate=appearancePreview) {
             var shape = charToUpdate.querySelector(`.${charShape.value}`);
             shape.classList.remove("hidden");
             break;
+        case "text":
+            var text = charToUpdate.querySelector(".shape-text");
+            text.textContent = charText.value;
+            break;
         case "backgroundColor":
             var shapes = charToUpdate.querySelectorAll(".preview-shape");
             var color = charBgColor.value;
             shapes.forEach(shape => {
                 shape.style.setProperty("--shape-background", color);
             });
+            break;
+        case "textColor":
+            var color = charTextColor.value;
+            var text = charToUpdate.querySelector(".shape-text");
+            text.style.setProperty("--shape-text-color", color);
             break;
         case "borderColor":
             var shapes = charToUpdate.querySelectorAll(".preview-shape");
@@ -645,7 +655,9 @@ function updateCharacter(elem, charToUpdate=appearancePreview) {
     }
 }
 charShape.onchange = () => {updateCharacter("shape");};
+charText.oninput = () => {updateCharacter("text");};
 charBgColor.onchange = () => {updateCharacter("backgroundColor");};
+charTextColor.onchange = () => {updateCharacter("textColor");};
 charBorderColor.onchange = () => {updateCharacter("borderColor");};
 charBorderWidth.oninput = () => {updateCharacter("borderWidth");};
 charBorderWidth.onchange = () => {updateCharacter("borderWidthChange");}

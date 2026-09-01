@@ -278,7 +278,20 @@
                 <div class="form-row items-end">
                     <div>Fill Color:</div>
                     <input type="color" id="create-char-color"
-                     class="input-field w-[40px] text-center m-0" value=#FFFFFF>
+                     class="input-field w-[40px] text-center m-0" value=#C636D3>
+                </div>
+                <!-- set character text color and size -->
+                <div class="form-row items-center">
+                    <div>Text:</div>
+                    <div class="form-row items-end">
+                        <input type="color" id="create-char-text-color"
+                         class="input-field w-[40px] text-center m-0" value=#000000>
+                    </div>
+                    <div class="form-row items-end">
+                        <!--todo: add slider for font size-->
+                        <div class="text-sm">
+                        (font size adjustable later)</div>
+                    </div>
                 </div>
                 <!-- set character border color -->
                 <div class="form-row items-end">
@@ -303,13 +316,11 @@
                         class="col-start-1 row-start-1 w-full h-full object-contain opacity-0">
 
                         <div id="previewChar" class="preview-shape-ctr">
+                            <div class="shape-text"></div>
                             <div id="previewChar-circle" class="circle preview-shape"></div>
                             <div id="previewChar-square" class="square preview-shape hidden"></div>
                             <div id="previewChar-triangle" class="triangle preview-shape hidden"></div>
                             <div id="previewChar-star" class="star preview-shape hidden"></div>
-                        </div>
-                        <div id="previewText-char" class="preview-text opacity-60">
-                            PREVIEW
                         </div>
                     </div>
                 </div>
